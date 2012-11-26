@@ -8,10 +8,11 @@ common.createConnection(function (err, db) {
 		"`name` VARCHAR(100) NOT NULL",
 		")"
 	].join(""), function () {
+		var calledAfter = false;
 		var TestModel = db.define('test_hook_after_save', {}, {
 			hooks: {
 				afterSave: function () {
-					db.close();
+					calledAfter = true;
 				}
 			}
 		});
@@ -19,6 +20,10 @@ common.createConnection(function (err, db) {
 		var Test = new TestModel({ name: "beforeSave" });
 		Test.save(function (err) {
 			assert.equal(err, null);
+
+			db.close(function () {
+				assert.equal(calledAfter, true);
+			});
 		});
 	});
 });

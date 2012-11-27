@@ -16,7 +16,7 @@
   "devDependencies": {
     "utest": "0.0.6",
     "urun": "0.0.6",
-    "mysql": "2.0.0@alpha4"
+    "mysql": "2.0.0-alpha4"
   },
   "optionalDependencies": {}
 }

@@ -2,6 +2,8 @@ var common = exports;
 var path   = require('path');
 var ORM    = require('../');
 
+common.ORM = ORM;
+
 common.isTravis = function() {
 	return Boolean(process.env.CI);
 };

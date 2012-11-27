@@ -2,12 +2,7 @@ var common     = require('../common');
 var assert     = require('assert');
 
 common.createConnection(function (err, db) {
-	db.driver.db.query([
-		"CREATE TEMPORARY TABLE `test_hook_before_save` (",
-		"`id` INT (5) NOT NULL PRIMARY KEY AUTO_INCREMENT,",
-		"`name` VARCHAR(100) NOT NULL",
-		")"
-	].join(""), function () {
+	common.createModelTable('test_hook_before_save', db.driver.db, function () {
 		var calledBefore = false;
 		var TestModel = db.define('test_hook_before_save', {}, {
 			hooks: {

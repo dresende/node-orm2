@@ -1,23 +1,21 @@
 var common     = require('../common');
 var assert     = require('assert');
-var mysql      = require('mysql');
 
-var url = 'mysql://root@localhost/orm_test';
+var connection;
 
-if (!common.isTravis()) {
-	url = (process.env.ORM_PROTOCOL || 'mysql') +
-	      '://' +
-	      (process.env.ORM_USER || 'root') +
-	      (process.env.ORM_PASSWORD ? ':' + process.env.ORM_PASSWORD : '') +
-	      '@' + (process.env.ORM_HOST || 'localhost') +
-	      '/' + (process.env.ORM_DATABASE || 'orm_test');
+switch (process.env.ORM_PROTOCOL) {
+	case 'mysql':
+		connection = require('mysql').createConnection(common.getConnectionString());
+		break;
+	case 'postgres':
+		connection = new (require('pg').Client)(common.getConnectionString());
+		break;
 }
 
-var connection = mysql.createConnection(url);
 connection.connect(function (err) {
 	assert.equal(err, null);
 
-	common.ORM.use(connection, "mysql", function (err, db) {
+	common.ORM.use(connection, process.env.ORM_PROTOCOL, function (err, db) {
 		assert.equal(err, null);
 		assert.equal(typeof db, "object");
 		assert.equal(typeof db.define, "function");

@@ -17,7 +17,7 @@ common.createConnection = function(cb) {
 };
 
 common.getConnectionString = function () {
-	var url, config = require("./config")[this.protocol()];
+	var url;
 
 	if (common.isTravis()) {
 		if (this.protocol() == 'mysql') {
@@ -26,6 +26,7 @@ common.getConnectionString = function () {
 			url = 'postgres://postgres@localhost/orm_test';
 		}
 	} else {
+		var config = require("./config")[this.protocol()];
 		if (this.protocol() == 'mysql') {
 			url = 'mysql://' +
 			      (config.user || 'root') +

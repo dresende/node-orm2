@@ -14,7 +14,6 @@ common.createConnection(function (err, db) {
 
 		var Test = new TestModel({ name: "beforeSave" });
 		Test.save(function (err) {
-			console.log(err);
 			assert.equal(err, null);
 
 			db.close(function () {

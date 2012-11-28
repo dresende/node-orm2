@@ -39,7 +39,7 @@ orm.connect("mysql://username:password@host/database", function (err, db) {
 
 ## Models
 
-A Model is a structure binder to one or more tables, depending on the associations. The model name is assumed to be the table name. After defining a model you can use it to manipulate the table.
+A Model is a structure binded to one or more tables, depending on the associations. The model name is assumed to be the table name. After defining a model you can use it to manipulate the table.
 
 ## Associations
 

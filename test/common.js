@@ -50,7 +50,7 @@ common.createModelTable = function (table, db, cb) {
 			db.query("CREATE TEMPORARY TABLE " + table + " (id SERIAL PRIMARY KEY, name VARCHAR(100) NOT NULL)", cb);
 			break;
 		default:
-			db.query("CREATE TEMPORARY TABLE " + table + " (id BIGINT NOT NULL PRIMARY KEY, name VARCHAR(100) NOT NULL)", cb);
+			db.query("CREATE TEMPORARY TABLE " + table + " (id BIGINT NOT NULL PRIMARY KEY AUTO_INCREMENT, name VARCHAR(100) NOT NULL)", cb);
 			break;
 	}
 };
@@ -61,7 +61,7 @@ common.createModel2Table = function (table, db, cb) {
 			db.query("CREATE TEMPORARY TABLE " + table + " (id SERIAL PRIMARY KEY, name VARCHAR(100) NOT NULL, assoc_id BIGINT NOT NULL)", cb);
 			break;
 		default:
-			db.query("CREATE TEMPORARY TABLE " + table + " (id BIGINT NOT NULL PRIMARY KEY, name VARCHAR(100) NOT NULL, assoc_id BIGINT NOT NULL)", cb);
+			db.query("CREATE TEMPORARY TABLE " + table + " (id BIGINT NOT NULL PRIMARY KEY AUTO_INCREMENT, name VARCHAR(100) NOT NULL, assoc_id BIGINT NOT NULL)", cb);
 			break;
 	}
 };

@@ -44,6 +44,12 @@ common.getConnectionString = function () {
 	return url;
 };
 
+common.getModelProperties = function () {
+	return {
+		name: String
+	};
+};
+
 common.createModelTable = function (table, db, cb) {
 	switch (this.protocol()) {
 		case "postgres":

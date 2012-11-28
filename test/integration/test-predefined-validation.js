@@ -8,7 +8,7 @@ common.createConnection(function (err, db) {
 		"`name` VARCHAR(100) NOT NULL",
 		")"
 	].join(""), function () {
-		var TestModel = db.define('test_predefined_validation', {}, {
+		var TestModel = db.define('test_predefined_validation', common.getModelProperties(), {
 			validations: {
 				name: db.validators.rangeLength(2, 3)
 			}

@@ -6,7 +6,7 @@ common.createConnection(function (err, db) {
 		db.driver.db.query("INSERT INTO test_find_limit VALUES (1, 'test1'), (2, 'test2')", function (err) {
 			if (err) throw err;
 
-			var TestModel = db.define('test_find_limit');
+			var TestModel = db.define('test_find_limit', common.getModelProperties());
 
 			TestModel.find(1, function (err, Instances) {
 				assert.equal(err, null);

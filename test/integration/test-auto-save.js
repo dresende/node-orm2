@@ -6,7 +6,7 @@ common.createConnection(function (err, db) {
 		db.driver.db.query("INSERT INTO test_auto_save VALUES (1, 'test')", function (err) {
 			if (err) throw err;
 
-			var TestModel = db.define('test_auto_save', {}, {
+			var TestModel = db.define('test_auto_save', common.getModelProperties(), {
 				autoSave: true
 			});
 			var autoSaved = false;

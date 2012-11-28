@@ -7,7 +7,7 @@ common.createConnection(function (err, db) {
 			if (err) throw err;
 
 			var calledBefore = false, calledAfter = false;
-			var TestModel = db.define('test_hook_for_single_property', {}, {
+			var TestModel = db.define('test_hook_for_single_property', common.getModelProperties(), {
 				autoSave: true,
 				hooks: {
 					beforeSave: function () {

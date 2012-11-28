@@ -6,7 +6,7 @@ common.createConnection(function (err, db) {
 		db.driver.db.query("INSERT INTO test_get VALUES (1, 'test')", function (err) {
 			if (err) throw err;
 
-			var TestModel = db.define('test_get');
+			var TestModel = db.define('test_get', common.getModelProperties());
 
 			TestModel.get(1, function (err, Instance) {
 				assert.equal(err, null);

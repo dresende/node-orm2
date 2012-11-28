@@ -6,7 +6,7 @@ common.createConnection(function (err, db) {
 		db.driver.db.query("INSERT INTO test_association_hasone_set VALUES (1, 'test1', 0), (2, 'test2', 0)", function (err) {
 			if (err) throw err;
 
-			var TestModel = db.define('test_association_hasone_set');
+			var TestModel = db.define('test_association_hasone_set', common.getModelProperties());
 			TestModel.hasOne("assoc");
 
 			TestModel.get(1, function (err, Test1) {

@@ -4,7 +4,7 @@ var assert     = require('assert');
 common.createConnection(function (err, db) {
 	common.createModelTable('test_hook_after_save', db.driver.db, function () {
 		var calledAfter = false;
-		var TestModel = db.define('test_hook_after_save', {}, {
+		var TestModel = db.define('test_hook_after_save', common.getModelProperties(), {
 			hooks: {
 				afterSave: function () {
 					calledAfter = true;

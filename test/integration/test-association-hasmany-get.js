@@ -10,11 +10,12 @@ common.createConnection(function (err, db) {
 				db.driver.db.query("INSERT INTO test_association_hasmany_get_assocs VALUES (1, 2), (1, 3)", function (err) {
 					if (err) throw err;
 
-					var TestModel = db.define('test_association_hasmany_get');
+					var TestModel = db.define('test_association_hasmany_get', common.getModelProperties());
 					TestModel.hasMany("assocs");
 
 					TestModel.get(1, function (err, Test1) {
 						assert.equal(err, null);
+						console.log(Test1);
 						Test1.getAssocs(function (err, Tests) {
 							assert.equal(err, null);
 							assert.equal(Array.isArray(Tests), true);

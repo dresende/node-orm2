@@ -26,7 +26,7 @@ common.getConnectionString = function () {
 			case 'postgres':
 				return 'postgres://postgres@localhost/orm_test';
 			case 'sqlite':
-				return 'sqlite:///' + __dirname + '/orm_test.sqlite';
+				return 'sqlite://';
 			default:
 				throw new Error("Unknown protocol");
 		}

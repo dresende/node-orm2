@@ -2,7 +2,7 @@
   "author": "Diogo Resende <dresende@thinkdigital.pt>",
   "name": "orm",
   "description": "NodeJS Object-relational mapping",
-  "version": "2.0.0-alpha1",
+  "version": "2.0.0-alpha2",
   "repository": {
     "url": ""
   },

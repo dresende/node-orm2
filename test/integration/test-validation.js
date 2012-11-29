@@ -2,12 +2,7 @@ var common     = require('../common');
 var assert     = require('assert');
 
 common.createConnection(function (err, db) {
-	db.driver.db.query([
-		"CREATE TEMPORARY TABLE `test_validation` (",
-		"`id` INT (5) NOT NULL PRIMARY KEY AUTO_INCREMENT,",
-		"`name` VARCHAR(100) NOT NULL",
-		")"
-	].join(""), function () {
+	common.createModelTable('test_validation', db.driver.db, function () {
 		var TestModel = db.define('test_validation', common.getModelProperties(), {
 			validations: {
 				name: function (name, next) {

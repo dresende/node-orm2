@@ -34,7 +34,7 @@ Validation.outsideList([ 1, 2, 3 ])('2', checkValidation());
 Validation.outsideList([ 1, 2, 3 ])(2, checkValidation('inside-list'));
 
 Validation.notEmptyString()('a', checkValidation());
-Validation.notEmptyString()('', checkValidation('out-of-range-length'));
+Validation.notEmptyString()('', checkValidation('empty-string'));
 Validation.notEmptyString()(_, checkValidation('undefined'));
 
 function checkValidation(ret1) {

@@ -3,7 +3,9 @@ var assert     = require('assert');
 
 common.createConnection(function (err, db) {
 	common.createModelTable('test_auto_save', db.driver.db, function () {
-		db.driver.db.query("INSERT INTO test_auto_save VALUES (1, 'test')", function (err) {
+		common.insertModelData('test_auto_save', db.driver.db, [
+			{ id : 1, name : 'test' }
+		], function (err) {
 			if (err) throw err;
 
 			var TestModel = db.define('test_auto_save', common.getModelProperties(), {
@@ -13,13 +15,16 @@ common.createConnection(function (err, db) {
 
 			TestModel.get(1, function (err, Test) {
 				Test.on("save", function () {
+					console.log("now saving!");
 					autoSaved = true;
 				});
 				Test.name = "auto-save test";
 
-				db.close(function () {
-					assert.equal(autoSaved, true);
-				});
+				setTimeout(function () {
+					db.close(function () {
+						assert.equal(autoSaved, true, "event 'save' not triggered");
+					});
+				}, 1000);
 			});
 		});
 	});

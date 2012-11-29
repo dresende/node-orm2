@@ -4,7 +4,11 @@ var assert     = require('assert');
 common.createConnection(function (err, db) {
 	common.createModelTable('test_association_hasmany_set', db.driver.db, function () {
 		common.createModelAssocTable('test_association_hasmany_set', 'assocs', db.driver.db, function () {
-			db.driver.db.query("INSERT INTO test_association_hasmany_set VALUES (1, 'test1'), (2, 'test2'), (3, 'test3')", function (err) {
+			common.insertModelData('test_association_hasmany_set', db.driver.db, [
+				{ id : 1, name : 'test1' },
+				{ id : 2, name : 'test2' },
+				{ id : 3, name : 'test3' }
+			], function (err) {
 				if (err) throw err;
 
 				var TestModel = db.define('test_association_hasmany_set', common.getModelProperties());

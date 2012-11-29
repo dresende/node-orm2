@@ -3,7 +3,10 @@ var assert     = require('assert');
 
 common.createConnection(function (err, db) {
 	common.createModel2Table('test_association_hasone_set', db.driver.db, function () {
-		db.driver.db.query("INSERT INTO test_association_hasone_set VALUES (1, 'test1', 0), (2, 'test2', 0)", function (err) {
+		common.insertModel2Data('test_association_hasone_set', db.driver.db, [
+			{ id : 1, name : 'test1', assoc: 0 },
+			{ id : 2, name : 'test2', assoc: 0 }
+		], function (err) {
 			if (err) throw err;
 
 			var TestModel = db.define('test_association_hasone_set', common.getModelProperties());

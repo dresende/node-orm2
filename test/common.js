@@ -20,25 +20,36 @@ common.getConnectionString = function () {
 	var url;
 
 	if (common.isTravis()) {
-		if (this.protocol() == 'mysql') {
-			url = 'mysql://root@localhost/orm_test';
-		} else {
-			url = 'postgres://postgres@localhost/orm_test';
+		switch (this.protocol()) {
+			case 'mysql':
+				return 'mysql://root@localhost/orm_test';
+			case 'postgres':
+				return 'postgres://postgres@localhost/orm_test';
+			case 'sqlite':
+				return 'sqlite:///' + __dirname + '/orm_test.sqlite';
+			default:
+				throw new Error("Unknown protocol");
 		}
 	} else {
 		var config = require("./config")[this.protocol()];
-		if (this.protocol() == 'mysql') {
-			url = 'mysql://' +
-			      (config.user || 'root') +
-			      (config.password ? ':' + config.password : '') +
-			      '@' + (config.host || 'localhost') +
-			      '/' + (config.database || 'orm_test');
-		} else {
-			url = 'postgres://' +
-			      (config.user || 'postgres') +
-			      (config.password ? ':' + config.password : '') +
-			      '@' + (config.host || 'localhost') +
-			      '/' + (config.database || 'orm_test');
+
+		switch (this.protocol()) {
+			case 'mysql':
+				return 'mysql://' +
+				       (config.user || 'root') +
+				       (config.password ? ':' + config.password : '') +
+				       '@' + (config.host || 'localhost') +
+				       '/' + (config.database || 'orm_test');
+			case 'postgres':
+				return 'postgres://' +
+				       (config.user || 'postgres') +
+				       (config.password ? ':' + config.password : '') +
+				       '@' + (config.host || 'localhost') +
+				       '/' + (config.database || 'orm_test');
+			case 'sqlite':
+				return 'sqlite://' + config.pathname;
+			default:
+				throw new Error("Unknown protocol");
 		}
 	}
 	return url;
@@ -55,6 +66,11 @@ common.createModelTable = function (table, db, cb) {
 		case "postgres":
 			db.query("CREATE TEMPORARY TABLE " + table + " (id SERIAL PRIMARY KEY, name VARCHAR(100) NOT NULL)", cb);
 			break;
+		case "sqlite":
+			db.run("DROP TABLE IF EXISTS " + table, function () {
+				db.run("CREATE TABLE " + table + " (id INTEGER NOT NULL, name VARCHAR(100) NOT NULL, PRIMARY KEY(id))", cb);
+			});
+			break;
 		default:
 			db.query("CREATE TEMPORARY TABLE " + table + " (id BIGINT NOT NULL PRIMARY KEY AUTO_INCREMENT, name VARCHAR(100) NOT NULL)", cb);
 			break;
@@ -65,6 +81,11 @@ common.createModel2Table = function (table, db, cb) {
 	switch (this.protocol()) {
 		case "postgres":
 			db.query("CREATE TEMPORARY TABLE " + table + " (id SERIAL PRIMARY KEY, name VARCHAR(100) NOT NULL, assoc_id BIGINT NOT NULL)", cb);
+			break;
+		case "sqlite":
+			db.run("DROP TABLE IF EXISTS " + table, function () {
+				db.run("CREATE TEMPORARY TABLE " + table + " (id SERIAL PRIMARY KEY, name VARCHAR(100) NOT NULL, assoc_id BIGINT NOT NULL)", cb);
+			});
 			break;
 		default:
 			db.query("CREATE TEMPORARY TABLE " + table + " (id BIGINT NOT NULL PRIMARY KEY AUTO_INCREMENT, name VARCHAR(100) NOT NULL, assoc_id BIGINT NOT NULL)", cb);
@@ -77,8 +98,100 @@ common.createModelAssocTable = function (table, assoc, db, cb) {
 		case "postgres":
 			db.query("CREATE TEMPORARY TABLE " + table + "_" + assoc + " (" + table + "_id BIGINT NOT NULL, " + assoc + "_id BIGINT NOT NULL)", cb);
 			break;
+		case "sqlite":
+			db.run("DROP TABLE IF EXISTS " + table + "_" + assoc, function () {
+				db.run("CREATE TABLE " + table + "_" + assoc + " (" + table + "_id INTEGER NOT NULL, " + assoc + "_id INTEGER NOT NULL)", cb);
+			});
+			break;
 		default:
 			db.query("CREATE TEMPORARY TABLE " + table + "_" + assoc + " (" + table + "_id BIGINT NOT NULL, " + assoc + "_id BIGINT NOT NULL)", cb);
+			break;
+	}
+};
+
+common.insertModelData = function (table, db, data, cb) {
+	var query = [], i;
+
+	switch (this.protocol()) {
+		case "postgres":
+		case "mysql":
+			query = [];
+
+			for (i = 0; i < data.length; i++) {
+				query.push(data[i].id + ", '" + data[i].name + "'");
+			}
+
+			db.query("INSERT INTO " + table + " VALUES (" + query.join("), (") + ")", cb);
+			break;
+		case "sqlite":
+			var pending = data.length;
+			for (i = 0; i < data.length; i++) {
+				db.run("INSERT INTO " + table + " VALUES (" + data[i].id + ", '" + data[i].name + "')", function () {
+					pending -= 1;
+
+					if (pending === 0) {
+						return cb();
+					}
+				});
+			}
+			break;
+	}
+};
+
+common.insertModel2Data = function (table, db, data, cb) {
+	var query = [], i;
+
+	switch (this.protocol()) {
+		case "postgres":
+		case "mysql":
+			query = [];
+
+			for (i = 0; i < data.length; i++) {
+				query.push(data[i].id + ", '" + data[i].name + "', " + data[i].assoc);
+			}
+
+			db.query("INSERT INTO " + table + " VALUES (" + query.join("), (") + ")", cb);
+			break;
+		case "sqlite":
+			var pending = data.length;
+			for (i = 0; i < data.length; i++) {
+				db.run("INSERT INTO " + table + " VALUES (" + data[i].id + ", '" + data[i].name + "', " + data[i].assoc + ")", function () {
+					pending -= 1;
+
+					if (pending === 0) {
+						return cb();
+					}
+				});
+			}
+			break;
+	}
+};
+
+common.insertModelAssocData = function (table, db, data, cb) {
+	var query = [], i;
+
+	switch (this.protocol()) {
+		case "postgres":
+		case "mysql":
+			query = [];
+
+			for (i = 0; i < data.length; i++) {
+				query.push(data[i].join(", "));
+			}
+
+			db.query("INSERT INTO " + table + " VALUES (" + query.join("), (") + ")", cb);
+			break;
+		case "sqlite":
+			var pending = data.length;
+			for (i = 0; i < data.length; i++) {
+				db.run("INSERT INTO " + table + " VALUES (" + data[i].join(", ") + ")", function () {
+					pending -= 1;
+
+					if (pending === 0) {
+						return cb();
+					}
+				});
+			}
 			break;
 	}
 };

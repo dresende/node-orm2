@@ -3,7 +3,9 @@ var assert     = require('assert');
 
 common.createConnection(function (err, db) {
 	common.createModelTable('test_hook_for_single_property', db.driver.db, function () {
-		db.driver.db.query("INSERT INTO test_hook_for_single_property VALUES (1, 'test')", function (err) {
+		common.insertModelData('test_hook_for_single_property', db.driver.db, [
+			{ id : 1, name : 'test1' }
+		], function (err) {
 			if (err) throw err;
 
 			var calledBefore = false, calledAfter = false;
@@ -22,10 +24,12 @@ common.createConnection(function (err, db) {
 			TestModel.get(1, function (err, Test) {
 				Test.name = "test_hook_for_single_property";
 
-				db.close(function () {
-					assert.equal(calledBefore, true);
-					assert.equal(calledAfter, true);
-				});
+				setTimeout(function () {
+					db.close(function () {
+						assert.equal(calledBefore, true, 'dit not call before');
+						assert.equal(calledAfter, true, 'did not call after');
+					});
+				}, 1000);
 			});
 		});
 	});

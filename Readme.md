@@ -10,6 +10,12 @@ npm install orm@2.0.0-alpha2
 
 Despite the alpha tag, this is the recommended version for new applications.
 
+## DBMS Support
+
+- MySQL
+- PostgreSQL
+- SQLite
+
 ## Introduction
 
 This is a node.js object relational mapping module.

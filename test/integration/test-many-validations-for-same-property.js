@@ -2,8 +2,8 @@ var common     = require('../common');
 var assert     = require('assert');
 
 common.createConnection(function (err, db) {
-	common.createModelTable('test_predefined_validation', db.driver.db, function () {
-		var TestModel = db.define('test_predefined_validation', common.getModelProperties(), {
+	common.createModelTable('test_many_validations_for_same_property', db.driver.db, function () {
+		var TestModel = db.define('test_many_validations_for_same_property', common.getModelProperties(), {
 			validations: {
 				name: [
 					db.validators.rangeLength(0, 20, 'error1'), // should not fail on this one

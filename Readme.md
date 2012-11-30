@@ -29,9 +29,12 @@ orm.connect("mysql://username:password@host/database", function (err, db) {
 	if (err) throw err;
 
 	var Person = db.define('person', {
-		name    : String,
-		surname : String,
-		age     : Number
+		name      : String,
+		surname   : String,
+		age       : Number,
+		male      : Boolean,
+		continent : [ 'Europe', 'America', 'Asia', 'Africa', 'Australia', 'Antartica' ], // ENUM type
+		data      : Object // JSON encoded
 	});
 
 	Person.find({ surname: "Doe" }, function (err, people) {

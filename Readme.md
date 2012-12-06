@@ -51,6 +51,49 @@ orm.connect("mysql://username:password@host/database", function (err, db) {
 
 A Model is a structure binded to one or more tables, depending on the associations. The model name is assumed to be the table name. After defining a model you can use it to manipulate the table.
 
+## Finding Items
+
+After defining a Model you can get a specific element or find one or more based on some conditions.
+
+```js
+Person.find({ name: "John", surname: "Doe" }, 3, function (err, people) {
+	// finds people with name='John' AND surname='Doe' and returns the first 3
+});
+```
+
+Or if you know the ID of the item (called Instance):
+
+```js
+Person.get(123, function (err, person) {
+	// finds person with id = 123
+});
+```
+
+If you need to sort the results because you're limiting or just because you want them sorted do:
+
+```js
+Person.find({ surname: "Doe" }, "name", function (err, people) {
+	// finds people with surname='Doe' and returns sorted by name ascending
+});
+Person.find({ surname: "Doe" }, [ "name", "Z" ], function (err, people) {
+	// finds people with surname='Doe' and returns sorted by name descending
+	// ('Z' means DESC; 'A' means ASC - default)
+});
+```
+
+There are more options that you can pass to find something. These options are passed in a second
+object:
+
+```js
+Person.find({ surname: "Doe" }, { offset: 2 }, function (err, people) {
+	// finds people with surname='Doe', skips the first 2 and returns the others
+});
+```
+
+The order of the parameters is not fixed. You can pass the callback first if you like or mix the
+other paramenters. The only parameter that needs to be in order is when you pass 2 objects. The
+first one is for conditions (although it can be empty) and the second one is for options.
+
 ## Associations
 
 An association is a relation between one or more tables.

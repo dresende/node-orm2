@@ -36,13 +36,19 @@ orm.connect("mysql://username:password@host/database", function (err, db) {
 		continent : [ 'Europe', 'America', 'Asia', 'Africa', 'Australia', 'Antartica' ], // ENUM type
 		photo     : Buffer, // BLOB/BINARY
 		data      : Object // JSON encoded
+	}, {
+		methods: {
+			fullName: function () {
+				return this.name + ' ' + this.surname;
+			}
+		}
 	});
 
 	Person.find({ surname: "Doe" }, function (err, people) {
 		// SQL: "SELECT * FROM person WHERE surname = 'Doe'"
 
 		console.log("People found: %d", people.length);
-		console.log("First person: %s", people[0].name);
+		console.log("First person: %s, age %d", people[0].fullName(), people[0].age);
 	});
 });
 ```

@@ -41,6 +41,9 @@ orm.connect("mysql://username:password@host/database", function (err, db) {
 			fullName: function () {
 				return this.name + ' ' + this.surname;
 			}
+		},
+		validations: {
+			age: orm.validators.rangeNumber(18, undefined, 'under-age')
 		}
 	});
 
@@ -49,6 +52,11 @@ orm.connect("mysql://username:password@host/database", function (err, db) {
 
 		console.log("People found: %d", people.length);
 		console.log("First person: %s, age %d", people[0].fullName(), people[0].age);
+
+		people[0].age = 16;
+		people[0].save(function (err) {
+			// err.msg = 'under-age';
+		});
 	});
 });
 ```

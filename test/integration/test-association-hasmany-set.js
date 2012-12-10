@@ -11,21 +11,25 @@ common.createConnection(function (err, db) {
 			], function (err) {
 				if (err) throw err;
 
-				var TestModel = db.define('test_association_hasmany_set', common.getModelProperties());
-				TestModel.hasMany("assocs");
+				common.insertModelAssocData('test_association_hasmany_set_assocs', db.driver.db, [
+					[ 1, 2 ]
+				], function (err) {
+					var TestModel = db.define('test_association_hasmany_set', common.getModelProperties());
+					TestModel.hasMany("assocs");
 
-				TestModel.get(1, function (err, Test1) {
-					assert.equal(err, null);
-					TestModel.get(2, function (err, Test2) {
+					TestModel.get(1, function (err, Test1) {
 						assert.equal(err, null);
-						Test1.setAssocs(Test2, function (err) {
+						TestModel.get(2, function (err, Test2) {
 							assert.equal(err, null);
-							Test1.getAssocs(function (err, Tests) {
+							Test1.setAssocs(Test2, function (err) {
 								assert.equal(err, null);
-								assert.equal(Array.isArray(Tests), true);
-								assert.equal(Tests.length, 1);
-								assert.equal(Tests[0].name, Test2.name);
-								db.close();
+								Test1.getAssocs(function (err, Tests) {
+									assert.equal(err, null);
+									assert.equal(Array.isArray(Tests), true);
+									assert.equal(Tests.length, 1);
+									assert.equal(Tests[0].name, Test2.name);
+									db.close();
+								});
 							});
 						});
 					});

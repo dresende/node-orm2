@@ -96,15 +96,15 @@ common.createModel2Table = function (table, db, cb) {
 common.createModelAssocTable = function (table, assoc, db, cb) {
 	switch (this.protocol()) {
 		case "postgres":
-			db.query("CREATE TEMPORARY TABLE " + table + "_" + assoc + " (" + table + "_id BIGINT NOT NULL, " + assoc + "_id BIGINT NOT NULL)", cb);
+			db.query("CREATE TEMPORARY TABLE " + table + "_" + assoc + " (" + table + "_id BIGINT NOT NULL, " + assoc + "_id BIGINT NOT NULL, extra_field BIGINT)", cb);
 			break;
 		case "sqlite":
 			db.run("DROP TABLE IF EXISTS " + table + "_" + assoc, function () {
-				db.run("CREATE TABLE " + table + "_" + assoc + " (" + table + "_id INTEGER NOT NULL, " + assoc + "_id INTEGER NOT NULL)", cb);
+				db.run("CREATE TABLE " + table + "_" + assoc + " (" + table + "_id INTEGER NOT NULL, " + assoc + "_id INTEGER NOT NULL, extra_field INTEGER)", cb);
 			});
 			break;
 		default:
-			db.query("CREATE TEMPORARY TABLE " + table + "_" + assoc + " (" + table + "_id BIGINT NOT NULL, " + assoc + "_id BIGINT NOT NULL)", cb);
+			db.query("CREATE TEMPORARY TABLE " + table + "_" + assoc + " (" + table + "_id BIGINT NOT NULL, " + assoc + "_id BIGINT NOT NULL, extra_field BIGINT)", cb);
 			break;
 	}
 };
@@ -176,6 +176,9 @@ common.insertModelAssocData = function (table, db, data, cb) {
 			query = [];
 
 			for (i = 0; i < data.length; i++) {
+				if (data[i].length < 3) {
+					data[i].push(0);
+				}
 				query.push(data[i].join(", "));
 			}
 
@@ -184,6 +187,9 @@ common.insertModelAssocData = function (table, db, data, cb) {
 		case "sqlite":
 			var pending = data.length;
 			for (i = 0; i < data.length; i++) {
+				if (data[i].length < 3) {
+					data[i].push(0);
+				}
 				db.run("INSERT INTO " + table + " VALUES (" + data[i].join(", ") + ")", function () {
 					pending -= 1;
 

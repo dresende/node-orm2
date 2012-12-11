@@ -119,7 +119,7 @@ Person.find({ surname: "Doe" }, { offset: 2 }, function (err, people) {
 
 If you prefer another less complicated syntax you can chain `.find()` by not giving a callback parameter.
 
-```
+```js
 Person.find({ surname: "Doe" }).limit(3).offset(2).only("name", "surname").run(function (err, people) {
     // finds people with surname='Doe', skips first 2 and limits to 3 elements,
     // returning only 'name' and 'surname' properties

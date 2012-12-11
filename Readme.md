@@ -65,21 +65,27 @@ orm.connect("mysql://username:password@host/database", function (err, db) {
 
 A Model is a structure binded to one or more tables, depending on the associations. The model name is assumed to be the table name. After defining a model you can use it to manipulate the table.
 
-## Finding Items
-
 After defining a Model you can get a specific element or find one or more based on some conditions.
 
-```js
-Person.find({ name: "John", surname: "Doe" }, 3, function (err, people) {
-	// finds people with name='John' AND surname='Doe' and returns the first 3
-});
-```
+## Finding Items
 
-Or if you know the ID of the item (called Instance):
+### Model.get(id, [ options ], cb)
+
+To get a specific element from the database use `Model.get`.
 
 ```js
 Person.get(123, function (err, person) {
 	// finds person with id = 123
+});
+```
+
+### Model.find([ conditions ] [, options ] [, limit ] [, order ] [, cb ])
+
+Finding one or more elements has more options, each one can be given in no specific parameter order. Only `options` has to be after `conditions` (even if it's an empty object).
+
+```js
+Person.find({ name: "John", surname: "Doe" }, 3, function (err, people) {
+	// finds people with name='John' AND surname='Doe' and returns the first 3
 });
 ```
 
@@ -95,8 +101,7 @@ Person.find({ surname: "Doe" }, [ "name", "Z" ], function (err, people) {
 });
 ```
 
-There are more options that you can pass to find something. These options are passed in a second
-object:
+There are more options that you can pass to find something. These options are passed in a second object:
 
 ```js
 Person.find({ surname: "Doe" }, { offset: 2 }, function (err, people) {
@@ -104,9 +109,22 @@ Person.find({ surname: "Doe" }, { offset: 2 }, function (err, people) {
 });
 ```
 
-The order of the parameters is not fixed. You can pass the callback first if you like or mix the
-other paramenters. The only parameter that needs to be in order is when you pass 2 objects. The
-first one is for conditions (although it can be empty) and the second one is for options.
+#### Available options
+
+- `offset`: discards the first `N` elements
+- `limit`: although it can be passed as a direct argument, you can use it here if you prefer
+- `only`: if you don't want all properties, you can give an array with the list of properties you want
+
+#### Chaining
+
+If you prefer another less complicated syntax you can chain `.find()` by not giving a callback parameter.
+
+```
+Person.find({ surname: "Doe" }).limit(3).offset(2).only("name", "surname").run(function (err, people) {
+    // finds people with surname='Doe', skips first 2 and limits to 3 elements,
+    // returning only 'name' and 'surname' properties
+});
+```
 
 ## Associations
 

@@ -161,8 +161,56 @@ var Person = db.define('person', {
 Person.hasMany("friends"); // omitting the other Model, it will assume self model
 
 Person.get(123, function (err, John) {
-	Person.getFriends(function (err, friends) {
+	John.getFriends(function (err, friends) {
 		// assumes table person_friends with columns person_id and friends_id
 	});
+});
+```
+
+The `hasMany` associations can have additional properties that are assumed to be in the association table.
+
+```js
+var Person = db.define('person', {
+	name : String
+});
+Person.hasMany("friends", {
+    rate : Number
+});
+
+Person.get(123, function (err, John) {
+	John.getFriends(function (err, friends) {
+		// assumes rate is another column on table person_friends
+		// you can access it by going to friends[N].extra.rate
+	});
+});
+```
+
+If you prefer you can activate `autoFetch`. This way associations are automatically fetched when you get or find instances of a model.
+
+```js
+var Person = db.define('person', {
+	name : String
+});
+Person.hasMany("friends", {
+    rate : Number
+}, {
+    autoFetch : true
+});
+
+Person.get(123, function (err, John) {
+    // no need to do John.getFriends() , John already has John.friends Array
+});
+```
+
+You can also define this option globally instead of a per association basis.
+
+```js
+var Person = db.define('person', {
+	name : String
+}, {
+    autoFetch : true
+});
+Person.hasMany("friends", {
+    rate : Number
 });
 ```

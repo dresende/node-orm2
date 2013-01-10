@@ -126,6 +126,26 @@ Person.find({ surname: "Doe" }).limit(3).offset(2).only("name", "surname").run(f
 });
 ```
 
+#### Conditions
+
+Conditions are defined as an object where every key is a property (table column). All keys are supposed
+to be concatenated by the logical `AND`. Values are considered to match exactly, unless you're passing
+an `Array`. In this case it is considered a list to compare the property with.
+
+```js
+{ col1: 123, col2: "foo" } // `col1` = 123 AND `col2` = 'foo'
+{ col1: [ 1, 3, 5 ] } // `col1` IN (1, 3, 5)
+```
+
+If you need other comparisons, you have to use a special object created by some helper functions. Here are
+a few examples to describe it:
+
+```js
+{ col1: orm.ne(123) } // `col1` <> 123
+{ col1: orm.gte(123) } // `col1` >= 123
+{ col1: orm.between(123, 456) } // `col1` BETWEEN 123 AND 456
+```
+
 ## Associations
 
 An association is a relation between one or more tables.

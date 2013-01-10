@@ -2,12 +2,14 @@
   "author": "Diogo Resende <dresende@thinkdigital.pt>",
   "name": "orm",
   "description": "NodeJS Object-relational mapping",
-  "version": "2.0.0-alpha6",
+  "version": "2.0.0-alpha7",
   "repository": {
-    "url": ""
+    "url": "http://dresende.github.com/node-orm2"
   },
   "contributors": [
-    { "name": "Bramus Van Damme", "email": "bramus@bram.us" }
+    { "name": "Bramus Van Damme", "email": "bramus@bram.us" },
+    { "name": "Lorien Gamaroff", "email": "lorien@gamaroff.org" },
+    { "name": "preslavrachev" }
   ],
   "main": "./lib/ORM",
   "scripts": {
@@ -19,7 +21,7 @@
   "devDependencies": {
     "utest": "0.0.6",
     "urun": "0.0.6",
-    "mysql": "2.0.0-alpha4",
+    "mysql": "2.0.0-alpha5",
     "pg": "0.8.7",
     "sqlite3": "2.1.5"
   },

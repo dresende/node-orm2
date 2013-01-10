@@ -12,7 +12,7 @@ common.createConnection(function (err, db) {
 
 			var TestModel = db.define(tableName, common.getModelProperties());
 
-			TestModel.find({ id: { value: 1, comparison: '<>' }}, function (err, Instances) {
+			TestModel.find({ id: common.ORM.ne(1) }, function (err, Instances) {
 				assert.equal(err, null);
 				assert.equal(Array.isArray(Instances), true);
 				assert.equal(Instances[0].id, 2);

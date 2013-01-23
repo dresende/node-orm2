@@ -93,6 +93,44 @@ var Person = db.define('person', {        // 'person' will be the table in the d
 });
 ```
 
+## Loading Models
+
+If you prefer to have your models defined in separated files, you can define them in a function inside a module and
+export the function has the entire module. You can have cascading loads.
+
+```js
+// your main file (after connecting)
+db.load("./models", function (err) {
+    // loaded!
+    var Person = db.models.person;
+    var Pet    = db.models.pet;
+});
+
+// models.js
+module.exports = function (db, cb) {
+    db.load("./models-extra", function (err) {
+        if (err) {
+            return cb(err);
+        }
+
+        db.define('person', {
+            name : String
+        });
+
+        return cb();
+    });
+};
+
+// models-extra.js
+module.exports = function (db, cb) {
+    db.define('pet', {
+        name : String
+    });
+
+    return cb();
+};
+```
+
 ## Synching Models
 
 If you don't have the tables on the database you have to call the `.sync()` on every Model. This will just create the

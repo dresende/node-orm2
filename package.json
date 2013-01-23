@@ -2,9 +2,21 @@
   "author": "Diogo Resende <dresende@thinkdigital.pt>",
   "name": "orm",
   "description": "NodeJS Object-relational mapping",
+  "keywords": [
+    "orm",
+    "odm",
+    "database",
+    "mysql",
+    "postgres",
+    "sqlite"
+  ],
   "version": "2.0.0-alpha8",
+  "license": "MIT",
   "repository": {
     "url": "http://dresende.github.com/node-orm2"
+  },
+  "scripts": {
+    "test": "make"
   },
   "contributors": [
     { "name": "Bramus Van Damme", "email": "bramus@bram.us" },
@@ -18,6 +30,7 @@
   "engines": {
     "node": "*"
   },
+  "analyse": false,
   "devDependencies": {
     "utest": "0.0.6",
     "urun": "0.0.6",

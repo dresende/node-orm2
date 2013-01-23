@@ -24,7 +24,8 @@ Despite the alpha tag, this is the recommended version for new applications.
 - ~~Add Model.count(), ChainFind.count(), Model.exists(id)~~
 - ~~Add Instance.has*() for hasMany and hasOne associations~~
 - ~~Add DB.load() to load definitions from files~~
-- Add ChainFind.remove() (and maybe some more interesting methods)
+- ~~Add ChainFind.remove() (and maybe some more interesting methods)~~
+- Add some kind of bulk insert
 
 ## Introduction
 

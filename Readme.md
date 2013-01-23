@@ -16,6 +16,15 @@ Despite the alpha tag, this is the recommended version for new applications.
 - PostgreSQL
 - SQLite
 
+## Roadmap (Future updates)
+
+- Add SQLite Model.sync()
+- Add Model.drop()
+- Add Model.count(), Model.exists(id)
+- Add Instance.has*() for hasMany and hasOne associations
+- Add DB.import() to load definitions from files
+- Add ChainFind.remove() (and maybe some more interesting methods)
+
 ## Introduction
 
 This is a node.js object relational mapping module.

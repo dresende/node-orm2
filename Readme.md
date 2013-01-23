@@ -5,7 +5,7 @@
 ## Install
 
 ```sh
-npm install orm@2.0.0-alpha7
+npm install orm@2.0.0-alpha8
 ```
 
 Despite the alpha tag, this is the recommended version for new applications.

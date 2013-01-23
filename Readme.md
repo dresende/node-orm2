@@ -16,16 +16,12 @@ Despite the alpha tag, this is the recommended version for new applications.
 - PostgreSQL
 - SQLite
 
-## Roadmap (Future updates)
+## Features
 
-- ~~Add SQLite Model.sync()~~
-- ~~Add options to Property to allow people to better define the type of coluns in the database~~ (_some added_)
-- ~~Add Model.drop()~~
-- ~~Add Model.count(), ChainFind.count(), Model.exists(id)~~
-- ~~Add Instance.has*() for hasMany and hasOne associations~~
-- ~~Add DB.load() to load definitions from files~~
-- ~~Add ChainFind.remove() (and maybe some more interesting methods)~~
-- Add some kind of bulk insert
+- Create Models, sync, drop, bulk create, get, find, remove, count
+- Create Model associations, find, check, create and remove
+- Define custom validations (several builtin validations, check instance properties before saving)
+- Instance singleton (table rows fetched twice are the same object, changes to one change all)
 
 ## Introduction
 

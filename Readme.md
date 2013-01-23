@@ -19,7 +19,7 @@ Despite the alpha tag, this is the recommended version for new applications.
 ## Roadmap (Future updates)
 
 - ~~Add SQLite Model.sync()~~
-- Add options to Property to allow people to better define the type of coluns in the database
+- ~~Add options to Property to allow people to better define the type of coluns in the database~~ (_some added_)
 - ~~Add Model.drop()~~
 - ~~Add Model.count(), ChainFind.count(), Model.exists(id)~~
 - ~~Add Instance.has*() for hasMany and hasOne associations~~

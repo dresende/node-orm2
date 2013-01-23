@@ -20,7 +20,7 @@ Despite the alpha tag, this is the recommended version for new applications.
 
 - ~~Add SQLite Model.sync()~~
 - Add options to Property to allow people to better define the type of coluns in the database
-- Add Model.drop()
+- ~~Add Model.drop()~~
 - Add Model.count(), Model.exists(id)
 - Add Instance.has*() for hasMany and hasOne associations
 - Add DB.import() to load definitions from files

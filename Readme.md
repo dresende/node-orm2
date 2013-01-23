@@ -196,6 +196,14 @@ Person.find({ surname: "Doe" }).limit(3).offset(2).only("name", "surname").run(f
 });
 ```
 
+You can also chain and just get the count in the end. In this case, offset, limit and order are ignored.
+
+```js
+Person.find({ surname: "Doe" }).count(function (err, people) {
+    // people = number of people with surname="Doe"
+});
+```
+
 #### Conditions
 
 Conditions are defined as an object where every key is a property (table column). All keys are supposed
@@ -211,8 +219,12 @@ If you need other comparisons, you have to use a special object created by some 
 a few examples to describe it:
 
 ```js
+{ col1: orm.eq(123) } // `col1` = 123 (default)
 { col1: orm.ne(123) } // `col1` <> 123
+{ col1: orm.gt(123) } // `col1` > 123
 { col1: orm.gte(123) } // `col1` >= 123
+{ col1: orm.lt(123) } // `col1` < 123
+{ col1: orm.lte(123) } // `col1` <= 123
 { col1: orm.between(123, 456) } // `col1` BETWEEN 123 AND 456
 ```
 

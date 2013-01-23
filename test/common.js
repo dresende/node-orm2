@@ -47,7 +47,7 @@ common.getConnectionString = function () {
 				       '@' + (config.host || 'localhost') +
 				       '/' + (config.database || 'orm_test');
 			case 'sqlite':
-				return 'sqlite://' + config.pathname;
+				return 'sqlite://' + (config.pathname || "");
 			default:
 				throw new Error("Unknown protocol");
 		}

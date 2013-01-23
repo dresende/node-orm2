@@ -243,6 +243,14 @@ Person.find({ surname: "Doe" }).count(function (err, people) {
 });
 ```
 
+Also available is the option to remove the selected items.
+
+```js
+Person.find({ surname: "Doe" }).remove(function (err) {
+    // Does gone..
+});
+```
+
 #### Conditions
 
 Conditions are defined as an object where every key is a property (table column). All keys are supposed

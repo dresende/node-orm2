@@ -77,6 +77,45 @@ A Model is a structure binded to one or more tables, depending on the associatio
 
 After defining a Model you can get a specific element or find one or more based on some conditions.
 
+## Defining Models
+
+To define a model, you use the reference to the database connection and call `define`. The function will define a Model
+and will return it to you. You can get it later by it's id directly from the database connection so you don't actually
+need to store a reference to it.
+
+```js
+var Person = db.define('person', {        // 'person' will be the table in the database as well as the model id
+	// properties
+	name    : String,                     // you can use native objects to define the property type
+	surname : { type: "text", size: 50 }  // or you can be specific and define aditional options
+}, {
+	// options (optional)
+});
+```
+
+## Synching Models
+
+If you don't have the tables on the database you have to call the `.sync()` on every Model. This will just create the
+tables necessary for your Model. If you have more than one Model you can call `.sync()` directly on the database
+connection to syncronize all Models.
+
+```js
+// db.sync() can also be used
+Person.sync(function (err) {
+	!err && console.log("done!");
+});
+```
+
+## Dropping Models
+
+If you want to drop a Model and remove all tables you can use the `.drop()` method.
+
+```js
+Person.drop(function (err) {
+	!err && console.log("person model no longer exists!");
+});
+```
+
 ## Finding Items
 
 ### Model.get(id, [ options ], cb)
@@ -116,6 +155,27 @@ There are more options that you can pass to find something. These options are pa
 ```js
 Person.find({ surname: "Doe" }, { offset: 2 }, function (err, people) {
 	// finds people with surname='Doe', skips the first 2 and returns the others
+});
+```
+
+### Model.count([ conditions, ] cb)
+
+If you just want to count the number of items that match a condition you can just use `.count()` instead of finding all
+of them and counting. This will actually tell the database server to do a count, the count is not done in javascript.
+
+```js
+Person.count({ surname: "Doe" }, function (err, count) {
+	console.log("We have %d Does in our db", count);
+});
+```
+
+### Model.exists([ conditions, ] cb)
+
+Similar to `.count()`, this method just checks if the count is greater than zero or not.
+
+```js
+Person.exists({ surname: "Doe" }, function (err, exists) {
+	console.log("We %s Does in our db", exists ? "have" : "don't have");
 });
 ```
 

@@ -10,7 +10,7 @@
     "postgres",
     "sqlite"
   ],
-  "version": "2.0.0-alpha8",
+  "version": "2.0.0-alpha9",
   "license": "MIT",
   "repository": {
     "url": "http://dresende.github.com/node-orm2"
@@ -21,7 +21,10 @@
   "contributors": [
     { "name": "Bramus Van Damme", "email": "bramus@bram.us" },
     { "name": "Lorien Gamaroff", "email": "lorien@gamaroff.org" },
-    { "name": "preslavrachev" }
+    { "name": "preslavrachev" },
+    { "name": "Chris Cowan", "email": "me@chriscowan.us" },
+    { "name": "Paul Dixon", "email": "paul.dixon@mintbridge.co.uk" },
+    { "name": "David Kosub" }
   ],
   "main": "./lib/ORM",
   "scripts": {

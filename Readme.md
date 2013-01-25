@@ -30,17 +30,17 @@ This is a node.js object relational mapping module.
 Here is an example on how to use it:
 
 ```js
-var orm = require('orm');
+var orm = require("orm");
 
 orm.connect("mysql://username:password@host/database", function (err, db) {
 	if (err) throw err;
 
-	var Person = db.define('person', {
+	var Person = db.define("person", {
 		name      : String,
 		surname   : String,
 		age       : Number,
 		male      : Boolean,
-		continent : [ 'Europe', 'America', 'Asia', 'Africa', 'Australia', 'Antartica' ], // ENUM type
+		continent : [ "Europe", "America", "Asia", "Africa", "Australia", "Antartica" ], // ENUM type
 		photo     : Buffer, // BLOB/BINARY
 		data      : Object // JSON encoded
 	}, {
@@ -50,7 +50,7 @@ orm.connect("mysql://username:password@host/database", function (err, db) {
 			}
 		},
 		validations: {
-			age: orm.validators.rangeNumber(18, undefined, 'under-age')
+			age: orm.validators.rangeNumber(18, undefined, "under-age")
 		}
 	});
 
@@ -62,9 +62,24 @@ orm.connect("mysql://username:password@host/database", function (err, db) {
 
 		people[0].age = 16;
 		people[0].save(function (err) {
-			// err.msg = 'under-age';
+			// err.msg = "under-age";
 		});
 	});
+});
+```
+
+## Settings
+
+You have a global settings object and one for each connection.
+
+```js
+var orm = require("orm");
+
+orm.settings.set("some.deep.value", 123);
+
+orm.connect("....", function (err, db) {
+	console.log(db.settings.get("some.deep.value")); // 123
+	console.log(db.settings.get("some.deep"));       // { value: 123 }
 });
 ```
 

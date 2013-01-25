@@ -13,3 +13,8 @@ var testFunction = function () {
 common.ORM.settings.set("some....object", testFunction);
 
 assert.equal(common.ORM.settings.get("some....object"), testFunction);
+
+common.ORM.settings.unset("some....object", "some.sub.object");
+
+assert.equal(common.ORM.settings.get("some....object"), undefined);
+assert.equal(common.ORM.settings.get("some.sub.object"), undefined);

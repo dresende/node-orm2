@@ -78,6 +78,9 @@ var orm = require("orm");
 orm.settings.set("some.deep.value", 123);
 
 orm.connect("....", function (err, db) {
+    // db.settings is a snapshot of the settings at the moment
+    // of orm.connect(). changes to it don't affect orm.settings
+
 	console.log(db.settings.get("some.deep.value")); // 123
 	console.log(db.settings.get("some.deep"));       // { value: 123 }
 });

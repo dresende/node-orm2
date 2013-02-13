@@ -10,7 +10,7 @@
     "postgres",
     "sqlite"
   ],
-  "version": "2.0.0-alpha9",
+  "version": "2.0.0-alpha10",
   "license": "MIT",
   "repository": {
     "url": "http://dresende.github.com/node-orm2"
@@ -37,7 +37,7 @@
   "devDependencies": {
     "utest": "0.0.6",
     "urun": "0.0.6",
-    "mysql": "2.0.0-alpha5",
+    "mysql": "2.0.0-alpha6",
     "pg": "0.8.7",
     "sqlite3": "2.1.5"
   },

@@ -265,6 +265,32 @@ Person.find({ surname: "Doe" }).remove(function (err) {
 });
 ```
 
+You can also make modifications to your instances using common Array traversal methods and save everything
+in the end.
+
+```js
+Person.find({ surname: "Doe" }).each(function (person) {
+	person.surname = "Dean";
+}).save(function (err) {
+	// done!
+});
+
+Person.find({ surname: "Doe" }).each().filter(function (person) {
+	return person.age >= 18;
+}).sort(function (person1, person2) {
+	return person1.age < person2.age;
+}).get(function (people) {
+	// get all people with at least 18 years, sorted by age
+});
+```
+
+Of course you could do this directly on `.find()`, but for some more complicated tasks this can be very usefull.
+
+`Model.find()` does not return an Array so you can't just chain directly. To start chaining you have to call
+`.each()` (with an optional callback if you want to traverse the list). You can then use the common functions
+`.filter()`, `.sort()` and `.forEach()` more than once. In the end (or during the process..) you can call
+`.count()` if you just want to know how many items there are or call `.get()` to retrieve the list.
+
 #### Conditions
 
 Conditions are defined as an object where every key is a property (table column). All keys are supposed

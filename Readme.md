@@ -377,3 +377,27 @@ Person.hasMany("friends", {
     rate : Number
 });
 ```
+
+For `hasOne` associations you can make calls to the associated Model by using the `reverse` option. For example,
+if you have an association from ModelA to ModelB, you can create an accessor in ModelB to get instances from ModelA.
+Confusin? Look at the next example.
+
+```js
+var Pet = db.define('pet', {
+	name : String
+});
+var Person = db.define('person', {
+	name : String
+});
+Pet.hasOne("owner", Person, {
+	reverse : "pets"
+});
+
+Person(4).getPets(function (err, pets) {
+	// although the association was made on Pet,
+	// Person will have an accessor (getPets)
+	//
+	// In this example, ORM will fetch all pets
+	// whose owner_id = 4
+});
+```

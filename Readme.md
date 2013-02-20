@@ -288,8 +288,12 @@ Of course you could do this directly on `.find()`, but for some more complicated
 
 `Model.find()` does not return an Array so you can't just chain directly. To start chaining you have to call
 `.each()` (with an optional callback if you want to traverse the list). You can then use the common functions
-`.filter()`, `.sort()` and `.forEach()` more than once. In the end (or during the process..) you can call
-`.count()` if you just want to know how many items there are or call `.get()` to retrieve the list.
+`.filter()`, `.sort()` and `.forEach()` more than once.
+
+In the end (or during the process..) you can call:
+- `.count()` if you just want to know how many items there are;
+- `.get()` to retrieve the list;
+- `.save()` to save all item changes.
 
 #### Conditions
 

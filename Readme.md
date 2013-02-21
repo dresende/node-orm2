@@ -14,6 +14,7 @@ Despite the alpha tag, this is the recommended version for new applications.
 
 - MySQL
 - PostgreSQL
+- Amazon Redshift
 - SQLite
 
 ## Features

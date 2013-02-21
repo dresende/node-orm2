@@ -196,11 +196,24 @@ var Pet = db.define("pet", {
 
 Other options:
 
-- `cache` : (default: `true`) Set it to `false` to disable Instance cache (Singletons) or set a timeout value (in seconds)
-- `autoSave` : (default: `false`) Set it to `true` to save an Instance right after changing any property
-- `autoFetch` : (default: `false`) Set it to `true` to fetch associations when fetching an instance from the database
+- `cache` : (default: `true`) Set it to `false` to disable Instance cache (Singletons) or set a timeout value (in seconds);
+- `autoSave` : (default: `false`) Set it to `true` to save an Instance right after changing any property;
+- `autoFetch` : (default: `false`) Set it to `true` to fetch associations when fetching an instance from the database;
 - `autoFetchLimit` : (default: 1) If `autoFetch` is enabled this ensures defines how many hoops (associations of associations)
   you want it to automatically fetch.
+
+## Hooks
+
+If you want to listen for a type of event than occurs in instances of a Model, you can attach a function that
+will be called when that event happens. There are some events possible:
+
+- `afterLoad` : (no parameters) Right after loading and preparing an instance to be used;
+- `beforeSave` : (no parameters) Right before trying to save;
+- `afterSave` : (bool success) Right after saving;
+- `beforeCreate` : (no parameters) Right before trying to save a new instance;
+- `beforeRemove` : (no parameters) Right before trying to remove an instance.
+
+All hook function are called with `this` as the instance so you can access anything you want related to it.
 
 ## Finding Items
 

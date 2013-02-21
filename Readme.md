@@ -196,7 +196,7 @@ var Pet = db.define("pet", {
 
 Other options:
 
-- `cache` : (default: `true`) Set it to `false` to disable Instance cache ([Singletons](#singletons)) or set a timeout value (in seconds);
+- `cache` : (default: `true`) Set it to `false` to disable Instance cache ([Singletons](#singleton)) or set a timeout value (in seconds);
 - `autoSave` : (default: `false`) Set it to `true` to save an Instance right after changing any property;
 - `autoFetch` : (default: `false`) Set it to `true` to fetch associations when fetching an instance from the database;
 - `autoFetchLimit` : (default: `1`) If `autoFetch` is enabled this defines how many hoops (associations of associations)

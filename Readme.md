@@ -8,7 +8,7 @@
 npm install orm
 ```
 
-Despite the alpha tag, this is the recommended version for new applications.
+Current stable version: **2.0.1**
 
 ## DBMS Support
 

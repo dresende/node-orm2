@@ -170,6 +170,30 @@ Person.drop(function (err) {
 });
 ```
 
+## Advanced Options
+
+Using [Settings](#settings) or directly on Model definition you can tweak some options.
+For example, each Model instance has a unique ID in the database. This table column is
+by default "id" but you can change it.
+
+```js
+var Person = db.define("person", {
+	name : String
+}, {
+	id   : "person_id"
+});
+
+// or just do it globally..
+db.settings.set("properties.primary_key", "UID");
+
+// ..and then define your Models
+var Pet = db.define("pet", {
+	name : String
+});
+```
+
+`Pet` model will have 2 columns, an `UID` and a `name`.
+
 ## Finding Items
 
 ### Model.get(id, [ options ], cb)

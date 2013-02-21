@@ -8,9 +8,10 @@
     "database",
     "mysql",
     "postgres",
+    "redshift",
     "sqlite"
   ],
-  "version": "2.0.0",
+  "version": "2.0.1",
   "license": "MIT",
   "repository": {
     "url": "http://dresende.github.com/node-orm2"

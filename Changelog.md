@@ -1,3 +1,11 @@
+### v2.0.2 - 21 Feb 2013
+
+- Forces hasMany association changes to check for instance saved (to ensure the instance has an id property)
+- Fixes some bugs when not using "id" as instance id property
+- Adds default setting instance.cache = true so people can tweak it globally
+- Adds autoFetch and autoSave options to default settings
+- Adds more documentation about Hooks, fixes Model options list ending
+
 ### v2.0.1 - 21 Feb 2013
 
 - Changes singleton to support cache value as a number (timeout in seconds)

@@ -11,7 +11,7 @@
     "redshift",
     "sqlite"
   ],
-  "version": "2.0.1",
+  "version": "2.0.2",
   "license": "MIT",
   "repository": {
     "url": "http://dresende.github.com/node-orm2"

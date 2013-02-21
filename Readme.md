@@ -192,7 +192,15 @@ var Pet = db.define("pet", {
 });
 ```
 
-`Pet` model will have 2 columns, an `UID` and a `name`.
+**Pet** model will have 2 columns, an `UID` and a `name`.
+
+Other options:
+
+- `cache` : (default: `true`) Set it to `false` to disable Instance cache (Singletons) or set a timeout value (in seconds)
+- `autoSave` : (default: `false`) Set it to `true` to save an Instance right after changing any property
+- `autoFetch` : (default: `false`) Set it to `true` to fetch associations when fetching an instance from the database
+- `autoFetchLimit` : (default: 1) If `autoFetch` is enabled this ensures defines how many hoops (associations of associations)
+  you want it to automatically fetch.
 
 ## Finding Items
 

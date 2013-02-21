@@ -232,7 +232,7 @@ Person.exists({ surname: "Doe" }, function (err, exists) {
 });
 ```
 
-#### Available options
+### Available options
 
 - `offset`: discards the first `N` elements
 - `limit`: although it can be passed as a direct argument, you can use it here if you prefer
@@ -317,6 +317,21 @@ a few examples to describe it:
 { col1: orm.lt(123) } // `col1` < 123
 { col1: orm.lte(123) } // `col1` <= 123
 { col1: orm.between(123, 456) } // `col1` BETWEEN 123 AND 456
+```
+
+### Singleton
+
+Each model instances is cached, so if you fetch the same record using 2 or more different queries, you will
+get the same object. If you have other systems that can change your database (or you're developing and need
+to make some manual changes) you should remove this feature by disabling cache. You do this when you're
+defining each Model.
+
+```js
+var Person = db.define('person', {
+	name    : String
+}, {
+	cache   : false
+});
 ```
 
 ## Associations

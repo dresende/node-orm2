@@ -24,6 +24,7 @@ common.getConnectionString = function () {
 			case 'mysql':
 				return 'mysql://root@localhost/orm_test';
 			case 'postgres':
+			case 'redshift':
 				return 'postgres://postgres@localhost/orm_test';
 			case 'sqlite':
 				return 'sqlite://';
@@ -46,6 +47,12 @@ common.getConnectionString = function () {
 				       (config.password ? ':' + config.password : '') +
 				       '@' + (config.host || 'localhost') +
 				       '/' + (config.database || 'orm_test');
+			case 'redshift':
+				return 'redshift://' +
+				       (config.user || 'postgres') +
+				       (config.password ? ':' + config.password : '') +
+				       '@' + (config.host || 'localhost') +
+				       '/' + (config.database || 'orm_test');
 			case 'sqlite':
 				return 'sqlite://' + (config.pathname || "");
 			default:
@@ -64,6 +71,7 @@ common.getModelProperties = function () {
 common.createModelTable = function (table, db, cb) {
 	switch (this.protocol()) {
 		case "postgres":
+		case "redshift":
 			db.query("CREATE TEMPORARY TABLE " + table + " (id SERIAL PRIMARY KEY, name VARCHAR(100) NOT NULL)", cb);
 			break;
 		case "sqlite":
@@ -80,6 +88,7 @@ common.createModelTable = function (table, db, cb) {
 common.createModel2Table = function (table, db, cb) {
 	switch (this.protocol()) {
 		case "postgres":
+		case "redshift":
 			db.query("CREATE TEMPORARY TABLE " + table + " (id SERIAL PRIMARY KEY, name VARCHAR(100) NOT NULL, assoc_id BIGINT NOT NULL)", cb);
 			break;
 		case "sqlite":
@@ -96,6 +105,7 @@ common.createModel2Table = function (table, db, cb) {
 common.createModelAssocTable = function (table, assoc, db, cb) {
 	switch (this.protocol()) {
 		case "postgres":
+		case "redshift":
 			db.query("CREATE TEMPORARY TABLE " + table + "_" + assoc + " (" + table + "_id BIGINT NOT NULL, " + assoc + "_id BIGINT NOT NULL, extra_field BIGINT)", cb);
 			break;
 		case "sqlite":
@@ -114,6 +124,7 @@ common.insertModelData = function (table, db, data, cb) {
 
 	switch (this.protocol()) {
 		case "postgres":
+		case "redshift":
 		case "mysql":
 			query = [];
 
@@ -143,6 +154,7 @@ common.insertModel2Data = function (table, db, data, cb) {
 
 	switch (this.protocol()) {
 		case "postgres":
+		case "redshift":
 		case "mysql":
 			query = [];
 
@@ -172,6 +184,7 @@ common.insertModelAssocData = function (table, db, data, cb) {
 
 	switch (this.protocol()) {
 		case "postgres":
+		case "redshift":
 		case "mysql":
 			query = [];
 

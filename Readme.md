@@ -334,6 +334,9 @@ var Person = db.define('person', {
 });
 ```
 
+If you want singletons but want cache to expire after a period of time, you can pass a number instead of a
+boolean. The number will be considered the cache timeout in seconds (you can use floating point).
+
 ## Associations
 
 An association is a relation between one or more tables.

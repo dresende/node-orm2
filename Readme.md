@@ -341,7 +341,18 @@ boolean. The number will be considered the cache timeout in seconds (you can use
 
 An association is a relation between one or more tables.
 
-## hasOne vs. hasMany Associations
+## hasOne vs. hasMany
+
+Since this topic brings some confusion to many people including myself, here's a list of the possibilities
+supported by both types of association.
+
+- `hasOne` : it's a **Many-to-One** relationship. A.hasOne(B) means A will have one (or none) of B, but B can be
+  associated with many A;
+- `hasMany`: it's a **One-to-Many** relationship. A.hasMany(B) means A will have none, one or more of B. Actually
+  B will be associated with possibly many A but you don't have how to find it easily (see next);
+- `hasMany` + reverse: it's a **Many-to-Many** relationship. A.hasMany(B, { reverse: A }) means A can have none or
+  many B and also B can have none or many A. Accessors will be created in both models so you can manage them from
+  both sides.
 
 If you have a relation of 1 to 0 or 1 to 1, you should use `hasOne` association. This assumes a column in the model that has the id of the other end of the relation.
 
@@ -362,6 +373,14 @@ Animal.get(123, function (err, Foo) {
 	});
 });
 ```
+
+If you prefer to use another name for the field (owner_id) you can change this parameter in the settings.
+
+```js
+db.settings.set("properties.association_key", "id_{name}"); // {name} will be replaced by 'owner' in this case
+```
+
+**Note: This has to be done prior to the association creation.**
 
 For relations of 1 to many you have to use `hasMany` associations. This assumes another table that has 2 columns, one for each table in the association.
 
@@ -426,9 +445,9 @@ Person.hasMany("friends", {
 });
 ```
 
-For `hasOne` associations you can make calls to the associated Model by using the `reverse` option. For example,
-if you have an association from ModelA to ModelB, you can create an accessor in ModelB to get instances from ModelA.
-Confusin? Look at the next example.
+Associations can make calls to the associated Model by using the `reverse` option. For example, if you have an
+association from ModelA to ModelB, you can create an accessor in ModelB to get instances from ModelA.
+Confusing? Look at the next example.
 
 ```js
 var Pet = db.define('pet', {
@@ -448,4 +467,25 @@ Person(4).getPets(function (err, pets) {
 	// In this example, ORM will fetch all pets
 	// whose owner_id = 4
 });
+```
+
+This makes even more sense when having `hasMany` associations since you can manage the Many-to-Many associations
+from both sides.
+
+
+```js
+var Pet = db.define('pet', {
+	name : String
+});
+var Person = db.define('person', {
+	name : String
+});
+Person.hasMany("pets", Person, {
+    bought  : Date
+}, {
+	reverse : "owners"
+});
+
+Person(1).getPets(...);
+Pet(2).getOwners(...);
 ```

@@ -1,3 +1,14 @@
+### v2.0.3 - 26 Feb 2013
+
+- Fixes postgresql integer columns (#52)
+- Adds boolean support for sqlite (#50)
+- Fixes an issue where hasMany association properties were not being checked (#49)
+- Changes hasMany associations to be able to make some call without callback
+- Makes Instances trigger beforeRemove event
+- Creates default option for instance.cascadeRemove (true)
+- Fixes unique validator not using Model id property name (was using hard coded "id")
+- Updated documentation
+
 ### v2.0.2 - 21 Feb 2013
 
 - Forces hasMany association changes to check for instance saved (to ensure the instance has an id property)

@@ -365,7 +365,7 @@ a few examples to describe it:
 { col1: orm.between(123, 456) } // `col1` BETWEEN 123 AND 456
 ```
 
-### Caching
+### Caching & Integrity
 
 Model instances are cached. If multiple different queries will result in the same result, you will
 get the same object. If you have other systems that can change your database (or you're developing and need

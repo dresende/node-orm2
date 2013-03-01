@@ -22,13 +22,13 @@ Current stable version: **2.0.3**
 - Create Models, sync, drop, bulk create, get, find, remove, count
 - Create Model associations, find, check, create and remove
 - Define custom validations (several builtin validations, check instance properties before saving)
-- Instance singleton (table rows fetched twice are the same object, changes to one change all)
+- Model instance caching and integrity (table rows fetched twice are the same object, changes to one change all)
 
 ## Introduction
 
 This is a node.js object relational mapping module.
 
-Here is an example on how to use it:
+An example:
 
 ```js
 var orm = require("orm");
@@ -71,7 +71,7 @@ orm.connect("mysql://username:password@host/database", function (err, db) {
 
 ## Settings
 
-You have a global settings object and one for each connection.
+Settings are used to store key value pairs. A settings object is stored on the global orm object and on each database connection.
 
 ```js
 var orm = require("orm");
@@ -89,15 +89,13 @@ orm.connect("....", function (err, db) {
 
 ## Models
 
-A Model is a structure binded to one or more tables, depending on the associations. The model name is assumed to be the table name. After defining a model you can use it to manipulate the table.
+A Model is an abstraction over one or more database tables. Models support associations (more below). The name of the model is assumed to match the table name. 
 
-After defining a Model you can get a specific element or find one or more based on some conditions.
+Models support behaviours for accessing and manipulating table data.
 
 ## Defining Models
 
-To define a model, you use the reference to the database connection and call `define`. The function will define a Model
-and will return it to you. You can get it later by it's id directly from the database connection so you don't actually
-need to store a reference to it.
+Call `define` on the database connection to setup a model. The name of the table and model is used as an identifier for the model on the database connection, so you can easily access the model later using the connection.
 
 ```js
 var Person = db.define('person', {        // 'person' will be the table in the database as well as the model id
@@ -111,8 +109,9 @@ var Person = db.define('person', {        // 'person' will be the table in the d
 
 ## Loading Models
 
-If you prefer to have your models defined in separated files, you can define them in a function inside a module and
-export the function has the entire module. You can have cascading loads.
+Models can be in separate modules. Simply ensure that the module holding the models uses module.exports to publish a function that accepts the database connection, then load your models however you like.
+
+Note - using this technique you can have cascading loads.
 
 ```js
 // your main file (after connecting)
@@ -147,11 +146,9 @@ module.exports = function (db, cb) {
 };
 ```
 
-## Synching Models
+## Synchronizing Models
 
-If you don't have the tables on the database you have to call the `.sync()` on every Model. This will just create the
-tables necessary for your Model. If you have more than one Model you can call `.sync()` directly on the database
-connection to syncronize all Models.
+Models can create their underlying tables in the database. You may call Model.sync() on each Model to create the underlying table or you can call db.sync() at a connection level to create all tables for all models.
 
 ```js
 // db.sync() can also be used
@@ -172,7 +169,8 @@ Person.drop(function (err) {
 
 ## Advanced Options
 
-Using [Settings](#settings) or directly on Model definition you can tweak some options.
+ORM2 allows you some advanced tweaks on your Model definitions. You can configure these via settings or in the call to `define` when you setup the Model.
+
 For example, each Model instance has a unique ID in the database. This table column is
 by default "id" but you can change it.
 
@@ -205,7 +203,9 @@ Other options:
 ## Hooks
 
 If you want to listen for a type of event than occurs in instances of a Model, you can attach a function that
-will be called when that event happens. There are some events possible:
+will be called when that event happens. 
+
+Currently the following events are supported:
 
 - `afterLoad` : (no parameters) Right after loading and preparing an instance to be used;
 - `beforeSave` : (no parameters) Right before trying to save;
@@ -260,7 +260,7 @@ Person.find({ surname: "Doe" }, { offset: 2 }, function (err, people) {
 ### Model.count([ conditions, ] cb)
 
 If you just want to count the number of items that match a condition you can just use `.count()` instead of finding all
-of them and counting. This will actually tell the database server to do a count, the count is not done in javascript.
+of them and counting. This will actually tell the database server to do a count (it won't be done in the node process itself).
 
 ```js
 Person.count({ surname: "Doe" }, function (err, count) {
@@ -286,7 +286,7 @@ Person.exists({ surname: "Doe" }, function (err, exists) {
 
 #### Chaining
 
-If you prefer another less complicated syntax you can chain `.find()` by not giving a callback parameter.
+If you prefer less complicated syntax you can chain `.find()` by not giving a callback parameter.
 
 ```js
 Person.find({ surname: "Doe" }).limit(3).offset(2).only("name", "surname").run(function (err, people) {
@@ -365,12 +365,12 @@ a few examples to describe it:
 { col1: orm.between(123, 456) } // `col1` BETWEEN 123 AND 456
 ```
 
-### Singleton
+### Caching & Integrity
 
-Each model instances is cached, so if you fetch the same record using 2 or more different queries, you will
+Model instances are cached. If multiple different queries will result in the same result, you will
 get the same object. If you have other systems that can change your database (or you're developing and need
-to make some manual changes) you should remove this feature by disabling cache. You do this when you're
-defining each Model.
+to make some manual changes) you should remove this feature by disabling cache. This can be done when you're
+defining the Model.
 
 ```js
 var Person = db.define('person', {
@@ -380,7 +380,7 @@ var Person = db.define('person', {
 });
 ```
 
-If you want singletons but want cache to expire after a period of time, you can pass a number instead of a
+The cache can be configured to expire after a period of time by passing in a number instead of a
 boolean. The number will be considered the cache timeout in seconds (you can use floating point).
 
 ## Associations
@@ -428,7 +428,7 @@ db.settings.set("properties.association_key", "id_{name}"); // {name} will be re
 
 **Note: This has to be done prior to the association creation.**
 
-For relations of 1 to many you have to use `hasMany` associations. This assumes another table that has 2 columns, one for each table in the association.
+For relations of 1 to many you have to use `hasMany` associations. This assumes the existence of a separate join table that has 2 columns, each referencing the table in the association. Ideally, these would be foreign key relationships in your database.
 
 ```js
 var Person = db.define('person', {

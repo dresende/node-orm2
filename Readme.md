@@ -22,7 +22,7 @@ Current stable version: **2.0.3**
 - Create Models, sync, drop, bulk create, get, find, remove, count
 - Create Model associations, find, check, create and remove
 - Define custom validations (several builtin validations, check instance properties before saving)
-- Instance singleton (table rows fetched twice are the same object, changes to one change all)
+- Model instance caching and integrity (table rows fetched twice are the same object, changes to one change all)
 
 ## Introduction
 

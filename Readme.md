@@ -383,6 +383,31 @@ var Person = db.define('person', {
 The cache can be configured to expire after a period of time by passing in a number instead of a
 boolean. The number will be considered the cache timeout in seconds (you can use floating point).
 
+## Creating Items
+
+### Model.create(items, cb)
+
+To insert new elements to the database use `Model.create`.
+
+```js
+Person.create([
+	{
+		name: "John",
+		surname: "Doe",
+		age: 25,
+		male: true
+	},
+	{
+		name: "Liza",
+		surname: "Kollan",
+		age: 19,
+		male: false
+	}
+], function (err) {
+	// called only if something goes wrong when creating new instances
+});
+```
+
 ## Associations
 
 An association is a relation between one or more tables.

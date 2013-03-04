@@ -11,10 +11,10 @@
     "redshift",
     "sqlite"
   ],
-  "version": "2.0.3",
+  "version": "2.0.5",
   "license": "MIT",
   "repository": {
-    "url": "http://dresende.github.com/node-orm2"
+    "url": "http://fon60.github.com/node-orm2"
   },
   "scripts": {
     "test": "make"

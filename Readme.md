@@ -403,8 +403,9 @@ Person.create([
 		age: 19,
 		male: false
 	}
-], function (err) {
-	// called only if something goes wrong when creating new instances
+], function (err, items) {
+	// err - description of the error or null
+	// items - array of inserted items
 });
 ```
 

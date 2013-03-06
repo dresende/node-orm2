@@ -89,7 +89,7 @@ orm.connect("....", function (err, db) {
 
 ## Models
 
-A Model is an abstraction over one or more database tables. Models support associations (more below). The name of the model is assumed to match the table name. 
+A Model is an abstraction over one or more database tables. Models support associations (more below). The name of the model is assumed to match the table name.
 
 Models support behaviours for accessing and manipulating table data.
 
@@ -203,7 +203,7 @@ Other options:
 ## Hooks
 
 If you want to listen for a type of event than occurs in instances of a Model, you can attach a function that
-will be called when that event happens. 
+will be called when that event happens.
 
 Currently the following events are supported:
 
@@ -554,7 +554,7 @@ var Pet = db.define('pet', {
 var Person = db.define('person', {
 	name : String
 });
-Person.hasMany("pets", Person, {
+Person.hasMany("pets", Pet, {
     bought  : Date
 }, {
 	reverse : "owners"

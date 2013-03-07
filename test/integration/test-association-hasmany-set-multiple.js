@@ -26,8 +26,13 @@ common.createConnection(function (err, db) {
 									assert.equal(err, null);
 									assert.equal(Array.isArray(Tests), true);
 									assert.equal(Tests.length, 2);
-									assert.equal(Tests[0].name, Test2.name);
-									assert.equal(Tests[1].name, Test3.name);
+									if (Tests[0].id == Test2.id) {
+										assert.equal(Tests[0].name, Test2.name);
+										assert.equal(Tests[1].name, Test3.name);
+									} else {
+										assert.equal(Tests[0].name, Test3.name);
+										assert.equal(Tests[1].name, Test2.name);
+									}
 									db.close();
 								});
 							});

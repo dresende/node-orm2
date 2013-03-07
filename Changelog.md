@@ -1,3 +1,18 @@
+### v2.0.4 - 7 Mar 2013
+
+- Changes db.load() to behave like builtin require()
+- Moves hook beforeSave to before checking validations (#66)
+- Changes postgres driver to support ssl flag and pass it to pg driver
+- Adds possibility to add order to hasMany getAccessor (#58)
+- Fixes hasOne reversed associations not having setAccessor
+- Adds db.ping() (#57)
+- Changes db.load to avoid throwing and just create the error
+- Added "afterRemove" hook
+- Added "afterCreate" hook
+- Support Model.find({ prop: null }) (closes #59)
+- Adds LIKE operator
+- Many bug fixes
+
 ### v2.0.3 - 26 Feb 2013
 
 - Fixes postgresql integer columns (#52)

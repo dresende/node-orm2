@@ -69,6 +69,43 @@ orm.connect("mysql://username:password@host/database", function (err, db) {
 });
 ```
 
+## Express
+
+If you're using Express, you might want to use the simple middleware to integrate more easily.
+
+```js
+var express = require('express');
+var orm = require('orm');
+var app = express();
+
+app.use(orm.express("mysql://username:password@host/database", {
+	define: function (db) {
+		db.define("person", { ... });
+	}
+}));
+app.listen(80);
+
+app.get("/", function (req, res) {
+	// access db using req.db
+	req.db.models.person.find(...);
+});
+```
+
+If you prefer, you can have direct access to the models you define.
+
+```js
+// ...
+app.use(orm.express("mysql://username:password@host/database", {
+	define: function (db, models) {
+		models.Person = db.define("person", { ... });
+	}
+}));
+// ...
+app.get("/", function (req, res) {
+	req.db.Person.find(...);
+});
+```
+
 ## Settings
 
 Settings are used to store key value pairs. A settings object is stored on the global orm object and on each database connection.

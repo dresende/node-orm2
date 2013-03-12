@@ -108,6 +108,8 @@ app.get("/", function (req, res) {
 });
 ```
 
+This also allows you to asynchronously load the models.
+
 ## Settings
 
 Settings are used to store key value pairs. A settings object is stored on the global orm object and on each database connection.

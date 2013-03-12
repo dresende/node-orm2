@@ -96,8 +96,10 @@ If you prefer, you can have direct access to the models you define.
 ```js
 // ...
 app.use(orm.express("mysql://username:password@host/database", {
-	define: function (db, models) {
+	define: function (db, models, next) {
 		models.Person = db.define("person", { ... });
+
+		return next();
 	}
 }));
 // ...

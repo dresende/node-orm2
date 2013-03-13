@@ -1,3 +1,14 @@
+### v2.0.5 - 13 Mar 2013
+
+- Uses sql-query for SQL query building
+- Adds initial middleware for Express
+- Moves beforeCreate to near beforeSave so people can change instance just like beforeSave (#69)
+- Fixes bug when creating Models without all data (#69)
+- Changes drivers.count() to be able to pass options (related to #68)
+- Changes postgres DDL to create ENUM types before table (#71)
+- Changes hasOne.getAccessor to be able to fetch instance before association (if needed)
+- Adds support for Object property type in DDL drivers (#72)
+
 ### v2.0.4 - 7 Mar 2013
 
 - Changes db.load() to behave like builtin require()

@@ -17,10 +17,8 @@ common.createConnection(function (err, db) {
 		var Test = new TestModel();
 		Test.save(function (err) {
 			assert.equal(err, null);
-			
-			db.close(function () {
-				assert.equal(Test.name, name);
-			});
+			assert.equal(Test.name, name);
+			db.close();
 		});
 	});
 });

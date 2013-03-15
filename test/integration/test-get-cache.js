@@ -23,7 +23,7 @@ common.createConnection(function (err, db) {
 					assert.equal(err, null);
 					assert.equal(typeof Instance2, "object");
 					assert.equal(Instance2.id, 1);
-					assert.equal(Instance2.name, 'test1');
+					assert.equal(Instance2.name, 'test'); // not saved
 					db.close();
 				});
 			});

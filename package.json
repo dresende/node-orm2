@@ -36,7 +36,7 @@
   },
   "analyse": false,
   "dependencies": {
-    "sql-query": "0.0.9"
+    "sql-query": "0.0.10"
   },
   "devDependencies": {
     "utest": "0.0.6",

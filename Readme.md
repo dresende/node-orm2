@@ -327,10 +327,18 @@ If you need to get some aggregated values from a Model, you can use `Model.aggre
 illustrate:
 
 ```js
-Person.aggregate().min("age").max("age").get(function (err, min, max) {
-	console.log("The youngest guy has %d years, while the oldest is %d", min, max);
+Person.aggregate({ surname: "Doe" }).min("age").max("age").get(function (err, min, max) {
+	console.log("The youngest Doe guy has %d years, while the oldest is %d", min, max);
 });
 ```
+
+Possible aggregating functions:
+
+- `min`
+- `max`
+- `avg`
+- `sum`
+- `count` (there's a shortcut to this - `Model.count`)
 
 ### Available options
 

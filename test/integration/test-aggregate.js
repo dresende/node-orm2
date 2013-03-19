@@ -14,10 +14,10 @@ common.createConnection(function (err, db) {
 
 			var TestModel = db.define('test_count', common.getModelProperties());
 
-			TestModel.aggregate().count('id').min('id').max('id').get(function (err, count, min, max) {
+			TestModel.aggregate({ id: common.ORM.gt(2) }).count('id').min('id').max('id').get(function (err, count, min, max) {
 				assert.equal(err, null);
-				assert.equal(count, 5);
-				assert.equal(min, 1);
+				assert.equal(count, 3);
+				assert.equal(min, 3);
 				assert.equal(max, 5);
 				db.close();
 			});

@@ -445,6 +445,9 @@ var Person = db.define('person', {
 The cache can be configured to expire after a period of time by passing in a number instead of a
 boolean. The number will be considered the cache timeout in seconds (you can use floating point).
 
+**Note**: One exception about Caching is that it won't be used if an instance is not saved. For example, if
+you fetch a Person and then change it, while it doesn't get saved it won't be passed from Cache.
+
 ## Creating Items
 
 ### Model.create(items, cb)

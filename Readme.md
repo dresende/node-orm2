@@ -321,6 +321,17 @@ Person.exists({ surname: "Doe" }, function (err, exists) {
 });
 ```
 
+### Aggregating Functions
+
+If you need to get some aggregated values from a Model, you can use `Model.aggregate()`. Here's an example to better
+illustrate:
+
+```js
+Person.aggregate().min("age").max("age").get(function (err, min, max) {
+	console.log("The youngest guy has %d years, while the oldest is %d", min, max);
+});
+```
+
 ### Available options
 
 - `offset`: discards the first `N` elements

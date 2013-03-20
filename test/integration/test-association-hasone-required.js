@@ -19,7 +19,7 @@ common.createConnection(function (err, db) {
           john.save(function(err) {
             assert(!err);
 
-            var emu = new Animal({name: 'emu'});
+            var emu = new Animal({name: 'emu', owner_id: null});
             emu.save(function(err) {
               // When required is true, there should be an error.
               // When required is false, there should be no errors.

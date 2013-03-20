@@ -511,6 +511,11 @@ Animal.get(123, function (err, Foo) {
 });
 ```
 
+Wild animals don't have owners, so you can represent this with:
+```js
+Animal.hasOne("owner", Person, { required: false });
+```
+
 If you prefer to use another name for the field (owner_id) you can change this parameter in the settings.
 
 ```js

@@ -1,8 +1,8 @@
 {
-  "author": "Diogo Resende <dresende@thinkdigital.pt>",
-  "name": "orm",
-  "description": "NodeJS Object-relational mapping",
-  "keywords": [
+  "author"      : "Diogo Resende <dresende@thinkdigital.pt>",
+  "name"        : "orm",
+  "description" : "NodeJS Object-relational mapping",
+  "keywords"    : [
     "orm",
     "odm",
     "database",
@@ -11,39 +11,40 @@
     "redshift",
     "sqlite"
   ],
-  "version": "2.0.5",
-  "license": "MIT",
-  "repository": {
-    "url": "http://dresende.github.com/node-orm2"
+  "version"     : "2.0.5",
+  "license"     : "MIT",
+  "repository"  : {
+    "url"            : "http://dresende.github.com/node-orm2"
   },
-  "scripts": {
-    "test": "make"
+  "scripts"     : {
+    "test"           : "make"
   },
   "contributors": [
-    { "name": "Bramus Van Damme", "email": "bramus@bram.us" },
-    { "name": "Lorien Gamaroff", "email": "lorien@gamaroff.org" },
-    { "name": "preslavrachev" },
-    { "name": "Chris Cowan", "email": "me@chriscowan.us" },
-    { "name": "Paul Dixon", "email": "paul.dixon@mintbridge.co.uk" },
-    { "name": "David Kosub" }
+    { "name" : "Bramus Van Damme", "email" : "bramus@bram.us" },
+    { "name" : "Lorien Gamaroff",  "email" : "lorien@gamaroff.org" },
+    { "name" : "preslavrachev" },
+    { "name" : "Chris Cowan",      "email" : "me@chriscowan.us" },
+    { "name" : "Paul Dixon",       "email" : "paul.dixon@mintbridge.co.uk" },
+    { "name" : "David Kosub" }
   ],
-  "main": "./lib/ORM",
-  "scripts": {
-    "test": "make test"
+  "main"        : "./lib/ORM",
+  "scripts"     : {
+    "test"           : "make test"
   },
-  "engines": {
-    "node": "*"
+  "engines"     : {
+    "node"           : "*"
   },
-  "analyse": false,
+  "analyse"     : false,
   "dependencies": {
-    "sql-query": "0.0.11"
+    "sql-query"      : "0.0.11",
+    "hat"            : "0.0.3"
   },
   "devDependencies": {
-    "utest": "0.0.6",
-    "urun": "0.0.6",
-    "mysql": "2.0.0-alpha7",
-    "pg": "0.8.7",
-    "sqlite3": "2.1.5"
+    "utest"     : "0.0.6",
+    "urun"      : "0.0.6",
+    "mysql"     : "2.0.0-alpha7",
+    "pg"        : "0.8.7",
+    "sqlite3"   : "2.1.5"
   },
   "optionalDependencies": {}
 }

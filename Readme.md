@@ -511,9 +511,9 @@ Animal.get(123, function (err, Foo) {
 });
 ```
 
-Wild animals don't have owners, so you can represent this with:
+You can mark the `owner_id` field as required in the database by specifying the `required` option:
 ```js
-Animal.hasOne("owner", Person, { required: false });
+Animal.hasOne("owner", Person, { required: true });
 ```
 
 If you prefer to use another name for the field (owner_id) you can change this parameter in the settings.

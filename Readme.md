@@ -79,14 +79,14 @@ var orm = require('orm');
 var app = express();
 
 app.use(orm.express("mysql://username:password@host/database", {
-	define: function (db) {
-		db.define("person", { ... });
+	define: function (db, models) {
+		models.person = db.define("person", { ... });
 	}
 }));
 app.listen(80);
 
 app.get("/", function (req, res) {
-	// access db using req.db
+	// req.models is a reference to models used above in define()
 	req.models.person.find(...);
 });
 ```

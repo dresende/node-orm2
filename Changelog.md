@@ -1,3 +1,17 @@
+### v2.0.6 - 22 Mar 2013
+
+- Changes orm.connect to check connection url/opts to avoid throwing some errors about missing protocol or database (#75)
+- Hardens some validators againt null/undefined, changes match validator to avoid compiling regex everytime it's called
+- Changes back default instance properties to null instead of undefined
+- Changes Express middleware to be able to have more than one connection (#76)
+- Changes Singleton to avoid cache if save_check option is enabled and cached instance is not saved (#78)
+- Adds Model.aggregate()
+- Adds 'required' option to hasOne associations
+- Changes singleton uid creation to use driver uid (#86)
+- Changes Model.drop and Model.sync to be resistive to no callback
+- Changes ORM.sync() to also be resistant to no callback
+- Many bug fixes
+
 ### v2.0.5 - 13 Mar 2013
 
 - Uses sql-query for SQL query building

@@ -8,7 +8,7 @@
 npm install orm
 ```
 
-Current stable version: **2.0.5**
+Current stable version: **2.0.6**
 
 ## DBMS Support
 

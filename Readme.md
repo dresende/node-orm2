@@ -87,28 +87,13 @@ app.listen(80);
 
 app.get("/", function (req, res) {
 	// access db using req.db
-	req.db.models.person.find(...);
+	req.models.person.find(...);
 });
 ```
 
-If you prefer, you can have direct access to the models you define.
-
-```js
-// ...
-app.use(orm.express("mysql://username:password@host/database", {
-	define: function (db, models, next) {
-		models.Person = db.define("person", { ... });
-
-		return next();
-	}
-}));
-// ...
-app.get("/", function (req, res) {
-	req.db.Person.find(...);
-});
-```
-
-This also allows you to asynchronously load the models.
+You can call `orm.express` more than once to have multiple database connections. Models defined across connections
+will be joined together in `req.models`. **Don't forget to use it before `app.use(app.router)`, preferably right after your
+assets public folder(s).**
 
 ## Settings
 

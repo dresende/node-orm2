@@ -1,14 +1,12 @@
 ## Object Relational Mapping
 
-[![Build Status](https://secure.travis-ci.org/dresende/node-orm2.png)](http://travis-ci.org/dresende/node-orm2)
+[![Build Status](https://secure.travis-ci.org/dresende/node-orm2.png)](http://travis-ci.org/dresende/node-orm2) [![](https://badge.fury.io/js/orm.png)](https://npmjs.org/package/orm)
 
 ## Install
 
 ```sh
 npm install orm
 ```
-
-Current stable version: **2.0.6**
 
 ## DBMS Support
 

@@ -1,3 +1,13 @@
+### v2.0.7 - 3 Apr 2013
+
+- Fixed SQLite driver writing to console when it should not
+- Changes Express middleware to wait for connections (errored or not) before processing requests (#92)
+- Avoids loosing previously set limit (if set) on Model.fin() (#93)
+- Fixes hasMany getAccessor when using an Array as only argument (specific properties)
+- Adds ChainFind .last() (similar to .first())
+- Fixes hasMany acessor names to correctly convert prop_name to PropName (underscores)
+- Adds hasMany hasAcessor conditional to ChainFind (#94)
+
 ### v2.0.6 - 22 Mar 2013
 
 - Changes orm.connect to check connection url/opts to avoid throwing some errors about missing protocol or database (#75)

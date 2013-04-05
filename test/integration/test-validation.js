@@ -14,6 +14,7 @@ common.createConnection(function (err, db) {
 		var Test = new TestModel({ name: "test-validation" });
 		Test.save(function (err) {
 			assert.equal(typeof err, "object");
+			assert.equal(err.type, "validation");
 			assert.equal(err.field, "name");
 			assert.equal(err.value, "test-validation");
 			assert.equal(err.msg, "force-validation-fail");

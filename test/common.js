@@ -68,6 +68,13 @@ common.getModelProperties = function () {
 	};
 };
 
+common.getModel2Properties = function () {
+	return {
+		name: String,
+		assoc_id: { type: 'number', rational: false }
+	};
+};
+
 common.createModelTable = function (table, db, cb) {
 	switch (this.protocol()) {
 		case "postgres":

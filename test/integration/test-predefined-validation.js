@@ -15,6 +15,7 @@ common.createConnection(function (err, db) {
 			assert.equal(err.field, "name");
 			assert.equal(err.value, "test-predefined-validation");
 			assert.equal(err.msg, "out-of-range-length");
+			assert.equal(err.type, "validation");
 
 			db.close();
 		});

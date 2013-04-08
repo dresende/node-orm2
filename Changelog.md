@@ -1,3 +1,15 @@
+### v2.0.8 - 8 Apr 2013
+
+- Adds more aggregate functions to the several drivers
+- Adds groupBy to aggregate methods (#99)
+- Adds possibility to use "-property" to indicate a descending order in Model.find()
+- Adds setting instance.returnAllErrors (default: true)
+- Changes hasMany.setAccessor to support passing an array of instances (#97)
+- Fixes property defaultValue not being set if property is null (closes #104)
+- Adds support for indexes on properties that are no associations (#98)
+- Adds a new option to add multi-column indexes to models (#98)
+- Bug fixes
+
 ### v2.0.7 - 3 Apr 2013
 
 - Fixed SQLite driver writing to console when it should not

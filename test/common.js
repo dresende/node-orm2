@@ -64,7 +64,7 @@ common.getConnectionString = function () {
 
 common.getModelProperties = function () {
 	return {
-		name: String
+		name: { type: "text", defaultValue: "test_default_value" }
 	};
 };
 

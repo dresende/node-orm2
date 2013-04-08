@@ -7,9 +7,7 @@ common.createConnection(function (err, db) {
 		var TestModel = db.define('test_hook_before_create_define_property', common.getModelProperties(), {
 			hooks: {
 				beforeCreate: function () {
-					if (!this.name) {
-						this.name = name;
-					}
+					this.name = name;
 				}
 			}
 		});

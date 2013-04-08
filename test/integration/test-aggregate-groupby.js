@@ -17,10 +17,17 @@ common.createConnection(function (err, db) {
 				assert.equal(err, null);
 				assert.equal(Array.isArray(rows), true);
 				assert.equal(rows.length, 2);
-				assert.equal(rows[0].avg_id, 3);
-				assert.equal(rows[0].count, 3);
-				assert.equal(rows[1].avg_id, 5);
-				assert.equal(rows[1].count, 1);
+				if (rows[0].avg_id == 3) {
+					assert.equal(rows[0].avg_id, 3);
+					assert.equal(rows[0].count, 3);
+					assert.equal(rows[1].avg_id, 5);
+					assert.equal(rows[1].count, 1);
+				} else {
+					assert.equal(rows[0].avg_id, 5);
+					assert.equal(rows[0].count, 1);
+					assert.equal(rows[1].avg_id, 3);
+					assert.equal(rows[1].count, 3);
+				}
 				db.close();
 			});
 		});

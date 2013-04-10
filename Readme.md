@@ -457,6 +457,42 @@ Person.create([
 });
 ```
 
+### Updating items (called Instances)
+
+Every item returned has the properties that were defined to the Model and also a couple of methods you can
+use to change each item.
+
+```js
+Person.get(1, function (err, John) {
+	John.name = "Joe";
+	John.surname = "Doe";
+	John.save(function (err) {
+		console.log("saved!");
+	});
+});
+```
+
+Updating and then saving an instance can be done in a single call:
+
+```js
+Person.get(1, function (err, John) {
+	John.save({ name: "Joe", surname: "Doe" }, function (err) {
+		console.log("saved!");
+	});
+});
+```
+
+If you want to remove an instance, just do:
+
+```js
+// you could do this without even fetching it, look at Chaining section above
+Person.get(1, function (err, John) {
+	John.remove(function (err) {
+		console.log("removed!");
+	});
+});
+```
+
 ## Associations
 
 An association is a relation between one or more tables.

@@ -343,6 +343,13 @@ Person.aggregate({ surname: "Doe" }).min("age").max("age").get(function (err, mi
 	console.log("The youngest Doe guy has %d years, while the oldest is %d", min, max);
 });
 ```
+Here's an example to illustrate how to use groupby:
+```js
+//The same as "select avg(weight), age from person where country='someCountry' group by age;"
+Person.aggregate(["age"], { country: "someCountry" }).avg("weight").groupBy("age").get(function (err, stats) {
+    // stats is an Array, each item should have 'age' and 'avg_weight'
+});
+```
 
 Possible aggregating functions:
 

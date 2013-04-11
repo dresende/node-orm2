@@ -131,6 +131,35 @@ var Person = db.define('person', {        // 'person' will be the table in the d
 });
 ```
 
+### Properties
+
+#### Types
+
+Available native object types are:
+
+`String, Number, Boolean, Date, Object, Buffer`
+
+If defining properties using the latter object syntax, the types are:
+
+`text, number, boolean, date, enum, object, binary`
+
+#### Options
+
+##### [all types]
+* `required`: true marks the column as `NOT NULL`, false (default)
+* `defaultValue`: sets the default value for the field
+
+##### string
+* `size`: max length of the string
+
+##### number
+* `rational`: true (default) creates a FLOAT/REAL, false an INTEGER
+
+##### date
+* `time`: true (default) creates a DATETIME/TIMESTAMP, false a DATE
+
+Note that these may vary accross drivers.
+
 ## Loading Models
 
 Models can be in separate modules. Simply ensure that the module holding the models uses module.exports to publish a function that accepts the database connection, then load your models however you like.

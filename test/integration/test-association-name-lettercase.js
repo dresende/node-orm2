@@ -9,7 +9,7 @@ common.createConnection(function (err, db) {
 			if (err) throw err;
 
 			var TestModel = db.define('test_association_name_lettercase', common.getModelProperties());
-			TestModel.hasOne("myLetterCase");
+			TestModel.hasOne("myLetterCase", { field: "assoc_id" });
 
 			TestModel.get(1, function (err, Test1) {
 				assert.equal(err, null);

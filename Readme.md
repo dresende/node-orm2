@@ -444,6 +444,7 @@ a few examples to describe it:
 { col1: orm.lt(123) } // `col1` < 123
 { col1: orm.lte(123) } // `col1` <= 123
 { col1: orm.between(123, 456) } // `col1` BETWEEN 123 AND 456
+{ col1: orm.like(12 + "%") } // `col1` like '12%'
 ```
 
 ### Caching & Integrity

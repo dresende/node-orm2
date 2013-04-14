@@ -2,16 +2,16 @@ var common     = require('../common');
 var assert     = require('assert');
 
 common.createConnection(function (err, db) {
-	common.createModelTable('test_association_hasmany_set_multiple', db.driver.db, function () {
-		common.createModelAssocTable('test_association_hasmany_set_multiple', 'assocs', db.driver.db, function () {
-			common.insertModelData('test_association_hasmany_set_multiple', db.driver.db, [
+	common.createModelTable('test_association_hasmany_add', db.driver.db, function () {
+		common.createModelAssocTable('test_association_hasmany_add', 'assocs', db.driver.db, function () {
+			common.insertModelData('test_association_hasmany_add', db.driver.db, [
 				{ id : 1, name : 'test1' },
 				{ id : 2, name : 'test2' },
 				{ id : 3, name : 'test3' }
 			], function (err) {
 				if (err) throw err;
 
-				var TestModel = db.define('test_association_hasmany_set_multiple', common.getModelProperties());
+				var TestModel = db.define('test_association_hasmany_add', common.getModelProperties());
 				TestModel.hasMany("assocs");
 
 				TestModel.get(1, function (err, Test1) {

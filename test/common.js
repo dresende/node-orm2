@@ -16,6 +16,24 @@ common.createConnection = function(cb) {
 	ORM.connect(this.getConnectionString(), cb);
 };
 
+common.getConfig = function () {
+	if (common.isTravis()) {
+		switch (this.protocol()) {
+			case 'mysql':
+				return { user: "root", host: "localhost", database: "orm_test" };
+			case 'postgres':
+			case 'redshift':
+				return { user: "postgres", host: "localhost", database: "orm_test" };
+			case 'sqlite':
+				return {};
+			default:
+				throw new Error("Unknown protocol");
+		}
+	} else {
+		return require("./config")[this.protocol()];
+	}
+};
+
 common.getConnectionString = function () {
 	var url;
 

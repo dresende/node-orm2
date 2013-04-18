@@ -18,7 +18,15 @@ common.createConnection(function (err, db) {
 			assert.equal(err.value, "test-validation");
 			assert.equal(err.msg, "force-validation-fail");
 
-			db.close();
+			Test = new TestModel({ name: "test-validation" });
+			Test.validate(function (err) {
+				assert.equal(typeof err, "object");
+				assert.equal(err.field, "name");
+				assert.equal(err.value, "test-validation");
+				assert.equal(err.msg, "force-validation-fail");
+
+				db.close();
+			});
 		});
 	});
 });

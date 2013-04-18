@@ -1,3 +1,24 @@
+### v2.0.9 - 18 Apr 2013
+
+- Correct 'returnAllErrors' setting behaviour
+- Adds default settings properties.required = false (#110)
+- Changes instance.save() to support an hash of changes before saving (#111)
+- Adds setting connection.reconnect (default=false) to auto-reconnect (only mysql for now) (#112)
+- Adds possibility of .order() to aggregate method (#114)
+- Adds .select() aggregate function to support additional properties to be selected (#114)
+- Adds .as() aggregate function to define alias to previous function (#123)
+- Adds .distinct() aggregate function to all drivers (#123)
+- Changes model.find() queries to specify columns instead of selecting * from tables (#106)
+- Changes hasMany.addAccessor to support arrays of instances (#97)
+- Adds support for descending ordering using "-property" (#115)
+- Adds pool support to postgres driver
+- Removes postgres axomic driver
+- Updates redshift driver to use new postgres driver
+- Adds .validate() model to instances
+- Adds more tests
+- Some documentation updates
+- Some bug fixes
+
 ### v2.0.8 - 8 Apr 2013
 
 - Adds more aggregate functions to the several drivers

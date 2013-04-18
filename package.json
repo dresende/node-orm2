@@ -13,9 +13,8 @@
   ],
   "version"     : "2.0.9",
   "license"     : "MIT",
-  "repository"  : {
-    "url"            : "http://dresende.github.io/node-orm2"
-  },
+  "homepage"    : "http://dresende.github.io/node-orm2",
+  "repository"  : "http://github.com/dresende/node-orm2.git",
   "scripts"     : {
     "test"           : "make"
   },

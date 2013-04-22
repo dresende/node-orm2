@@ -114,25 +114,29 @@ orm.connect("....", function (err, db) {
 ## Connecting
 
 You can pass in connection options either as a string:
+
 ```js
 var orm = require("orm");
 
 orm.connect("mysql://username:password@host/database?pool=true", function (err, db) {...}
 ```
-or as an object:
+
+Or as an object:
+
 ```js
-var connOpts = {
-  database: "dbname",
-  protocol: "[mysql|postgresql|redshift|sqlite]",
-  host:     "127.0.0.1",
-  port:     3306         // optional, defaults to database default
-  password: "drowssap",
-  query: {
-    pool:  true|false    // optional, false by default
-    debug: true|false    // optional, false by default
+var opts = {
+  database : "dbname",
+  protocol : "[mysql|postgres|redshift|sqlite]",
+  host     :     "127.0.0.1",
+  port     :     3306,         // optional, defaults to database default
+  username : "..",
+  password : "..",
+  query    : {
+    pool  :  true|false    // optional, false by default
+    debug : true|false    // optional, false by default
   }
 };
-orm.connect(connOpts, function (err, db) {...}
+orm.connect(opts, function (err, db) {...}
 ```
 `pool` is only supported by mysql & postgres.
 

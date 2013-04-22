@@ -127,8 +127,8 @@ Or as an object:
 var opts = {
   database : "dbname",
   protocol : "[mysql|postgres|redshift|sqlite]",
-  host     :     "127.0.0.1",
-  port     :     3306,         // optional, defaults to database default
+  host     : "127.0.0.1",
+  port     : 3306,         // optional, defaults to database default
   username : "..",
   password : "..",
   query    : {

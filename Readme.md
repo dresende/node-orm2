@@ -1,6 +1,6 @@
 ## Object Relational Mapping
 
-[![Build Status](https://secure.travis-ci.org/dresende/node-orm2.png)](http://travis-ci.org/dresende/node-orm2) [![](https://badge.fury.io/js/orm.png)](https://npmjs.org/package/orm)
+[![Build Status](https://secure.travis-ci.org/dresende/node-orm2.png?branch=master)](http://travis-ci.org/dresende/node-orm2) [![](https://badge.fury.io/js/orm.png)](https://npmjs.org/package/orm)
 
 ## Install
 

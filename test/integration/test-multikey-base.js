@@ -40,11 +40,16 @@ common.createConnection(function (err, db) {
 								assert.notEqual(err, null);
 								assert.equal(err.message, "Not found");
 
-								TestModel.find().count(function (err, count) {
+								TestModel.exists(1, 2, 3, function (err, exists) {
 									assert.equal(err, null);
-									assert.equal(count, 3);
+									assert.equal(exists, false);
 
-									db.close();
+									TestModel.find().count(function (err, count) {
+										assert.equal(err, null);
+										assert.equal(count, 3);
+
+										db.close();
+									});
 								});
 							});
 						});

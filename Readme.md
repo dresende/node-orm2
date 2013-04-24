@@ -21,6 +21,7 @@ npm install orm
 - Create Model associations, find, check, create and remove
 - Define custom validations (several builtin validations, check instance properties before saving)
 - Model instance caching and integrity (table rows fetched twice are the same object, changes to one change all)
+- Plugins: [MySQL FTS](http://github.com/dresende/node-orm-mysql-fts)
 
 ## Introduction
 

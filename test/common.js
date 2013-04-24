@@ -120,6 +120,23 @@ common.createModel2Table = function (table, db, cb) {
 	}
 };
 
+common.createKeysModelTable = function (table, db, keys, cb) {
+	switch (this.protocol()) {
+		case "postgres":
+		case "redshift":
+			db.query("CREATE TEMPORARY TABLE " + table + " (" + keys.join(" BIGINT NOT NULL, ") + " BIGINT NOT NULL, name VARCHAR(100) NOT NULL, PRIMARY KEY (" + keys.join(", ") + "))", cb);
+			break;
+		case "sqlite":
+			db.run("DROP TABLE IF EXISTS " + table, function () {
+				db.run("CREATE TEMPORARY TABLE " + table + " (" + keys.join(" BIGINT NOT NULL, ") + " BIGINT NOT NULL, name VARCHAR(100) NOT NULL, PRIMARY KEY (" + keys.join(", ") + "))", cb);
+			});
+			break;
+		default:
+			db.query("CREATE TEMPORARY TABLE " + table + " (" + keys.join(" BIGINT NOT NULL, ") + " BIGINT NOT NULL, name VARCHAR(100) NOT NULL, PRIMARY KEY (" + keys.join(", ") + "))", cb);
+			break;
+	}
+};
+
 common.createModelAssocTable = function (table, assoc, db, cb) {
 	switch (this.protocol()) {
 		case "postgres":
@@ -194,6 +211,45 @@ common.insertModel2Data = function (table, db, data, cb) {
 				});
 			}
 			break;
+	}
+};
+
+common.insertKeysModelData = function (table, db, data, cb) {
+	var query = [], i, k, keys, vals, pending;
+
+	for (i = 0; i < data.length; i++) {
+		keys = [];
+		vals = [];
+
+		for (k in data[i]) {
+			keys.push(k);
+			vals.push(data[i][k]);
+		}
+
+		query.push("INSERT INTO " + table + " (" + keys.join(", ") + ") VALUES ('" + vals.join("', '") + "')");
+	}
+
+	pending = query.length;
+
+	for (i = 0; i < query.length; i++) {
+		switch (this.protocol()) {
+			case "postgres":
+			case "redshift":
+			case "mysql":
+				db.query(query[i], function () {
+					if (--pending === 0) {
+						return cb();
+					}
+				});
+				break;
+			case "sqlite":
+				db.run(query[i], function () {
+					if (--pending === 0) {
+						return cb();
+					}
+				});
+				break;
+		}
 	}
 };
 

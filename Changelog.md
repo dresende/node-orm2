@@ -1,3 +1,18 @@
+### v2.0.10 - 25 Apr 2013
+
+- Adds ChainFind.where() as a link to ChainFind.find()
+- Adds support for -property on ChainFind.order()
+- Reduces the size of mysql driver
+- Adds initial support for multi primary key models
+- Updates DB.define() and Model.get() to support tables with multiple primary keys (#135)
+- Creates Model.all() as alias to Model.find(), adds simple example
+- Fixes autoFetch option not being considered in Model.find() (#120)
+- Adds support for chaining and rechaining with ChainFind
+- Fixes bug about connection config object not having query key (fixes #130)
+- Adds initial plugin architecture - .use() (#121)
+- Fixes some bugs
+- Adds more tests
+
 ### v2.0.9 - 18 Apr 2013
 
 - Correct 'returnAllErrors' setting behaviour

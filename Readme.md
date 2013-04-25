@@ -119,8 +119,12 @@ You can pass in connection options either as a string:
 ```js
 var orm = require("orm");
 
-orm.connect("mysql://username:password@host/database?pool=true", function (err, db) {...}
+orm.connect("mysql://username:password@host/database?pool=true", function (err, db) {
+	// ...
+});
 ```
+
+**Note:** `pool` is only supported by mysql & postgres.
 
 Or as an object:
 
@@ -137,10 +141,21 @@ var opts = {
     debug : true|false    // optional, false by default
   }
 };
-orm.connect(opts, function (err, db) {...}
+orm.connect(opts, function (err, db) {
+	// ...
+});
 ```
-`pool` is only supported by mysql & postgres.
 
+You can also avoid passing a callback and just listen for the connect event:
+
+```js
+var orm = require("orm");
+var db  = orm.connect("mysql://username:password@host/database");
+
+db.on("connect", function (err, db) {
+	// ...
+});
+```
 
 ## Models
 

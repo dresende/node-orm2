@@ -35,7 +35,7 @@
   },
   "analyse"     : false,
   "dependencies": {
-    "sql-query"      : "0.0.21",
+    "sql-query"      : "0.0.22",
     "hat"            : "0.0.3"
   },
   "devDependencies": {

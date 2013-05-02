@@ -30,7 +30,7 @@ common.createConnection(function (err, db) {
           });
         });
       });
-    }
+    };
 
     Person.drop(function (err) {
       Animal.drop(function (err) {
@@ -39,7 +39,7 @@ common.createConnection(function (err, db) {
         });
       });
     });
-  }
+  };
 
   testRequired(false, function() {
     testRequired(true, function() {

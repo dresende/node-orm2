@@ -134,7 +134,7 @@ var opts = {
   protocol : "[mysql|postgres|redshift|sqlite]",
   host     : "127.0.0.1",
   port     : 3306,         // optional, defaults to database default
-  username : "..",
+  user     : "..",
   password : "..",
   query    : {
     pool     : true|false    // optional, false by default

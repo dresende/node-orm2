@@ -1,3 +1,12 @@
+### v2.0.11 - 3 May 2013
+
+- Changes orm.connect() to return an EventEmitter
+- Avoids saving an instance if a property is null and is marked as required (#142)
+- Avoids passing property validations if property is null and is not required (#142)
+- Fixes documentation where user should be used instead of username in connection options (closes #145)
+- Adds postgresql schema support
+- Fixes autoFetchLimit and cascadeRemove options not being used when set to 0 or false (fixes #144)
+
 ### v2.0.10 - 25 Apr 2013
 
 - Adds ChainFind.where() as a link to ChainFind.find()

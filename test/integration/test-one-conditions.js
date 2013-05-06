@@ -13,10 +13,9 @@ common.createConnection(function (err, db) {
 
 			var TestModel = db.define('test_one_conditions', common.getModelProperties());
 
-			TestModel.one({ name: 'test1' }, function (err, Instances) {
+			TestModel.one({ name: 'test2' }, function (err, Instance) {
 				assert.equal(err, null);
-				assert.equal(Array.isArray(Instances), true);
-				assert.equal(Instances.length, 1);
+				assert.equal(Instance, null);
 				db.close();
 			});
 		});

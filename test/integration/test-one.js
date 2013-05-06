@@ -11,10 +11,10 @@ common.createConnection(function (err, db) {
 
 			var TestModel = db.define('test_one', common.getModelProperties());
 
-			TestModel.one(function (err, Instances) {
+			TestModel.one(function (err, Instance) {
 				assert.equal(err, null);
-				assert.equal(Array.isArray(Instances), true);
-				assert.equal(Instances.length, 1);
+				assert.equal(!Array.isArray(Instance), true);
+				assert.equal(typeof Instance.id, "number");
 				db.close();
 			});
 		});

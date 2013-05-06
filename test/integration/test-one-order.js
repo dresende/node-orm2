@@ -13,11 +13,10 @@ common.createConnection(function (err, db) {
 
 			var TestModel = db.define('test_one_order', common.getModelProperties());
 
-			TestModel.one("-name", function (err, Instances) {
+			TestModel.one("-name", function (err, Instance) {
 				assert.equal(err, null);
-				assert.equal(Array.isArray(Instances), true);
-				assert.equal(Instances.length, 1);
-				assert.equal(Instances[0].id, 4);
+				assert.equal(!Array.isArray(Instance), true);
+				assert.equal(Instance.id, 4);
 				db.close();
 			});
 		});

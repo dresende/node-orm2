@@ -540,7 +540,7 @@ Person.create([
 });
 ```
 
-### Updating items (called Instances)
+## Updating Items
 
 Every item returned has the properties that were defined to the Model and also a couple of methods you can
 use to change each item.
@@ -572,6 +572,66 @@ If you want to remove an instance, just do:
 Person.get(1, function (err, John) {
 	John.remove(function (err) {
 		console.log("removed!");
+	});
+});
+```
+
+## Validations
+
+You can define validations for every property of a Model. You can have one or more validations for each property.
+You can also use the predefined validations or create your own.
+
+```js
+var Person = db.define("person", {
+	name : String,
+	age  : Number
+}, {
+	validations : {
+		name : orm.validators.rangeLength(1, undefined, "missing"), // "missing" is a name given to this validation, instead of default
+		age  : [ orm.validators.rangeNumber(0, 10), orm.validators.insideList([ 1, 3, 5, 7, 9 ]) ]
+	}
+});
+```
+
+The code above defines that the `name` length must be between 1 and undefined (undefined means any) and `age`
+must be a number between 0 and 10 (inclusive) but also one of the listed values. The example might not make sense
+but you get the point.
+
+When saving an item, if it fails to validate any of the defined validations you'll get an `error` object with the property
+name and validation error description. This description should help you identify what happened.
+
+```js
+var John = new Person({
+	name : "",
+	age : 20
+});
+John.save(function (err) {
+	// err.field = "name" , err.value = "" , err.msg = "missing"
+});
+```
+
+The validation stops after the first validation error. If you want it to validate every property and return all validation
+errors, you can change this behavior on global or local settings:
+
+```js
+var orm = require("orm");
+
+orm.settings.set("instance.returnAllErrors", true); // global or..
+
+orm.connect("....", function (err, db) {
+	db.settings.set("instance.returnAllErrors", true); // .. local
+
+	// ...
+
+	var John = new Person({
+		name : "",
+		age : 15
+	});
+	John.save(function (err) {
+		assert(Array.isArray(err));
+		// err[0].field = "name" , err[0].value = "" , err[0].msg = "missing"
+		// err[0].field = "age"  , err[0].value = 15 , err[0].msg = "out-of-range-number"
+		// err[0].field = "age"  , err[0].value = 15 , err[0].msg = "outside-list"
 	});
 });
 ```

@@ -630,8 +630,8 @@ orm.connect("....", function (err, db) {
 	John.save(function (err) {
 		assert(Array.isArray(err));
 		// err[0].field = "name" , err[0].value = "" , err[0].msg = "missing"
-		// err[0].field = "age"  , err[0].value = 15 , err[0].msg = "out-of-range-number"
-		// err[0].field = "age"  , err[0].value = 15 , err[0].msg = "outside-list"
+		// err[1].field = "age"  , err[1].value = 15 , err[1].msg = "out-of-range-number"
+		// err[2].field = "age"  , err[2].value = 15 , err[2].msg = "outside-list"
 	});
 });
 ```

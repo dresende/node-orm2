@@ -206,6 +206,44 @@ If defining properties using the latter object syntax, the types are:
 
 Note that these may vary accross drivers.
 
+### Instance Methods
+
+Are passed in during model definition.
+
+```js
+var Person = db.define('person', {
+    name    : String,
+    surname : String
+}, {
+    methods: {
+        fullName: function () {
+            return this.name + ' ' + this.surname;
+        }
+    }
+});
+
+Person.get(4, function(err, person) {
+    console.log( person.fullName() );
+})
+```
+
+### Model Methods
+
+Are defined directly on the model.
+
+```js
+var Person = db.define('person', {
+    name    : String,
+    height  : { type: 'number', rational: false }
+});
+Person.tallerThan = function(height, callback) {
+    this.find({ height: orm.gt(height) }, callback);
+};
+
+Person.tallerThan( 192, function(err, tallPeople) { ... } );
+```
+
+
 ## Loading Models
 
 Models can be in separate modules. Simply ensure that the module holding the models uses module.exports to publish a function that accepts the database connection, then load your models however you like.

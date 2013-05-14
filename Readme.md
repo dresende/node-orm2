@@ -114,6 +114,16 @@ orm.connect("....", function (err, db) {
 
 ## Connecting
 
+First, add the correct driver to your `package.json`:
+
+For **mysql** add: `"mysql" : "2.0.0-alpha7"`
+
+For **postgres/redshift** add: `"pg": "~1.0.0",`
+
+For **sqlite** add: `"sqlite3" : "2.1.5"`
+
+### Options
+
 You can pass in connection options either as a string:
 
 ```js

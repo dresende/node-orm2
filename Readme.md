@@ -200,6 +200,8 @@ If defining properties using the latter object syntax, the types are:
 
 ##### number
 * `rational`: true (default) creates a FLOAT/REAL, false an INTEGER
+* `size` or `length`: length property for INTEGER
+* `unsigned`: true to make INTEGER unsigned, default is false
 
 ##### date
 * `time`: true (default) creates a DATETIME/TIMESTAMP, false a DATE

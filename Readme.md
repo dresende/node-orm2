@@ -210,6 +210,8 @@ var Person = db.define('person', {        // 'person' will be the table in the d
 
 ##### number
 * `rational`: true (default) creates a FLOAT/REAL, false an INTEGER
+* `size` or `length`: length property for INTEGER
+* `unsigned`: true to make INTEGER unsigned, default is false
 
 ##### date
 * `time`: true (default) creates a DATETIME/TIMESTAMP, false a DATE

@@ -43,7 +43,8 @@
     "urun"      : "0.0.6",
     "mysql"     : "2.0.0-alpha7",
     "pg"        : "1.0.0",
-    "sqlite3"   : "2.1.5"
+    "sqlite3"   : "2.1.5",
+    "async"     : "*"
   },
   "optionalDependencies": {}
 }

@@ -116,11 +116,11 @@ orm.connect("....", function (err, db) {
 
 First, add the correct driver to your `package.json`:
 
-For **mysql** add: `"mysql" : "2.0.0-alpha7"`
-
-For **postgres/redshift** add: `"pg": "~1.0.0",`
-
-For **sqlite** add: `"sqlite3" : "2.1.5"`
+ driver                | dependency
+:----------------------|:---------------------------
+ mysql                 | `"mysql" : "2.0.0-alpha7"`
+ postgres<br/>redshift | `"pg": "~1.0.0",`
+ sqlite                | `"sqlite3" : "2.1.5"`
 
 ### Options
 
@@ -191,13 +191,13 @@ var Person = db.define('person', {        // 'person' will be the table in the d
 
 #### Types
 
-Available native object types are:
 
-`String, Number, Boolean, Date, Object, Buffer`
-
-If defining properties using the latter object syntax, the types are:
-
-`text, number, boolean, date, enum, object, binary`
+ Native   | String     | Native   | String
+ :--------|:-----------|:---------|:---------
+ String   | 'text'     | Date     | 'date '
+ Number   | 'number'   | Object   | 'object'
+ Boolean  | 'boolean'  | Buffer   | 'binary'
+          |            |  ---     | 'enum'
 
 #### Options
 
@@ -553,6 +553,12 @@ var Person = db.define('person', {
 	name    : String
 }, {
 	cache   : false
+});
+```
+and also globally:
+```js
+orm.connect('...', function(err, db) {
+  db.settings.set('instance.cache', false);
 });
 ```
 

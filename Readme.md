@@ -147,7 +147,7 @@ var opts = {
   user     : "..",
   password : "..",
   query    : {
-    pool     : true|false    // optional, false by default
+    pool     : true|false,    // optional, false by default
     debug    : true|false    // optional, false by default
   }
 };

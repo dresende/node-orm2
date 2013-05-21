@@ -210,7 +210,7 @@ var Person = db.define('person', {        // 'person' will be the table in the d
 
 ##### number
 * `rational`: true (default) creates a FLOAT/REAL, false an INTEGER
-* `size` or `length`: length property for INTEGER
+* `size`: byte size of number, default is 4. Note that 8 byte numbers [have limitations](http://stackoverflow.com/questions/307179/what-is-javascripts-max-int-whats-the-highest-integer-value-a-number-can-go-t)
 * `unsigned`: true to make INTEGER unsigned, default is false
 
 ##### date

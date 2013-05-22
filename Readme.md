@@ -33,38 +33,38 @@ An example:
 var orm = require("orm");
 
 orm.connect("mysql://username:password@host/database", function (err, db) {
-	if (err) throw err;
+  if (err) throw err;
 
-	var Person = db.define("person", {
-		name      : String,
-		surname   : String,
-		age       : Number,
-		male      : Boolean,
-		continent : [ "Europe", "America", "Asia", "Africa", "Australia", "Antartica" ], // ENUM type
-		photo     : Buffer, // BLOB/BINARY
-		data      : Object // JSON encoded
-	}, {
-		methods: {
-			fullName: function () {
-				return this.name + ' ' + this.surname;
-			}
-		},
-		validations: {
-			age: orm.validators.rangeNumber(18, undefined, "under-age")
-		}
-	});
+  var Person = db.define("person", {
+    name      : String,
+    surname   : String,
+    age       : Number,
+    male      : Boolean,
+    continent : [ "Europe", "America", "Asia", "Africa", "Australia", "Antartica" ], // ENUM type
+    photo     : Buffer, // BLOB/BINARY
+    data      : Object // JSON encoded
+  }, {
+    methods: {
+      fullName: function () {
+        return this.name + ' ' + this.surname;
+      }
+    },
+    validations: {
+      age: orm.validators.rangeNumber(18, undefined, "under-age")
+    }
+  });
 
-	Person.find({ surname: "Doe" }, function (err, people) {
-		// SQL: "SELECT * FROM person WHERE surname = 'Doe'"
+  Person.find({ surname: "Doe" }, function (err, people) {
+    // SQL: "SELECT * FROM person WHERE surname = 'Doe'"
 
-		console.log("People found: %d", people.length);
-		console.log("First person: %s, age %d", people[0].fullName(), people[0].age);
+    console.log("People found: %d", people.length);
+    console.log("First person: %s, age %d", people[0].fullName(), people[0].age);
 
-		people[0].age = 16;
-		people[0].save(function (err) {
-			// err.msg = "under-age";
-		});
-	});
+    people[0].age = 16;
+    people[0].save(function (err) {
+      // err.msg = "under-age";
+    });
+  });
 });
 ```
 
@@ -78,15 +78,15 @@ var orm = require('orm');
 var app = express();
 
 app.use(orm.express("mysql://username:password@host/database", {
-	define: function (db, models) {
-		models.person = db.define("person", { ... });
-	}
+  define: function (db, models) {
+    models.person = db.define("person", { ... });
+  }
 }));
 app.listen(80);
 
 app.get("/", function (req, res) {
-	// req.models is a reference to models used above in define()
-	req.models.person.find(...);
+  // req.models is a reference to models used above in define()
+  req.models.person.find(...);
 });
 ```
 
@@ -104,11 +104,11 @@ var orm = require("orm");
 orm.settings.set("some.deep.value", 123);
 
 orm.connect("....", function (err, db) {
-	// db.settings is a snapshot of the settings at the moment
-	// of orm.connect(). changes to it don't affect orm.settings
+  // db.settings is a snapshot of the settings at the moment
+  // of orm.connect(). changes to it don't affect orm.settings
 
-	console.log(db.settings.get("some.deep.value")); // 123
-	console.log(db.settings.get("some.deep"));       // { value: 123 }
+  console.log(db.settings.get("some.deep.value")); // 123
+  console.log(db.settings.get("some.deep"));       // { value: 123 }
 });
 ```
 
@@ -130,7 +130,7 @@ You can pass in connection options either as a string:
 var orm = require("orm");
 
 orm.connect("mysql://username:password@host/database?pool=true", function (err, db) {
-	// ...
+  // ...
 });
 ```
 
@@ -152,7 +152,7 @@ var opts = {
   }
 };
 orm.connect(opts, function (err, db) {
-	// ...
+  // ...
 });
 ```
 
@@ -163,7 +163,7 @@ var orm = require("orm");
 var db  = orm.connect("mysql://username:password@host/database");
 
 db.on("connect", function (err, db) {
-	// ...
+  // ...
 });
 ```
 
@@ -179,11 +179,11 @@ Call `define` on the database connection to setup a model. The name of the table
 
 ```js
 var Person = db.define('person', {        // 'person' will be the table in the database as well as the model id
-	// properties
-	name    : String,                     // you can use native objects to define the property type
-	surname : { type: "text", size: 50 }  // or you can be specific and define aditional options
+  // properties
+  name    : String,                     // you can use native objects to define the property type
+  surname : { type: "text", size: 50 }  // or you can be specific and define aditional options
 }, {
-	// options (optional)
+  // options (optional)
 });
 ```
 
@@ -300,7 +300,7 @@ Models can create their underlying tables in the database. You may call Model.sy
 ```js
 // db.sync() can also be used
 Person.sync(function (err) {
-	!err && console.log("done!");
+  !err && console.log("done!");
 });
 ```
 
@@ -310,7 +310,7 @@ If you want to drop a Model and remove all tables you can use the `.drop()` meth
 
 ```js
 Person.drop(function (err) {
-	!err && console.log("person model no longer exists!");
+  !err && console.log("person model no longer exists!");
 });
 ```
 
@@ -323,9 +323,9 @@ by default "id" but you can change it.
 
 ```js
 var Person = db.define("person", {
-	name : String
+  name : String
 }, {
-	id   : "person_id"
+  id   : "person_id"
 });
 
 // or just do it globally..
@@ -333,7 +333,7 @@ db.settings.set("properties.primary_key", "UID");
 
 // ..and then define your Models
 var Pet = db.define("pet", {
-	name : String
+  name : String
 });
 ```
 
@@ -372,7 +372,7 @@ To get a specific element from the database use `Model.get`.
 
 ```js
 Person.get(123, function (err, person) {
-	// finds person with id = 123
+  // finds person with id = 123
 });
 ```
 
@@ -382,7 +382,7 @@ Finding one or more elements has more options, each one can be given in no speci
 
 ```js
 Person.find({ name: "John", surname: "Doe" }, 3, function (err, people) {
-	// finds people with name='John' AND surname='Doe' and returns the first 3
+  // finds people with name='John' AND surname='Doe' and returns the first 3
 });
 ```
 
@@ -390,11 +390,11 @@ If you need to sort the results because you're limiting or just because you want
 
 ```js
 Person.find({ surname: "Doe" }, "name", function (err, people) {
-	// finds people with surname='Doe' and returns sorted by name ascending
+  // finds people with surname='Doe' and returns sorted by name ascending
 });
 Person.find({ surname: "Doe" }, [ "name", "Z" ], function (err, people) {
-	// finds people with surname='Doe' and returns sorted by name descending
-	// ('Z' means DESC; 'A' means ASC - default)
+  // finds people with surname='Doe' and returns sorted by name descending
+  // ('Z' means DESC; 'A' means ASC - default)
 });
 ```
 
@@ -402,7 +402,7 @@ There are more options that you can pass to find something. These options are pa
 
 ```js
 Person.find({ surname: "Doe" }, { offset: 2 }, function (err, people) {
-	// finds people with surname='Doe', skips the first 2 and returns the others
+  // finds people with surname='Doe', skips the first 2 and returns the others
 });
 ```
 
@@ -413,7 +413,7 @@ of them and counting. This will actually tell the database server to do a count 
 
 ```js
 Person.count({ surname: "Doe" }, function (err, count) {
-	console.log("We have %d Does in our db", count);
+  console.log("We have %d Does in our db", count);
 });
 ```
 
@@ -423,7 +423,7 @@ Similar to `.count()`, this method just checks if the count is greater than zero
 
 ```js
 Person.exists({ surname: "Doe" }, function (err, exists) {
-	console.log("We %s Does in our db", exists ? "have" : "don't have");
+  console.log("We %s Does in our db", exists ? "have" : "don't have");
 });
 ```
 
@@ -434,7 +434,7 @@ illustrate:
 
 ```js
 Person.aggregate({ surname: "Doe" }).min("age").max("age").get(function (err, min, max) {
-	console.log("The youngest Doe guy has %d years, while the oldest is %d", min, max);
+  console.log("The youngest Doe guy has %d years, while the oldest is %d", min, max);
 });
 ```
 Here's an example to illustrate how to use groupby:
@@ -491,17 +491,17 @@ in the end.
 
 ```js
 Person.find({ surname: "Doe" }).each(function (person) {
-	person.surname = "Dean";
+  person.surname = "Dean";
 }).save(function (err) {
-	// done!
+  // done!
 });
 
 Person.find({ surname: "Doe" }).each().filter(function (person) {
-	return person.age >= 18;
+  return person.age >= 18;
 }).sort(function (person1, person2) {
-	return person1.age < person2.age;
+  return person1.age < person2.age;
 }).get(function (people) {
-	// get all people with at least 18 years, sorted by age
+  // get all people with at least 18 years, sorted by age
 });
 ```
 
@@ -550,9 +550,9 @@ defining the Model.
 
 ```js
 var Person = db.define('person', {
-	name    : String
+  name    : String
 }, {
-	cache   : false
+  cache   : false
 });
 ```
 and also globally:
@@ -576,21 +576,21 @@ To insert new elements to the database use `Model.create`.
 
 ```js
 Person.create([
-	{
-		name: "John",
-		surname: "Doe",
-		age: 25,
-		male: true
-	},
-	{
-		name: "Liza",
-		surname: "Kollan",
-		age: 19,
-		male: false
-	}
+  {
+    name: "John",
+    surname: "Doe",
+    age: 25,
+    male: true
+  },
+  {
+    name: "Liza",
+    surname: "Kollan",
+    age: 19,
+    male: false
+  }
 ], function (err, items) {
-	// err - description of the error or null
-	// items - array of inserted items
+  // err - description of the error or null
+  // items - array of inserted items
 });
 ```
 
@@ -601,11 +601,11 @@ use to change each item.
 
 ```js
 Person.get(1, function (err, John) {
-	John.name = "Joe";
-	John.surname = "Doe";
-	John.save(function (err) {
-		console.log("saved!");
-	});
+  John.name = "Joe";
+  John.surname = "Doe";
+  John.save(function (err) {
+    console.log("saved!");
+  });
 });
 ```
 
@@ -613,9 +613,9 @@ Updating and then saving an instance can be done in a single call:
 
 ```js
 Person.get(1, function (err, John) {
-	John.save({ name: "Joe", surname: "Doe" }, function (err) {
-		console.log("saved!");
-	});
+  John.save({ name: "Joe", surname: "Doe" }, function (err) {
+    console.log("saved!");
+  });
 });
 ```
 
@@ -624,9 +624,9 @@ If you want to remove an instance, just do:
 ```js
 // you could do this without even fetching it, look at Chaining section above
 Person.get(1, function (err, John) {
-	John.remove(function (err) {
-		console.log("removed!");
-	});
+  John.remove(function (err) {
+    console.log("removed!");
+  });
 });
 ```
 
@@ -637,13 +637,13 @@ You can also use the predefined validations or create your own.
 
 ```js
 var Person = db.define("person", {
-	name : String,
-	age  : Number
+  name : String,
+  age  : Number
 }, {
-	validations : {
-		name : orm.validators.rangeLength(1, undefined, "missing"), // "missing" is a name given to this validation, instead of default
-		age  : [ orm.validators.rangeNumber(0, 10), orm.validators.insideList([ 1, 3, 5, 7, 9 ]) ]
-	}
+  validations : {
+    name : orm.validators.rangeLength(1, undefined, "missing"), // "missing" is a name given to this validation, instead of default
+    age  : [ orm.validators.rangeNumber(0, 10), orm.validators.insideList([ 1, 3, 5, 7, 9 ]) ]
+  }
 });
 ```
 
@@ -656,11 +656,11 @@ name and validation error description. This description should help you identify
 
 ```js
 var John = new Person({
-	name : "",
-	age : 20
+  name : "",
+  age : 20
 });
 John.save(function (err) {
-	// err.field = "name" , err.value = "" , err.msg = "missing"
+  // err.field = "name" , err.value = "" , err.msg = "missing"
 });
 ```
 
@@ -673,20 +673,20 @@ var orm = require("orm");
 orm.settings.set("instance.returnAllErrors", true); // global or..
 
 orm.connect("....", function (err, db) {
-	db.settings.set("instance.returnAllErrors", true); // .. local
+  db.settings.set("instance.returnAllErrors", true); // .. local
 
-	// ...
+  // ...
 
-	var John = new Person({
-		name : "",
-		age : 15
-	});
-	John.save(function (err) {
-		assert(Array.isArray(err));
-		// err[0].field = "name" , err[0].value = "" , err[0].msg = "missing"
-		// err[1].field = "age"  , err[1].value = 15 , err[1].msg = "out-of-range-number"
-		// err[2].field = "age"  , err[2].value = 15 , err[2].msg = "outside-list"
-	});
+  var John = new Person({
+    name : "",
+    age : 15
+  });
+  John.save(function (err) {
+    assert(Array.isArray(err));
+    // err[0].field = "name" , err[0].value = "" , err[0].msg = "missing"
+    // err[1].field = "age"  , err[1].value = 15 , err[1].msg = "out-of-range-number"
+    // err[2].field = "age"  , err[2].value = 15 , err[2].msg = "outside-list"
+  });
 });
 ```
 
@@ -694,36 +694,81 @@ orm.connect("....", function (err, db) {
 
 An association is a relation between one or more tables.
 
-## hasOne vs. hasMany
+### hasOne
+Is a **many to one** relationship. It's the same as **belongs to.**<br/>
+Eg: `Animal.hasOne('owner', Person)`.<br/>
+Animal can only have one owner, but Person can have many animals.<br/>
+Animal will have the `owner_id` property automatically added.
 
-Since this topic brings some confusion to many people including myself, here's a list of the possibilities
-supported by both types of association.
+The following functions will become available:
+```js
+animal.getOwner(function..)         // Gets owner
+animal.setOwner(person, function..) // Sets owner_id
+animal.hasOwner(function..)         // Checks if owner exists
+animal.removeOwner()                // Sets owner_id to 0
+```
 
-- `hasOne` : it's a **Many-to-One** relationship. A.hasOne(B) means A will have one (or none) of B, but B can be
-  associated with many A;
-- `hasMany`: it's a **One-to-Many** relationship. A.hasMany(B) means A will have none, one or more of B. Actually
-  B will be associated with possibly many A but you don't have how to find it easily (see next);
-- `hasMany` + reverse: it's a **Many-to-Many** relationship. A.hasMany(B, { reverse: A }) means A can have none or
-  many B and also B can have none or many A. Accessors will be created in both models so you can manage them from
-  both sides.
+**Reverse access**
+```js
+Animal.hasOne('owner', Person, {reverse: 'pets'})
+```
+will add the following:
+```js
+person.getPets(function..)
+person.setPets(cat, function..)
+```
 
-If you have a relation of 1 to 0 or 1 to 1, you should use `hasOne` association. This assumes a column in the model that has the id of the other end of the relation.
+
+### hasMany
+Is a **many to many** relationship (includes join table).<br/>
+Eg: `Patient.hasMany('doctors', Doctor, { why: String }, { reverse: 'patients' })`.<br/>
+Patient can have many different doctors. Each doctor can have many different patients.
+
+This will create a join table `patient_doctors` when you call `Patient.sync()`:
+
+ column name | type
+ :-----------|:--------
+ patient_id  | Integer
+ doctor_id   | Integer
+ why         | varchar(255)
+
+The following functions will be available:
+```js
+patient.getDoctors(function..)           // List of doctors
+patient.addDoctors(docs, function...)    // Adds entries to join table
+patient.setDoctors(docs, function...)    // Removes existing entries in join table, adds new ones
+patient.hasDoctors(docs, function...)    // Checks if patient is associated to specified doctors
+patient.removeDoctors(docs, function...) // Removes specified doctors from join table
+
+doctor.getPatients(function..)
+etc...
+```
+
+To associate a doctor to a patient:
+```js
+patient.addDoctor(surgeon, {why: "remove appendix"}, function(err) { ... } )
+```
+which will add `{patient_id: 4, doctor_id: 6, why: "remove appendix"}` to the join table.
+
+### Examples & options
+
+If you have a relation of 1 to n, you should use `hasOne` (belongs to) association.
 
 ```js
 var Person = db.define('person', {
-	name : String
+    name : String
 });
 var Animal = db.define('animal', {
-	name : String
+    name : String
 });
-Animal.hasOne("owner", Person); // assumes column 'owner_id' in 'animal' table
+Animal.hasOne("owner", Person); // creates column 'owner_id' in 'animal' table
 
 // get animal with id = 123
-Animal.get(123, function (err, Foo) {
-	// Foo is the animal model instance, if found
-	Foo.getOwner(function (err, John) {
-		// if Foo animal has really an owner, John points to it
-	});
+Animal.get(123, function (err, animal) {
+    // animal is the animal model instance, if found
+    Foo.getOwner(function (err, person) {
+        // if animal has really an owner, person points to it
+    });
 });
 ```
 
@@ -738,46 +783,32 @@ If you prefer to use another name for the field (owner_id) you can change this p
 db.settings.set("properties.association_key", "id_{name}"); // {name} will be replaced by 'owner' in this case
 ```
 
-**Note: This has to be done prior to the association creation.**
+**Note: This has to be done before the association is specified.**
 
-For relations of 1 to many you have to use `hasMany` associations. This assumes the existence of a separate join table that has 2 columns, each referencing the table in the association. Ideally, these would be foreign key relationships in your database.
-
-```js
-var Person = db.define('person', {
-	name : String
-});
-Person.hasMany("friends"); // omitting the other Model, it will assume self model
-
-Person.get(123, function (err, John) {
-	John.getFriends(function (err, friends) {
-		// assumes table person_friends with columns person_id and friends_id
-	});
-});
-```
-
-The `hasMany` associations can have additional properties that are assumed to be in the association table.
+The `hasMany` associations can have additional properties in the association table.
 
 ```js
 var Person = db.define('person', {
-	name : String
+    name : String
 });
 Person.hasMany("friends", {
     rate : Number
 });
 
 Person.get(123, function (err, John) {
-	John.getFriends(function (err, friends) {
-		// assumes rate is another column on table person_friends
-		// you can access it by going to friends[N].extra.rate
-	});
+    John.getFriends(function (err, friends) {
+        // assumes rate is another column on table person_friends
+        // you can access it by going to friends[N].extra.rate
+    });
 });
 ```
 
-If you prefer you can activate `autoFetch`. This way associations are automatically fetched when you get or find instances of a model.
+If you prefer you can activate `autoFetch`.
+This way associations are automatically fetched when you get or find instances of a model.
 
 ```js
 var Person = db.define('person', {
-	name : String
+  name : String
 });
 Person.hasMany("friends", {
     rate : Number
@@ -794,7 +825,7 @@ You can also define this option globally instead of a per association basis.
 
 ```js
 var Person = db.define('person', {
-	name : String
+    name : String
 }, {
     autoFetch : true
 });
@@ -809,39 +840,38 @@ Confusing? Look at the next example.
 
 ```js
 var Pet = db.define('pet', {
-	name : String
+    name : String
 });
 var Person = db.define('person', {
-	name : String
+    name : String
 });
 Pet.hasOne("owner", Person, {
-	reverse : "pets"
+    reverse : "pets"
 });
 
 Person(4).getPets(function (err, pets) {
-	// although the association was made on Pet,
-	// Person will have an accessor (getPets)
-	//
-	// In this example, ORM will fetch all pets
-	// whose owner_id = 4
+    // although the association was made on Pet,
+    // Person will have an accessor (getPets)
+    //
+    // In this example, ORM will fetch all pets
+    // whose owner_id = 4
 });
 ```
 
-This makes even more sense when having `hasMany` associations since you can manage the Many-to-Many associations
-from both sides.
-
+This makes even more sense when having `hasMany` associations since you can manage the *many to many*
+associations from both sides.
 
 ```js
 var Pet = db.define('pet', {
-	name : String
+    name : String
 });
 var Person = db.define('person', {
-	name : String
+    name : String
 });
 Person.hasMany("pets", Pet, {
     bought  : Date
 }, {
-	reverse : "owners"
+    reverse : "owners"
 });
 
 Person(1).getPets(...);

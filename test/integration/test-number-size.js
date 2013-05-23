@@ -13,9 +13,9 @@ common.createConnection(function (err, db) {
   if (err) throw err;
 
   var Model = db.define('test-number-size', {
-    int2: { type: 'number', size: 2, rational: false },
-    int4: { type: 'number', size: 4, rational: false },
-    int8: { type: 'number', size: 8, rational: false },
+    int2:   { type: 'number', size: 2, rational: false },
+    int4:   { type: 'number', size: 4, rational: false },
+    int8:   { type: 'number', size: 8, rational: false },
     float4: { type: 'number', size: 4 },
     float8: { type: 'number', size: 8 }
   });
@@ -28,7 +28,13 @@ common.createConnection(function (err, db) {
 
   var protocol = common.protocol().toLowerCase();
   var mysql    = protocol == 'mysql';
-  var postgres = protocol == 'postgres';
+  var postgres = protocol == 'postgres' || protocol == 'redshift';
+
+  // Sqlite doesn't support specifying sizes
+  if(!(postgres || mysql)) {
+    db.close();
+    return;
+  }
 
   async.series([
     function(cb) {

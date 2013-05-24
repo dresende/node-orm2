@@ -437,7 +437,11 @@ Person.aggregate({ surname: "Doe" }).min("age").max("age").get(function (err, mi
 	console.log("The youngest Doe guy has %d years, while the oldest is %d", min, max);
 });
 ```
-Here's an example to illustrate how to use groupby:
+
+An `Array` of properties can be passed to select only a few properties. An `Object` is also accepted to define conditions.
+
+Here's an example to illustrate how to use `.groupBy()`:
+
 ```js
 //The same as "select avg(weight), age from person where country='someCountry' group by age;"
 Person.aggregate(["age"], { country: "someCountry" }).avg("weight").groupBy("age").get(function (err, stats) {
@@ -445,7 +449,12 @@ Person.aggregate(["age"], { country: "someCountry" }).avg("weight").groupBy("age
 });
 ```
 
-Possible aggregating functions:
+### Base `.aggregate()` methods
+
+- `.limit()`: you can pass a number as a limit, or two numbers as offset and limit respectively
+- `.order()`: same as `Model.find().order()`
+
+### Additional `.aggregate()` methods
 
 - `min`
 - `max`
@@ -453,11 +462,7 @@ Possible aggregating functions:
 - `sum`
 - `count` (there's a shortcut to this - `Model.count`)
 
-### Available options
-
-- `offset`: discards the first `N` elements
-- `limit`: although it can be passed as a direct argument, you can use it here if you prefer
-- `only`: if you don't want all properties, you can give an array with the list of properties you want
+There are more aggregate functions depending on the driver (Math functions for example).
 
 #### Chaining
 

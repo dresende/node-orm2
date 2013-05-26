@@ -9,6 +9,12 @@ function round(num, points) {
   return Math.round(num * m) / m;
 }
 
+// Round because different systems store floats in different
+// ways, thereby introducing small errors.
+function fuzzyEql(num1, num2) {
+  return round(num1 / num2, 3) == 1;
+}
+
 common.createConnection(function (err, db) {
   if (err) throw err;
 
@@ -46,28 +52,26 @@ common.createConnection(function (err, db) {
         });
       });
     },
+    // It should be able to store near MAX sized values for each field
     function(cb) {
-      // It should be able to store near MAX sized values for each field
       Model.create(data, function (err, item) {
         if (err) throw err;
 
         Model.get(item.id, function (err, item) {
           if (err) throw err;
 
-          // Round because different systems store floats in different
-          // ways, thereby introducing small errors.
-          assert.equal(round(item.int2   / data.int2,   3), 1);
-          assert.equal(round(item.int4   / data.int4,   3), 1);
-          assert.equal(round(item.int8   / data.int8,   3), 1);
-          assert.equal(round(item.float4 / data.float4, 3), 1);
-          assert.equal(round(item.float8 / data.float8, 3), 1);
-        });
+          assert(fuzzyEql(item.int2,   data.int2));
+          assert(fuzzyEql(item.int4,   data.int4));
+          assert(fuzzyEql(item.int8,   data.int8));
+          assert(fuzzyEql(item.float4, data.float4));
+          assert(fuzzyEql(item.float8, data.float8));
 
-        cb();
+          cb();
+        });
       });
     },
+    // It should not be able to store values which are too large in int2
     function(cb) {
-      // It should not be able to store values which are too large in int2
       Model.create({ int2: data.int4 }, function (err, item) {
         // Postgres throws an error if it detects potential data loss,
         // ie. if it detects an overflow.
@@ -79,14 +83,14 @@ common.createConnection(function (err, db) {
           Model.get(item.id, function (err, item) {
             if (err) throw err;
 
-            assert.notEqual(item.int2, data.int4)
+            assert(!fuzzyEql(item.int2, data.int4));
             cb();
           });
         }
       });
     },
+    // It should not be able to store values which are too large in int4
     function(cb) {
-      // It should not be able to store values which are too large in int4
       Model.create({ int4: data.int8 }, function (err, item) {
         if (postgres) {
           assert(err);
@@ -95,14 +99,14 @@ common.createConnection(function (err, db) {
           Model.get(item.id, function (err, item) {
             if (err) throw err;
 
-            assert.notEqual(item.int4, data.int8)
+            assert(!fuzzyEql(item.int4, data.int8));
             cb();
           });
         }
       });
     },
+    // It should not be able to store values which are too large in float4
     function(cb) {
-      // It should not be able to store values which are too large in float4
       Model.create({ float4: data.float8 }, function (err, item) {
         if (postgres) {
           assert(err);
@@ -111,7 +115,7 @@ common.createConnection(function (err, db) {
           Model.get(item.id, function (err, item) {
             if (err) throw err;
 
-            assert.notEqual(item.float4, data.float8)
+            assert(!fuzzyEql(item.float4, data.float8));
             cb();
           });
         }

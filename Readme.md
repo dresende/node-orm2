@@ -359,8 +359,9 @@ Currently the following events are supported:
 - `afterSave` : (bool success) Right after saving;
 - `beforeCreate` : (no parameters) Right before trying to save a new instance;
 - `afterCreate` : (bool success) Right after saving a new instance;
-- `beforeRemove` : (no parameters) Right before trying to remove an instance.
+- `beforeRemove` : (no parameters) Right before trying to remove an instance;
 - `afterRemove` : (bool success) Right after removing an instance;
+- `beforeValidation` : (no parameters) Before all validations and prior to `beforeCreate` and `beforeSave`;
 
 All hook function are called with `this` as the instance so you can access anything you want related to it.
 

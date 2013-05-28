@@ -119,8 +119,8 @@ First, add the correct driver to your `package.json`:
  driver                | dependency
 :----------------------|:---------------------------
  mysql                 | `"mysql" : "2.0.0-alpha7"`
- postgres<br/>redshift | `"pg": "~1.0.0",`
- sqlite                | `"sqlite3" : "2.1.5"`
+ postgres<br/>redshift | `"pg": "~1.0.0"`
+ sqlite                | `"sqlite3" : "2.1.7"`
 
 ### Options
 

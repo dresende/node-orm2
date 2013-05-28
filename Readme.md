@@ -357,13 +357,35 @@ Currently the following events are supported:
 - `afterLoad` : (no parameters) Right after loading and preparing an instance to be used;
 - `beforeSave` : (no parameters) Right before trying to save;
 - `afterSave` : (bool success) Right after saving;
-- `beforeCreate` : (no parameters) Right before trying to save a new instance;
+- `beforeCreate` : (no parameters) Right before trying to save a new instance (prior to `beforeSave`);
 - `afterCreate` : (bool success) Right after saving a new instance;
 - `beforeRemove` : (no parameters) Right before trying to remove an instance;
 - `afterRemove` : (bool success) Right after removing an instance;
 - `beforeValidation` : (no parameters) Before all validations and prior to `beforeCreate` and `beforeSave`;
 
 All hook function are called with `this` as the instance so you can access anything you want related to it.
+
+For all `before*` hooks, you can add an additional parameter to the hook function. This parameter will be a function that
+must be called to tell if the hook allows the execution to continue or to break. You might be familiar with this workflow
+already from Express. Here's an example:
+
+```js
+var Person = db.define("person", {
+	name    : String,
+	surname : String
+}, {
+	hooks: {
+		beforeCreate: function (next) {
+			if (this.surname == "Doe") {
+				return next(new Error("No Does allowed"));
+			}
+			return next();
+		}
+	}
+});
+```
+
+This workflow allows you to make asynchronous work before calling `next`.
 
 ## Finding Items
 

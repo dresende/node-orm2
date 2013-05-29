@@ -23,15 +23,18 @@ common.createConnection(function (err, db) {
 										var TestModelParent = db.define('test_association_hasone_reverse_updown_up', common.getModelProperties());
 										var TestModelChild	= db.define('test_association_hasone_reverse_updown',	common.getModelProperties());
 										var TestModelGrandChild	= db.define('test_association_hasone_reverse_updown_down',	common.getModelProperties());
-										TestModelChild.hasOne("assocup", TestModelParent, { reverse: "reverseassoc" });
+										TestModelChild.hasOne("assocup", TestModelParent, {
+                      autoFetch: true, 
+                      reverse: "reverseassoc" 
+                    });
 										TestModelChild.hasOne("assocdown", TestModelGrandChild, { autoFetch: true });
 
-										TestModelParent(2).getReverseassoc(function (err, children) {
+										TestModelParent.get(2, function (err, par) {
 											assert.equal(err, null);
-											assert.equal(Array.isArray(children), true);
-											assert.equal(typeof children[0], "object");
-											assert.equal(children[0].id, 1);
-											assert.equal(typeof children[0].assocdown, "object");
+											assert.equal(Array.isArray(par.reverseassoc), true);
+											assert.equal(typeof par.reverseassoc[0], "object");
+											assert.equal(par.reverseassoc[0].id, 1);
+											assert.equal(typeof par.reverseassoc[0].assocdown, "object");
 
 											// Make sure the association field hasn't been erroneously added to the reverse association model.
 											TestModelParent.find({}, function (err, parents) {

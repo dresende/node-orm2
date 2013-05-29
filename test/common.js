@@ -241,7 +241,7 @@ common.insertModelAssocUpDownData = function (table, db, data, cb) {
 			query = [];
 
 			for (i = 0; i < data.length; i++) {
-				query.push(data[i].id + ", '" + data[i].name + "', " + data[i].assocup + "', " + data[i].assocdown);
+				query.push(data[i].id + ", '" + data[i].name + "', " + data[i].assocup + ", " + data[i].assocdown);
 			}
 
 			db.query("INSERT INTO " + table + " VALUES (" + query.join("), (") + ")", cb);

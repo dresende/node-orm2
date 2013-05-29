@@ -20,7 +20,7 @@ common.createConnection(function (err, db) {
 									], function (err) {
 										if (err) throw err;
 
-										var TestModelParent = db.define('test_association_hasone_reverse_updown_up', common.getModelProperties());
+										var TestModelParent = db.define('test_association_hasone_reverse_updown_up', common.getModelProperties(), { autoFetchLimit: 2 });
 										var TestModelChild	= db.define('test_association_hasone_reverse_updown',	common.getModelProperties());
 										var TestModelGrandChild	= db.define('test_association_hasone_reverse_updown_down',	common.getModelProperties());
 										TestModelChild.hasOne("assocup", TestModelParent, {

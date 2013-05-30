@@ -11,7 +11,7 @@
     "redshift",
     "sqlite"
   ],
-  "version"     : "2.0.11",
+  "version"     : "2.0.12",
   "license"     : "MIT",
   "homepage"    : "http://dresende.github.io/node-orm2",
   "repository"  : "http://github.com/dresende/node-orm2.git",
@@ -24,7 +24,9 @@
     { "name" : "preslavrachev" },
     { "name" : "Chris Cowan",      "email" : "me@chriscowan.us" },
     { "name" : "Paul Dixon",       "email" : "paul.dixon@mintbridge.co.uk" },
-    { "name" : "David Kosub" }
+    { "name" : "David Kosub" },
+    { "name" : "Arek W" },
+    { "name" : "Joseph Gilley",    "email" : "joe.gilley@gmail.com" }
   ],
   "main"        : "./lib/ORM",
   "scripts"     : {

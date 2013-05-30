@@ -1,3 +1,20 @@
+### v2.0.12 - 30 May 2013
+
+- New plugin: orm-paging
+- Adds Model.one() as an alias for Model.all().limit(1) (#148)
+- Changes Model.one() to return only one instance (or null) instead of an Array (#148)
+- Allow passing a single object to Model.create() (#159)
+- Fixes passing unknown properties to new instances (fixes #178)
+- Adds AggregateFunctions.limit() (#172)
+- Checks for driver debug flag and prints debug lines in AggregateFunctions (#171)
+- Added Hook 'beforeValidation' prior to _all_ validations
+- Avoids JSON parsing values when they are already objects (and not string buffers) (#168)
+- Changes beforeRemove, beforeCreate, beforeSave and beforeValidation to use Hooks.wait() (sync or async hooks) (#167)
+- Support specifying size of number columns
+- Many more bug fixes
+- More tests added
+- Many documentation improvements
+
 ### v2.0.11 - 3 May 2013
 
 - Changes orm.connect() to return an EventEmitter

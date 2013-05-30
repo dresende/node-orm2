@@ -120,6 +120,23 @@ common.createModel2Table = function (table, db, cb) {
 	}
 };
 
+common.createModelAssocUpDownTable = function (table, db, cb) {
+	switch (this.protocol()) {
+		case "postgres":
+		case "redshift":
+			db.query("CREATE TEMPORARY TABLE " + table + " (id SERIAL PRIMARY KEY, name VARCHAR(100) NOT NULL, assocup_id BIGINT NOT NULL, assocdown_id BIGINT NOT NULL)", cb);
+			break;
+		case "sqlite":
+			db.run("DROP TABLE IF EXISTS " + table, function () {
+				db.run("CREATE TEMPORARY TABLE " + table + " (id SERIAL PRIMARY KEY, name VARCHAR(100) NOT NULL, assocup_id BIGINT NOT NULL, assocdown_id BIGINT NOT NULL)", cb);
+			});
+			break;
+		default:
+			db.query("CREATE TEMPORARY TABLE " + table + " (id BIGINT NOT NULL PRIMARY KEY AUTO_INCREMENT, name VARCHAR(100) NOT NULL, assocup_id BIGINT NOT NULL, assocdown_id BIGINT NOT NULL)", cb);
+			break;
+	}
+};
+
 common.createKeysModelTable = function (table, db, keys, cb) {
 	switch (this.protocol()) {
 		case "postgres":
@@ -203,6 +220,36 @@ common.insertModel2Data = function (table, db, data, cb) {
 			var pending = data.length;
 			for (i = 0; i < data.length; i++) {
 				db.run("INSERT INTO " + table + " VALUES (" + data[i].id + ", '" + data[i].name + "', " + data[i].assoc + ")", function () {
+					pending -= 1;
+
+					if (pending === 0) {
+						return cb();
+					}
+				});
+			}
+			break;
+	}
+};
+
+common.insertModelAssocUpDownData = function (table, db, data, cb) {
+	var query = [], i;
+
+	switch (this.protocol()) {
+		case "postgres":
+		case "redshift":
+		case "mysql":
+			query = [];
+
+			for (i = 0; i < data.length; i++) {
+				query.push(data[i].id + ", '" + data[i].name + "', " + data[i].assocup + ", " + data[i].assocdown);
+			}
+
+			db.query("INSERT INTO " + table + " VALUES (" + query.join("), (") + ")", cb);
+			break;
+		case "sqlite":
+			var pending = data.length;
+			for (i = 0; i < data.length; i++) {
+				db.run("INSERT INTO " + table + " VALUES (" + data[i].id + ", '" + data[i].name + "', " + data[i].assocup + ", " + data[i].assocdown + ")", function () {
 					pending -= 1;
 
 					if (pending === 0) {

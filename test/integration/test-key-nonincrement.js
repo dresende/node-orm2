@@ -28,6 +28,7 @@ common.createConnection(function (err, db) {
 				
 				console.log(items[0].poc, items[0].first_name, items[0].last_name);
 				assert(items[0].poc, 'Edward Kline');
+				db.close();
 			});
 			
 		}

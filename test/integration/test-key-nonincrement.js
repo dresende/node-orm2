@@ -20,15 +20,11 @@ common.createConnection(function (err, db) {
 		} else {
 
 			//if sync is good, insert a record
-			var data = [{ poc: 'Edward Kline', first_name: 'Edward', last_name: 'Kline' }];
-
+			var data = [{ poc: 'John Doe', first_name: 'John', last_name: 'Doe' }];
 
 			Contact.create( data, function(err, items) {
 				if (err) throw err;
-
-				console.log(items[0].poc, items[0].first_name, items[0].last_name);
-				assert(items[0].poc, 'Edward Kline');
-				db.close();
+				assert(items[0].poc, 'John Doe');
 			});
 
 		}

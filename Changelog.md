@@ -1,3 +1,11 @@
+### v2.0.13 - 5 June 2013
+
+- Avoids throwing when calling db.close() without a callback and using pool in mysql (fixes #180)
+- Adds initial code to support passing associations when creating new instances (#162)
+- Changes Model.exists() to allow array or object passing
+- Allows passing an object instead of an instance as an hasOne asssociation
+- Fixes bug introduced in 2.0.12 forcing extra properties being ignored (fixes #183)
+
 ### v2.0.12 - 30 May 2013
 
 - New plugin: orm-paging

@@ -29,10 +29,12 @@ common.createConnection(function (err, db) {
       john.save(function(err) {
         assert(!err);
 
-        var emu = new Animal({name: 'emu', owner_id: null});
+        var emu = new Animal({name: 'emu', owner_id: john.id});
         emu.save(function(err) {
           // Should not raise any errors inside ORM
-          cb();
+
+          assert(!err);
+          done();
         });
       });
     }

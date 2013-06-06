@@ -1,5 +1,6 @@
 var common = exports;
 var path   = require('path');
+var async  = require('async');
 var ORM    = require('../');
 
 common.ORM = ORM;
@@ -334,4 +335,22 @@ common.insertModelAssocData = function (table, db, data, cb) {
 			}
 			break;
 	}
+};
+
+common.dropSync = function (models, done) {
+	if (!Array.isArray(models)) {
+		models = [models];
+	}
+
+	async.eachSeries(models, function(item, cb) {
+		item.drop(function(err) {
+			if (err) throw err
+			item.sync(function(err) {
+				if (err) throw err
+				cb();
+			});
+		});
+	}, function() {
+		done();
+	});
 };

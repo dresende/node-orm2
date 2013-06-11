@@ -20,7 +20,7 @@ common.createConnection(function (err, db) {
 					var TestModel = db.define('test_association_hasone_findby', common.getModelProperties());
 					TestModel.hasOne("assoc", TestModel2);
 
-					TestModel.findByAssoc({ name: "test3" }, function (err, Tests) {
+					TestModel.findByAssoc({ name: "test3" }).find({ name: "test1" }, function (err, Tests) {
 						assert.equal(err, null);
 						assert.equal(Array.isArray(Tests), true);
 						assert.equal(Tests.length, 1);

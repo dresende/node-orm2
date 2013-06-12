@@ -1,6 +1,7 @@
 var _        = require('lodash');
 var should   = require('should');
 var helper   = require('../support/spec_helper');
+var async    = require('async');
 var ORM      = require('../../');
 
 describe("Validations", function() {
@@ -33,6 +34,8 @@ describe("Validations", function() {
     });
   });
 
+  after(function() { db.close() });
+
   describe("predefined", function() {
     before(setup(false, false));
 
@@ -46,6 +49,28 @@ describe("Validations", function() {
         should.equal(err.type,   'validation');
         should.equal(john.id,     null);
         done();
+      });
+    });
+
+    it("unique validator should work", function(done) {
+      var Product = db.define("tvae_unique", { name: String }, {
+        validations: { name: ORM.validators.unique() }
+      });
+      var create = function (cb) {
+        var p = new Product({name: 'broom'});
+        p.save(cb);
+      }
+
+      helper.dropSync(Product, function() {
+        create(function(err) {
+          should.equal(err, null);
+          create(function(err) {
+            should.deepEqual(err, _.extend(new Error(),{
+              field: 'name', value: 'broom', msg: 'not-unique'
+            }));
+            done();
+          });
+        });
       });
     });
   });

@@ -41,12 +41,15 @@
     "hat"            : "0.0.3"
   },
   "devDependencies": {
-    "utest"     : "0.0.6",
-    "urun"      : "0.0.6",
-    "mysql"     : "2.0.0-alpha7",
-    "pg"        : "1.0.0",
-    "sqlite3"   : "2.1.7",
-    "async"     : "*"
+    "utest"   : "0.0.6",
+    "urun"    : "0.0.6",
+    "mysql"   : "2.0.0-alpha7",
+    "pg"      : "1.0.0",
+    "sqlite3" : "2.1.7",
+    "async"   : "*",
+    "mocha"   : "1.10.0",
+    "should"  : "1.2.2",
+    "lodash"  : "1.2.1"
   },
   "optionalDependencies": {}
 }

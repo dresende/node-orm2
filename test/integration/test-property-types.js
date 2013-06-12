@@ -3,14 +3,14 @@ var assert     = require('assert');
 var Property   = require('../../lib/Property');
 var Settings   = common.ORM.settings;
 
-assert.equal(Property.check(String, Settings).type, "text");
-assert.equal(Property.check(Number, Settings).type, "number");
-assert.equal(Property.check(Boolean, Settings).type, "boolean");
-assert.equal(Property.check(Date, Settings).type, "date");
-assert.equal(Property.check(Object, Settings).type, "object");
-assert.equal(Property.check(Buffer, Settings).type, "binary");
-assert.equal(Property.check([ 'a', 'b' ], Settings).type, "enum");
-assert.deepEqual(Property.check([ 'a', 'b' ], Settings).values, [ 'a', 'b' ]);
+assert.equal(Property.normalize(String, Settings).type, "text");
+assert.equal(Property.normalize(Number, Settings).type, "number");
+assert.equal(Property.normalize(Boolean, Settings).type, "boolean");
+assert.equal(Property.normalize(Date, Settings).type, "date");
+assert.equal(Property.normalize(Object, Settings).type, "object");
+assert.equal(Property.normalize(Buffer, Settings).type, "binary");
+assert.equal(Property.normalize([ 'a', 'b' ], Settings).type, "enum");
+assert.deepEqual(Property.normalize([ 'a', 'b' ], Settings).values, [ 'a', 'b' ]);
 
 assert.equal({ type: "text" }.type, "text");
 assert.equal({ type: "number" }.type, "number");
@@ -20,5 +20,5 @@ assert.equal({ type: "enum" }.type, "enum");
 assert.equal({ type: "object" }.type, "object");
 assert.equal({ type: "binary" }.type, "binary");
 
-assert.throws(function () { Property.check({ type: "buffer" }, Settings); });
-assert.throws(function () { Property.check({ type: "unknown" }, Settings); });
+assert.throws(function () { Property.normalize({ type: "buffer" }, Settings); });
+assert.throws(function () { Property.normalize({ type: "unknown" }, Settings); });

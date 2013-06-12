@@ -89,6 +89,29 @@ describe("Model.get()", function() {
 				});
 			});
 		});
+
+		describe("changing instance.cacheSaveCheck = false", function () {
+			before(function (done) {
+				Person.settings.set("instance.cacheSaveCheck", false);
+
+				it("should return the same object with the changed name", function (done) {
+					Person.get(1, function (err, John1) {
+						should.equal(err, null);
+
+						John1.name = "James";
+
+						Person.get(1, function (err, John2) {
+							should.equal(err, null);
+
+							John1.id.should.equal(John2.id);
+							John2.name.should.equal("James");
+
+							return done();
+						});
+					});
+				});
+			});
+		});
 	});
 
 	describe("with no cache", function () {

@@ -1,4 +1,4 @@
-var common     = require('../common');
+var common     = require('../../common');
 var assert     = require('assert');
 
 common.ORM.settings.set("some.sub.object", 123.45);

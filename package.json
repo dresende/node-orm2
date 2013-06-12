@@ -49,7 +49,7 @@
     "async"   : "*",
     "mocha"   : "1.10.0",
     "should"  : "1.2.2",
-    "lodash"  : "1.3.0"
+    "lodash"  : "1.2.1"
   },
   "optionalDependencies": {}
 }

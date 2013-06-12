@@ -1,6 +1,6 @@
-var common     = require('../../common');
+var common     = require('../common');
 var assert     = require('assert');
-var Validation = require('../../../lib/Validators');
+var Validation = require('../../lib/Validators');
 var _; // undefined
 
 Validation.rangeNumber(0, 10)(5, checkValidation());

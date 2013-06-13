@@ -4,7 +4,7 @@ var undef      = undefined;
 
 function checkValidation(done, expected) {
 	return function (returned) {
-		should.equal(returned, returned);
+		should.equal(returned, expected);
 
 		return done();
 	};
@@ -33,8 +33,8 @@ describe("Predefined Validators", function () {
 		});
 	});
 	describe("rangeNumber(0, undef)", function () {
-		it("should pass -5", function (done) {
-			validators.rangeNumber(0, undef)(-5, checkValidation(done));
+		it("should pass 5", function (done) {
+			validators.rangeNumber(0, undef)(5, checkValidation(done));
 		});
 		it("should not pass -5 with 'out-of-range-number'", function (done) {
 			validators.rangeNumber(0, undef)(-5, checkValidation(done, 'out-of-range-number'));
@@ -148,6 +148,7 @@ describe("Predefined Validators", function () {
 		});
 	});
 
+
 	describe("notEmptyString()", function () {
 		it("should pass 'a'", function (done) {
 			validators.notEmptyString()('a', checkValidation(done));
@@ -167,6 +168,71 @@ describe("Predefined Validators", function () {
 			it("should not pass '' with 'custom-error'", function (done) {
 				validators.notEmptyString('custom-error')('', checkValidation(done, 'custom-error'));
 			});
+		});
+	});
+
+
+	describe("patterns.hexString()", function () {
+		it("should pass 'ABCDEF0123456789'", function (done) {
+			validators.patterns.hexString()('ABCDEF0123456789', checkValidation(done));
+		});
+		it("should pass 'abcdef0123456789'", function (done) {
+			validators.patterns.hexString()('abcdef0123456789', checkValidation(done));
+		});
+		it("should not pass 'af830g'", function (done) {
+			validators.patterns.hexString()('af830g', checkValidation(done, 'no-pattern-match'));
+		});
+		it("should not pass ''", function (done) {
+			validators.patterns.hexString()('', checkValidation(done, 'no-pattern-match'));
+		});
+	});
+
+
+	describe("patterns.email()", function () {
+		// Source: http://en.wikipedia.org/wiki/Email_address
+		//
+		it("should pass 'niceandsimple@example.com'", function (done) {
+			validators.patterns.email()('niceandsimple@example.com', checkValidation(done));
+		});
+		it("should pass 'Very.Common@example.com'", function (done) {
+			validators.patterns.email()('Very.Common@example.com', checkValidation(done));
+		});
+		it("should pass 'disposable.style.email.with+symbol@example.com'", function (done) {
+			validators.patterns.email()('disposable.style.email.with+symbol@example.com', checkValidation(done));
+		});
+		it("should not pass 'Abc.example.com'", function (done) {
+			validators.patterns.email()('Abc.example.com', checkValidation(done, 'no-pattern-match'));
+		});
+		it("should not pass 'A@b@c@example.com'", function (done) {
+			validators.patterns.email()('A@b@c@example.com', checkValidation(done, 'no-pattern-match'));
+		});
+		it("should not pass 'not\\allowed@example.com'", function (done) {
+			validators.patterns.email()('not\\allowed@example.com', checkValidation(done, 'no-pattern-match'));
+		});
+		it("should not pass 'abc@example'", function (done) {
+			validators.patterns.email()('abc@example', checkValidation(done, 'no-pattern-match'));
+		});
+	});
+
+
+	describe("patterns.ipv4()", function () {
+		it("should pass '1.2.3.4'", function (done) {
+			validators.patterns.ipv4()('1.2.3.4', checkValidation(done));
+		});
+		it("should pass '1.0.0.1'", function (done) {
+			validators.patterns.ipv4()('1.0.0.1', checkValidation(done));
+		});
+		it("should pass '1.10.100.254'", function (done) {
+			validators.patterns.ipv4()('1.10.100.254', checkValidation(done));
+		});
+		it("should not pass '1.10.100.255'", function (done) {
+			validators.patterns.ipv4()('1.10.100.255', checkValidation(done, 'no-pattern-match'));
+		});
+		it("should not pass '1.10.100.0'", function (done) {
+			validators.patterns.ipv4()('1.10.100.0', checkValidation(done, 'no-pattern-match'));
+		});
+		it("should not pass '0.1.2.3'", function (done) {
+			validators.patterns.ipv4()('0.1.2.3', checkValidation(done, 'no-pattern-match'));
 		});
 	});
 });

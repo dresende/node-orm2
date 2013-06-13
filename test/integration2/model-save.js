@@ -54,6 +54,30 @@ describe("Model.save()", function() {
 		});
 	});
 
+	describe("without callback", function () {
+		before(setup());
+
+		it("should still save item and return id", function (done) {
+			var John = new Person({
+				name: "John"
+			});
+			John.save();
+			John.on("save", function (err) {
+				should.equal(err, null);
+				John.id.should.be.a("number");
+
+				Person.get(John.id, function (err, JohnCopy) {
+					should.equal(err, null);
+
+					JohnCopy.id.should.equal(John.id);
+					JohnCopy.name.should.equal(John.name);
+
+					return done();
+				});
+			});
+		});
+	});
+
 	describe("with properties object", function () {
 		before(setup());
 

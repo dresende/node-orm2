@@ -48,6 +48,7 @@ describe("Event", function() {
 			var John = new Person({
 				name : "John Doe"
 			});
+
 			John.on("save", function () {
 				triggered = true;
 			});
@@ -64,11 +65,12 @@ describe("Event", function() {
 		it("should trigger when saving an instance even if it fails", function (done) {
 			var triggered = false;
 			var John = new Person();
+
 			John.on("save", function (err) {
 				triggered = true;
 
 				err.should.be.a("object");
-				err.msg.should.equal("required");
+				err.should.have.property("msg", "required");
 			});
 
 			triggered.should.be.false;

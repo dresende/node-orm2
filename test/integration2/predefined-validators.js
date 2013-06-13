@@ -172,6 +172,19 @@ describe("Predefined Validators", function () {
 	});
 
 
+	describe("equalToProperty('name')", function () {
+		it("should pass if equal", function (done) {
+			validators.equalToProperty('name')('John Doe', checkValidation(done), { name: "John Doe" });
+		});
+		it("should not pass if not equal", function (done) {
+			validators.equalToProperty('name')('John Doe', checkValidation(done, 'not-equal-to-property'), { name: "John" });
+		});
+		it("should not pass even if equal to other property", function (done) {
+			validators.equalToProperty('name')('John Doe', checkValidation(done, 'not-equal-to-property'), { surname: "John Doe" });
+		});
+	});
+
+
 	describe("patterns.hexString()", function () {
 		it("should pass 'ABCDEF0123456789'", function (done) {
 			validators.patterns.hexString()('ABCDEF0123456789', checkValidation(done));

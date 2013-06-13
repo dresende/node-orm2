@@ -8,10 +8,10 @@ describe("Model.save()", function() {
 	var db = null;
 	var Person = null;
 
-	var setup = function () {
+	var setup = function (nameDefinition) {
 		return function (done) {
 			Person = db.define("person", {
-				name   : String
+				name   : nameDefinition || String
 			});
 			Person.hasOne("parent");
 
@@ -29,6 +29,21 @@ describe("Model.save()", function() {
 
 	after(function () {
 		return db.close();
+	});
+
+	describe("if properties have default values", function () {
+		before(setup({ type: "text", defaultValue: "John" }));
+
+		it("should use it if not defined", function (done) {
+			var John = new Person();
+
+			John.save(function (err) {
+				should.equal(err, null);
+				John.name.should.equal("John");
+
+				return done();
+			});
+		});
 	});
 
 	describe("with callback", function () {

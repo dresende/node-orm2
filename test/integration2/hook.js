@@ -54,6 +54,10 @@ describe("Hook", function() {
 		return db.close();
 	});
 
+	// there are a lot of timeouts in this suite and Travis or other test runners can
+	// have hickups that could force this suite to timeout to the default value (2 secs)
+	this.timeout(30000);
+
 	describe("beforeCreate", function () {
 		before(setup());
 

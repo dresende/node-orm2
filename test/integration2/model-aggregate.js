@@ -57,6 +57,38 @@ describe("Model.aggregate()", function() {
 		});
 	});
 
+	describe("with select() without arguments", function () {
+		before(setup());
+
+		it("should throw", function (done) {
+			Person.aggregate().select.should.throw();
+
+			return done();
+		});
+	});
+
+	describe("with get() without callback", function () {
+		before(setup());
+
+		it("should throw", function (done) {
+			Person.aggregate().count('id').get.should.throw();
+
+			return done();
+		});
+	});
+
+	describe("with get() without aggregates", function () {
+		before(setup());
+
+		it("should throw", function (done) {
+			(function () {
+				Person.aggregate().get(function () {});
+			}).should.throw();
+
+			return done();
+		});
+	});
+
 	describe("with distinct()", function () {
 		before(setup());
 
@@ -73,11 +105,26 @@ describe("Model.aggregate()", function() {
 
 		describe("with limit(1)", function () {
 			it("should return only one value", function (done) {
-				Person.aggregate().distinct('name').limit(1).get(function (err, names) {
+				Person.aggregate().distinct('name').limit(1).order("name").get(function (err, names) {
 					should.equal(err, null);
 
 					names.should.be.a("object");
 					names.should.have.property("length", 1);
+					names[0].should.equal("Jane Doe");
+
+					return done();
+				});
+			});
+		});
+
+		describe("with limit(1, 1)", function () {
+			it("should return only one value", function (done) {
+				Person.aggregate().distinct('name').limit(1, 1).order("name").get(function (err, names) {
+					should.equal(err, null);
+
+					names.should.be.a("object");
+					names.should.have.property("length", 1);
+					names[0].should.equal("John Doe");
 
 					return done();
 				});

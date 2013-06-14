@@ -5,18 +5,41 @@ var async		= require('async');
 var ORM			= require('../../');
 
 describe("hasOne", function() {
-	var db   = null;
-	var Tree = null;
-	var Leaf = null;
+	var db    = null;
+	var Tree  = null;
+	var Stalk = null;
+	var Leaf  = null;
 
 	var setup = function (opts) {
 		opts = opts || {};
 		return function (done) {
-			Tree = db.define("tree", { type: String });
-			Leaf = db.define("leaf", { size: Number });
-			Leaf.hasOne('tree', Tree, { field: 'treeId', autoFetch: !!opts.autoFetch });
+			db.settings.set('instance.cache', false);
+			db.settings.set('instance.returnAllErrors', true);
+			Tree  = db.define("tree",   { type:   { type: 'text' } });
+			Stalk = db.define("stalk",  { length: { type: 'number', rational: false } });
+			Leaf  = db.define("leaf", {
+				size: { type: 'number', rational: false }
+			}, {
+				validations: opts.validations
+			});
+			Leaf.hasOne('tree',  Tree,  { field: 'treeId', autoFetch: !!opts.autoFetch });
+			Leaf.hasOne('stalk', Stalk, { field: 'stalkId' });
 
-			return helper.dropSync([Tree, Leaf], done);
+			return helper.dropSync([Tree, Stalk, Leaf], function() {
+				Tree.create({ type: 'pine' }, function (err, tree) {
+					should.not.exist(err);
+					Leaf.create({ size: 14 }, function (err, leaf) {
+						should.not.exist(err);
+						leaf.setTree(tree, function () {
+							Stalk.create({ length: 20 }, function (err, stalk) {
+								should.not.exist(err);
+								should.exist(stalk);
+								done();
+							});
+						});
+					});
+				});
+			});
 		};
 	};
 
@@ -27,51 +50,189 @@ describe("hasOne", function() {
 		});
 	});
 
-	var afArr = [false, true];
-	for(var i = 0; i < afArr.length; i++) {
-		describe("with autofetch = " + afArr[i], function() {
-			before(setup({autoFetch: afArr[i]}));
+	describe("accessors", function () {
+		before(setup());
 
-			describe("associating by parent id", function() {
-				var tree = null;
-
-				before(function(done) {
-					Tree.create({type: "cyprus"},  function(err, item) {
-						if (err) throw err;
-						tree = item;
-						return done();
-					});
+		it("get should get the association", function (done) {
+			Leaf.one({ size: 14 }, function (err, leaf) {
+				should.not.exist(err);
+				should.exist(leaf);
+				leaf.getTree(function (err, tree) {
+					should.not.exist(err);
+					should.exist(tree);
+					return done();
 				});
+			});
+		});
 
-				it("should work when calling Instance.save", function(done) {
-					console.log("before new");
-					leaf = new Leaf({size: 4.6, treeId: tree.id});
-					console.log("after new", leaf.tree);
-					leaf.save(function(err, leaf) {
-						if (err) throw err;
+		it("has should indicate if there is an association present", function (done) {
+			Leaf.one({ size: 14 }, function (err, leaf) {
+				should.not.exist(err);
+				should.exist(leaf);
 
-						return done();
-					});
-				});
+				leaf.hasTree(function (err, has) {
+					should.not.exist(err);
+					should.equal(has, true);
 
-				it("should work when calling Instance.save after initially setting parentId to null", function(done) {
-					leaf = new Leaf({size: 4.6, treeId: null});
-					leaf.treeId = tree.id;
-					leaf.save(function(err, leaf) {
-						if (err) throw err;
-
-						return done();
-					});
-				});
-
-				it("should work when calling Model.create", function(done) {
-					Leaf.create({size: 4.6, treeId: tree.id}, function(err, leaf) {
-						if (err) throw err;
-
+					leaf.hasStalk(function (err, has) {
+						should.not.exist(err);
+						should.equal(has, false);
 						return done();
 					});
 				});
 			});
 		});
-	};
+
+		it("set should associate another instance", function (done) {
+			Stalk.one({ length: 20 }, function (err, stalk) {
+				should.not.exist(err);
+				should.exist(stalk);
+				Leaf.one({ size: 14 }, function (err, leaf) {
+					should.not.exist(err);
+					should.exist(leaf);
+					should.not.exist(leaf.stalkId);
+					leaf.setStalk(stalk, function (err) {
+						should.not.exist(err);
+						Leaf.one({ size: 14 }, function (err, leaf) {
+							should.not.exist(err);
+							should.equal(leaf.stalkId, stalk.id);
+							done();
+						});
+					});
+				});
+			});
+		});
+
+		it("remove should unassociation another instance", function (done) {
+			Stalk.one({ length: 20 }, function (err, stalk) {
+				should.not.exist(err);
+				should.exist(stalk);
+				Leaf.one({ size: 14 }, function (err, leaf) {
+					should.not.exist(err);
+					should.exist(leaf);
+					should.exist(leaf.stalkId);
+					leaf.removeStalk(function (err) {
+						should.not.exist(err);
+						Leaf.one({ size: 14 }, function (err, leaf) {
+							should.not.exist(err);
+							should.equal(leaf.stalkId, null)
+							done();
+						});
+					});
+				});
+			});
+		});
+	});
+
+	[false, true].forEach(function (af) {
+		describe("with autofetch = " + af, function () {
+			before(setup({autoFetch: af}));
+
+			describe("autofetching", function() {
+				it((af ? "should" : "shouldn't") + " be done", function (done) {
+					Leaf.one({}, function (err, leaf) {
+						should.not.exist(err);
+						should.equal(typeof leaf.tree, af ? 'object' : 'undefined');
+
+						return done();
+					});
+				});
+			});
+
+			describe("associating by parent id", function () {
+				var tree = null;
+
+				before(function(done) {
+					Tree.create({type: "cyprus"},  function (err, item) {
+						should.not.exist(err);
+						tree = item;
+
+						return done();
+					});
+				});
+
+				it("should work when calling Instance.save", function (done) {
+					leaf = new Leaf({size: 4, treeId: tree.id});
+					leaf.save(function(err, leaf) {
+						should.not.exist(err);
+
+						Leaf.get(leaf.id, function(err, fetchedLeaf) {
+							should.not.exist(err);
+							should.exist(fetchedLeaf);
+							should.equal(fetchedLeaf.treeId, leaf.treeId);
+
+							return done();
+						});
+					});
+				});
+
+				it("should work when calling Instance.save after initially setting parentId to null", function(done) {
+					leaf = new Leaf({size: 4, treeId: null});
+					leaf.treeId = tree.id;
+					leaf.save(function(err, leaf) {
+						should.not.exist(err);
+
+						Leaf.get(leaf.id, function(err, fetchedLeaf) {
+							should.not.exist(err);
+							should.exist(fetchedLeaf);
+							should.equal(fetchedLeaf.treeId, leaf.treeId);
+
+							return done();
+						});
+					});
+				});
+
+				it("should work when specifying parentId in the save call", function (done) {
+					leaf = new Leaf({size: 4});
+					leaf.save({ treeId: tree.id }, function(err, leaf) {
+						should.not.exist(err);
+
+						should.exist(leaf.treeId);
+
+						Leaf.get(leaf.id, function(err, fetchedLeaf) {
+							should.not.exist(err);
+							should.exist(fetchedLeaf);
+							should.equal(fetchedLeaf.treeId, leaf.treeId);
+
+							return done();
+						});
+					});
+				});
+
+				it("should work when calling Model.create", function (done) {
+					Leaf.create({size: 4, treeId: tree.id}, function (err, leaf) {
+						should.not.exist(err);
+
+						Leaf.get(leaf.id, function(err, fetchedLeaf) {
+							should.not.exist(err);
+
+							should.exist(fetchedLeaf);
+							should.equal(fetchedLeaf.treeId, leaf.treeId);
+
+							return done();
+						});
+					});
+				});
+			});
+		});
+	});
+
+	describe("validations", function () {
+		before(setup({validations: { stalkId: ORM.validators.rangeNumber(undefined, 50) }}));
+
+		it("should allow validating parentId", function (done) {
+			Leaf.one({ size: 14 }, function (err, leaf) {
+				should.not.exist(err);
+				should.exist(leaf);
+
+				leaf.save({ stalkId: 51	}, function( err, item ) {
+					should(Array.isArray(err));
+					should.equal(err.length, 1);
+					should.equal(err[0].msg, 'out-of-range-number');
+
+					done();
+				});
+			});
+		});
+	});
 });

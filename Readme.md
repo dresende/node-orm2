@@ -10,9 +10,12 @@ npm install orm
 
 ## Node.js Version Support
 
-Tests are done using [Travis CI](https://travis-ci.org/) for node versions 0.4.x, 0.6.x and 0.8.x. Because of full driver support,
-node 0.10.x is not tested yet due to the sqlite driver. If you don't use this driver, it should work just fine in latest versions, but
-you've been warned. Use at your own risk.
+Tests are done using [Travis CI](https://travis-ci.org/) for node versions 0.4.x, 0.6.x, 0.8.x and 0.10.x. If you want you can run
+tests locally.
+
+```sh
+make
+```
 
 ## DBMS Support
 
@@ -126,7 +129,7 @@ First, add the correct driver to your `package.json`:
 :----------------------|:---------------------------
  mysql                 | `"mysql" : "2.0.0-alpha7"`
  postgres<br/>redshift | `"pg": "~1.0.0"`
- sqlite                | `"sqlite3" : "2.1.7"`
+ sqlite                | `"sqlite3" : "2.1.9"`
 
 ### Options
 

@@ -23,6 +23,7 @@ describe("Event", function() {
 			Person = db.define("person", {
 				name   : { type: "text", required: true }
 			});
+			Person.settings.set("instance.returnAllErrors", false);
 
 			return helper.dropSync(Person, done);
 		};

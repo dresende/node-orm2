@@ -12,7 +12,7 @@ common.createConnection(function (err, db) {
 		], function (err) {
 			if (err) throw err;
 
-			common.ORM.settings.set('properties.primary_key', 'name');
+			db.settings.set('properties.primary_key', 'name');
 
 			var properties = common.getModelProperties();
 			// since "id" is no longer primary key and instances ignore non model properties,

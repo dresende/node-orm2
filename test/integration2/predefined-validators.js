@@ -1,4 +1,5 @@
 var should     = require('should');
+var helper     = require('../support/spec_helper');
 var validators = require('../../').validators;
 var undef      = undefined;
 
@@ -181,6 +182,73 @@ describe("Predefined Validators", function () {
 		});
 		it("should not pass even if equal to other property", function (done) {
 			validators.equalToProperty('name')('John Doe', checkValidation(done, 'not-equal-to-property'), { surname: "John Doe" });
+		});
+	});
+
+
+	describe("unique()", function () {
+		var db = null;
+		var Person = null;
+
+		var setup = function () {
+			return function (done) {
+				Person = db.define("person", {
+					name    : String,
+					surname : String
+				}, {
+					validations: {
+						surname: validators.unique()
+					}
+				});
+
+				Person.settings.set("instance.returnAllErrors", false);
+
+				return helper.dropSync(Person, function () {
+					Person.create([{
+						name    : "John",
+						surname : "Doe"
+					}], done);
+				});
+			};
+		};
+
+		before(function (done) {
+			helper.connect(function (connection) {
+				db = connection;
+
+				return setup()(done);
+			});
+		});
+
+		after(function () {
+			return db.close();
+		});
+
+		it("should not pass if more elements with that property exist", function (done) {
+			var janeDoe = new Person({
+				name    : "Jane",
+				surname : "Doe" // <-- in table already!
+			});
+			janeDoe.save(function (err) {
+				err.should.be.a("object");
+				err.should.have.property("field", "surname");
+				err.should.have.property("value", "Doe");
+				err.should.have.property("msg", "not-unique");
+
+				return done();
+			});
+		});
+
+		it("should pass if no more elements with that property exist", function (done) {
+			var janeDoe = new Person({
+				name    : "Jane",
+				surname : "Dean" // <-- not in table
+			});
+			janeDoe.save(function (err) {
+				should.equal(err, null);
+
+				return done();
+			});
 		});
 	});
 

@@ -190,4 +190,16 @@ describe("Model.get()", function() {
 			});
 		});
 	});
+
+	describe("without callback", function () {
+		before(setup(true));
+
+		it("should throw", function (done) {
+			(function () {
+				Person.get(1);
+			}).should.throw();
+
+			return done();
+		});
+	});
 });

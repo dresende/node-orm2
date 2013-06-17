@@ -4,3 +4,4 @@ node_modules
 test/config.js
 test/coverage.html
 lib-cov/
+*~

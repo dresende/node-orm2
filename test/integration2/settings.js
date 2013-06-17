@@ -2,7 +2,7 @@ var _        = require('lodash');
 var should   = require('should');
 var helper   = require('../support/spec_helper');
 var ORM      = require('../../');
-var Settings = require("../../lib/Settings");
+var Settings = ORM.Settings;
 
 describe("Settings", function () {
 	describe("changed on connection instance", function() {

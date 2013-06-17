@@ -70,7 +70,7 @@ describe("Model.find() chaining", function() {
 			Person.find().skip(2).order("age").run(function (err, instances) {
 				should.equal(err, null);
 				instances.should.have.property("length", 1);
-				instances[0].age.should.equal(20);
+				Number(instances[0].age).should.equal(20);
 
 				return done();
 			});
@@ -84,7 +84,7 @@ describe("Model.find() chaining", function() {
 			Person.find().offset(2).order("age").run(function (err, instances) {
 				should.equal(err, null);
 				instances.should.have.property("length", 1);
-				instances[0].age.should.equal(20);
+				Number(instances[0].age).should.equal(20);
 
 				return done();
 			});
@@ -98,8 +98,8 @@ describe("Model.find() chaining", function() {
 			Person.find().order("age").run(function (err, instances) {
 				should.equal(err, null);
 				instances.should.have.property("length", 3);
-				instances[0].age.should.equal(18);
-				instances[2].age.should.equal(20);
+				Number(instances[0].age).should.equal(18);
+				Number(instances[2].age).should.equal(20);
 
 				return done();
 			});
@@ -113,8 +113,8 @@ describe("Model.find() chaining", function() {
 			Person.find().order("-age").run(function (err, instances) {
 				should.equal(err, null);
 				instances.should.have.property("length", 3);
-				instances[0].age.should.equal(20);
-				instances[2].age.should.equal(18);
+				Number(instances[0].age).should.equal(20);
+				Number(instances[2].age).should.equal(18);
 
 				return done();
 			});
@@ -128,8 +128,8 @@ describe("Model.find() chaining", function() {
 			Person.find().order("age", "Z").run(function (err, instances) {
 				should.equal(err, null);
 				instances.should.have.property("length", 3);
-				instances[0].age.should.equal(20);
-				instances[2].age.should.equal(18);
+				Number(instances[0].age).should.equal(20);
+				Number(instances[2].age).should.equal(18);
 
 				return done();
 			});
@@ -190,7 +190,7 @@ describe("Model.find() chaining", function() {
 
 				JaneDoe.name.should.equal("Jane");
 				JaneDoe.surname.should.equal("Doe");
-				JaneDoe.age.should.equal(20);
+				Number(JaneDoe.age).should.equal(20);
 
 				return done();
 			});
@@ -215,7 +215,7 @@ describe("Model.find() chaining", function() {
 
 				JaneDoe.name.should.equal("Jane");
 				JaneDoe.surname.should.equal("Doe");
-				JaneDoe.age.should.equal(20);
+				Number(JaneDoe.age).should.equal(20);
 
 				return done();
 			});

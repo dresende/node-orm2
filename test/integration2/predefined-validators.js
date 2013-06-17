@@ -240,14 +240,29 @@ describe("Predefined Validators", function () {
 		});
 
 		it("should pass if no more elements with that property exist", function (done) {
-			var janeDoe = new Person({
+			var janeDean = new Person({
 				name    : "Jane",
 				surname : "Dean" // <-- not in table
 			});
-			janeDoe.save(function (err) {
+			janeDean.save(function (err) {
 				should.equal(err, null);
 
 				return done();
+			});
+		});
+
+		it("should pass if resaving the same instance", function (done) {
+			Person.find({ name: "John", surname: "Doe" }, function (err, Johns) {
+				should.equal(err, null);
+				Johns.should.have.property("length", 1);
+
+				Johns[0].surname = "Doe"; // forcing resave
+
+				Johns[0].save(function (err) {
+					should.equal(err, null);
+
+					return done();
+				});
 			});
 		});
 	});

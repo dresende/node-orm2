@@ -41,6 +41,16 @@ describe("Model.exists()", function() {
 		return db.close();
 	});
 
+	describe("without callback", function () {
+		before(setup());
+
+		it("should throw", function (done) {
+			Person.exists.should.throw();
+
+			return done();
+		});
+	});
+
 	describe("with an id", function () {
 		before(setup());
 

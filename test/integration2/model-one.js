@@ -55,6 +55,16 @@ describe("Model.one()", function() {
 		});
 	});
 
+	describe("without callback", function () {
+		before(setup());
+
+		it("should throw", function (done) {
+			Person.one.should.throw();
+
+			return done();
+		});
+	});
+
 	describe("with order", function () {
 		before(setup());
 

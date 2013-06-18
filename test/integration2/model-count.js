@@ -41,6 +41,16 @@ describe("Model.count()", function() {
 		return db.close();
 	});
 
+	describe("without callback", function () {
+		before(setup());
+
+		it("should throw", function (done) {
+			Person.count.should.throw();
+
+			return done();
+		});
+	});
+
 	describe("without conditions", function () {
 		before(setup());
 

@@ -184,7 +184,7 @@ describe("Model.get()", function() {
 
 				John.should.be.a("object");
 				John.should.have.property("id", 1);
-				John.should.have.property("name", "John Doe")
+				John.should.have.property("name", "John Doe");
 
 				return done();
 			});
@@ -197,6 +197,47 @@ describe("Model.get()", function() {
 		it("should throw", function (done) {
 			(function () {
 				Person.get(1);
+			}).should.throw();
+
+			return done();
+		});
+	});
+
+	describe("when not found", function () {
+		before(setup(true));
+
+		it("should return an error", function (done) {
+			Person.get(999, function (err) {
+				err.should.be.a("object");
+				err.message.should.equal("Not found");
+
+				return done();
+			});
+		});
+	});
+
+	describe("if passed an Array with ids", function () {
+		before(setup(true));
+
+		it("should accept and try to fetch", function (done) {
+			Person.get([ 1 ], function (err, John) {
+				should.equal(err, null);
+
+				John.should.be.a("object");
+				John.should.have.property("id", 1);
+				John.should.have.property("name", "John Doe");
+
+				return done();
+			});
+		});
+	});
+
+	describe("if passed a wrong number of ids", function () {
+		before(setup(true));
+
+		it("should throw", function (done) {
+			(function () {
+				Person.get(1, 2, function () {});
 			}).should.throw();
 
 			return done();

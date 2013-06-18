@@ -38,6 +38,8 @@ describe("Hook", function() {
 				hooks  : hooks
 			});
 
+			Person.settings.set("instance.returnAllErrors", false);
+
 			return helper.dropSync(Person, done);
 		};
 	};
@@ -112,7 +114,27 @@ describe("Hook", function() {
 
 					return done();
 				});
+			});
 
+			describe("if hook triggers error", function () {
+				before(setup({
+					beforeCreate : function (next) {
+						setTimeout(function () {
+							return next(new Error('beforeCreate-error'));
+						}, 200);
+					}
+				}));
+
+				it("should trigger error", function (done) {
+					this.timeout(500);
+
+					Person.create([{ name: "John Doe" }], function (err) {
+						err.should.be.a("object");
+						err.message.should.equal("beforeCreate-error");
+
+						return done();
+					});
+				});
 			});
 		});
 	});
@@ -166,6 +188,27 @@ describe("Hook", function() {
 					return done();
 				});
 
+			});
+
+			describe("if hook triggers error", function () {
+				before(setup({
+					beforeSave : function (next) {
+						setTimeout(function () {
+							return next(new Error('beforeSave-error'));
+						}, 200);
+					}
+				}));
+
+				it("should trigger error", function (done) {
+					this.timeout(500);
+
+					Person.create([{ name: "John Doe" }], function (err) {
+						err.should.be.a("object");
+						err.message.should.equal("beforeSave-error");
+
+						return done();
+					});
+				});
 			});
 		});
 	});
@@ -295,6 +338,29 @@ describe("Hook", function() {
 					});
 				});
 
+			});
+
+			describe("if hook triggers error", function () {
+				before(setup({
+					beforeRemove : function (next) {
+						setTimeout(function () {
+							return next(new Error('beforeRemove-error'));
+						}, 200);
+					}
+				}));
+
+				it("should trigger error", function (done) {
+					this.timeout(500);
+
+					Person.create([{ name: "John Doe" }], function (err, items) {
+						items[0].remove(function (err) {
+							err.should.be.a("object");
+							err.message.should.equal("beforeRemove-error");
+
+							return done();
+						});
+					});
+				});
 			});
 		});
 	});

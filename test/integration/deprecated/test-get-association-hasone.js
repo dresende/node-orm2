@@ -13,7 +13,6 @@ common.createConnection(function (err, db) {
 			TestModel.hasOne("assoc");
 
 			TestModel(1).getAssoc(function (err, Test2) {
-				console.log(err, Test2);
 				assert.equal(err, null);
 				assert.equal(typeof Test2, "object");
 				assert.equal(Test2.id, 2);

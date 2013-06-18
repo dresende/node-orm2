@@ -9,6 +9,9 @@ describe("hasOne", function() {
 	var Tree  = null;
 	var Stalk = null;
 	var Leaf  = null;
+	var leafId = null;
+	var treeId = null;
+	var stalkId = null;
 
 	var setup = function (opts) {
 		opts = opts || {};
@@ -28,12 +31,16 @@ describe("hasOne", function() {
 			return helper.dropSync([Tree, Stalk, Leaf], function() {
 				Tree.create({ type: 'pine' }, function (err, tree) {
 					should.not.exist(err);
+					treeId = tree.id;
 					Leaf.create({ size: 14 }, function (err, leaf) {
 						should.not.exist(err);
-						leaf.setTree(tree, function () {
+						leafId = leaf.id;
+						leaf.setTree(tree, function (err) {
+							should.not.exist(err);
 							Stalk.create({ length: 20 }, function (err, stalk) {
 								should.not.exist(err);
 								should.exist(stalk);
+								stalkId = stalk.id;
 								done();
 							});
 						});
@@ -62,6 +69,15 @@ describe("hasOne", function() {
 					should.exist(tree);
 					return done();
 				});
+			});
+		});
+
+		it("get should get the association with a shell model", function (done) {
+			Leaf(leafId).getTree(function (err, tree) {
+				should.not.exist(err);
+				should.exist(tree);
+				should.equal(tree.id, treeId);
+				done();
 			});
 		});
 

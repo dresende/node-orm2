@@ -117,6 +117,21 @@ describe("Model.save()", function() {
 		});
 	});
 
+	describe("with unknown argument type", function () {
+		before(setup());
+
+		it("should should throw", function (done) {
+			var John = new Person({
+				name: "Jane"
+			});
+			(function () {
+				John.save("will-fail");
+			}).should.throw();
+
+			return done();
+		});
+	});
+
 	describe("if passed an association instance", function () {
 		before(setup());
 

@@ -8,11 +8,12 @@ describe("Model.save()", function() {
 	var db = null;
 	var Person = null;
 
-	var setup = function (nameDefinition) {
+	var setup = function (nameDefinition, opts) {
 		return function (done) {
 			Person = db.define("person", {
 				name   : nameDefinition || String
-			});
+			}, opts || {});
+
 			Person.hasOne("parent");
 
 			return helper.dropSync(Person, done);
@@ -175,6 +176,25 @@ describe("Model.save()", function() {
 				John.parent.id.should.be.a("number");
 
 				return done();
+			});
+		});
+	});
+
+	describe("if autoSave is on", function () {
+		before(setup(null, { autoSave: true }));
+
+		it("should save the instance as soon as a property is changed", function (done) {
+			var John = new Person({
+				name : "Jhon"
+			});
+			John.save(function (err) {
+				should.equal(err, null);
+
+				John.on("save", function () {
+					return done();
+				});
+
+				John.name = "John";
 			});
 		});
 	});

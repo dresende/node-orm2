@@ -1,4 +1,3 @@
-var _        = require('lodash');
 var should   = require('should');
 var helper   = require('../support/spec_helper');
 var ORM      = require('../../');

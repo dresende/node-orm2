@@ -1,4 +1,3 @@
-var _        = require('lodash');
 var should   = require('should');
 var ORM      = require("../..");
 var Property = ORM.Property;

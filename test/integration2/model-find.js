@@ -94,8 +94,8 @@ describe("Model.find()", function() {
 				should.not.exist(err);
 				people.should.be.a("object");
 				people.should.have.property("length", 5);
-				people[0].age.should.equal(16);
-				people[4].age.should.equal(20);
+				Number(people[0].age).should.equal(16);
+				Number(people[4].age).should.equal(20);
 
 				return done();
 			});
@@ -106,8 +106,8 @@ describe("Model.find()", function() {
 				should.not.exist(err);
 				people.should.be.a("object");
 				people.should.have.property("length", 5);
-				people[0].age.should.equal(20);
-				people[4].age.should.equal(16);
+				Number(people[0].age).should.equal(20);
+				Number(people[4].age).should.equal(16);
 
 				return done();
 			});
@@ -122,8 +122,8 @@ describe("Model.find()", function() {
 				should.not.exist(err);
 				people.should.be.a("object");
 				people.should.have.property("length", 5);
-				people[0].age.should.equal(16);
-				people[4].age.should.equal(20);
+				Number(people[0].age).should.equal(16);
+				Number(people[4].age).should.equal(20);
 
 				return done();
 			});
@@ -134,8 +134,8 @@ describe("Model.find()", function() {
 				should.not.exist(err);
 				people.should.be.a("object");
 				people.should.have.property("length", 5);
-				people[0].age.should.equal(20);
-				people[4].age.should.equal(16);
+				Number(people[0].age).should.equal(20);
+				Number(people[4].age).should.equal(16);
 
 				return done();
 			});
@@ -146,8 +146,8 @@ describe("Model.find()", function() {
 				should.not.exist(err);
 				people.should.be.a("object");
 				people.should.have.property("length", 5);
-				people[0].age.should.equal(20);
-				people[4].age.should.equal(16);
+				Number(people[0].age).should.equal(20);
+				Number(people[4].age).should.equal(16);
 
 				return done();
 			});
@@ -158,8 +158,8 @@ describe("Model.find()", function() {
 				should.not.exist(err);
 				people.should.be.a("object");
 				people.should.have.property("length", 5);
-				people[0].age.should.equal(16);
-				people[4].age.should.equal(20);
+				Number(people[0].age).should.equal(16);
+				Number(people[4].age).should.equal(20);
 
 				return done();
 			});
@@ -170,8 +170,8 @@ describe("Model.find()", function() {
 				should.not.exist(err);
 				people.should.be.a("object");
 				people.should.have.property("length", 5);
-				people[0].age.should.equal(16);
-				people[4].age.should.equal(20);
+				Number(people[0].age).should.equal(16);
+				Number(people[4].age).should.equal(20);
 
 				return done();
 			});
@@ -186,7 +186,7 @@ describe("Model.find()", function() {
 				should.not.exist(err);
 				people.should.be.a("object");
 				people.should.have.property("length", 1);
-				people[0].age.should.equal(16);
+				Number(people[0].age).should.equal(16);
 
 				return done();
 			});
@@ -200,7 +200,7 @@ describe("Model.find()", function() {
 					should.not.exist(err);
 					people.should.be.a("object");
 					people.should.have.property("length", 1);
-					people[0].age.should.equal(18);
+					Number(people[0].age).should.equal(18);
 
 					return done();
 				});
@@ -214,7 +214,7 @@ describe("Model.find()", function() {
 						should.not.exist(err);
 						people.should.be.a("object");
 						people.should.have.property("length", 1);
-						people[0].age.should.equal(18);
+						Number(people[0].age).should.equal(18);
 
 						return done();
 					});
@@ -229,7 +229,7 @@ describe("Model.find()", function() {
 						should.not.exist(err);
 						people.should.be.a("object");
 						people.should.have.property("length", 3);
-						people[0].age.should.equal(16);
+						Number(people[0].age).should.equal(16);
 
 						return done();
 					});
@@ -240,7 +240,7 @@ describe("Model.find()", function() {
 						should.not.exist(err);
 						people.should.be.a("object");
 						people.should.have.property("length", 3);
-						people[0].age.should.equal(16);
+						Number(people[0].age).should.equal(16);
 
 						return done();
 					});

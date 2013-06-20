@@ -119,6 +119,16 @@ describe("ORM.connect()", function () {
 		});
 	});
 
+	it("should emit an error if empty url (with only spaces) is passed", function (done) {
+		var db = ORM.connect("   ");
+
+		db.on("connect", function (err) {
+			err.message.should.equal("CONNECTION_URL_EMPTY");
+
+			return done();
+		});
+	});
+
 	it("should emit an error if no protocol is passed", function (done) {
 		var db = ORM.connect("user@db");
 

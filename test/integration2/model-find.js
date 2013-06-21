@@ -192,6 +192,18 @@ describe("Model.find()", function() {
 			});
 		});
 
+		it("should accept comparison objects", function (done) {
+			Person.find({ age: ORM.gt(18) }, function (err, people) {
+				should.not.exist(err);
+				people.should.be.a("object");
+				people.should.have.property("length", 2);
+				Number(people[0].age).should.equal(20);
+				Number(people[1].age).should.equal(20);
+
+				return done();
+			});
+		});
+
 		describe("with another Object as argument", function () {
 			before(setup());
 
@@ -214,6 +226,21 @@ describe("Model.find()", function() {
 						should.not.exist(err);
 						people.should.be.a("object");
 						people.should.have.property("length", 1);
+						Number(people[0].age).should.equal(18);
+
+						return done();
+					});
+				});
+			});
+
+			describe("if an offset is passed", function () {
+				before(setup());
+
+				it("should use it", function (done) {
+					Person.find({}, { offset: 1 }, "age", function (err, people) {
+						should.not.exist(err);
+						people.should.be.a("object");
+						people.should.have.property("length");
 						Number(people[0].age).should.equal(18);
 
 						return done();
@@ -245,6 +272,29 @@ describe("Model.find()", function() {
 						return done();
 					});
 				});
+			});
+		});
+	});
+
+	describe("if defined static methods", function () {
+		before(setup());
+
+		it("should be rechainable", function (done) {
+			Person.over18 = function () {
+				return this.find({ age: ORM.gt(18) });
+			};
+			Person.family = function (family) {
+				return this.find({ surname: family });
+			};
+
+			Person.over18().family("Doe").run(function (err, people) {
+				should.not.exist(err);
+				people.should.be.a("object");
+				people.should.have.property("length", 1);
+				people[0].name.should.equal("Jasmine");
+				people[0].surname.should.equal("Doe");
+
+				return done();
 			});
 		});
 	});

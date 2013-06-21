@@ -193,20 +193,39 @@ describe("Hook", function() {
 			describe("if hook triggers error", function () {
 				before(setup({
 					beforeSave : function (next) {
+						if (this.name == "John Doe") {
+							return next();
+						}
 						setTimeout(function () {
 							return next(new Error('beforeSave-error'));
 						}, 200);
 					}
 				}));
 
-				it("should trigger error", function (done) {
+				it("should trigger error when creating", function (done) {
 					this.timeout(500);
 
-					Person.create([{ name: "John Doe" }], function (err) {
+					Person.create([{ name: "Jane Doe" }], function (err) {
 						err.should.be.a("object");
 						err.message.should.equal("beforeSave-error");
 
 						return done();
+					});
+				});
+
+				it("should trigger error when saving", function (done) {
+					this.timeout(500);
+
+					Person.create([{ name: "John Doe" }], function (err, John) {
+						should.equal(err, null);
+
+						John[0].name = "Jane Doe";
+						John[0].save(function (err) {
+							err.should.be.a("object");
+							err.message.should.equal("beforeSave-error");
+
+							return done();
+						});
 					});
 				});
 			});

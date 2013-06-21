@@ -240,7 +240,7 @@ describe("Model.find()", function() {
 					Person.find({}, { offset: 1 }, "age", function (err, people) {
 						should.not.exist(err);
 						people.should.be.a("object");
-						people.should.have.property("length");
+						people.should.have.property("length", 4);
 						Number(people[0].age).should.equal(18);
 
 						return done();

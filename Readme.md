@@ -145,7 +145,7 @@ orm.connect("mysql://username:password@host/database?pool=true", function (err, 
 });
 ```
 
-**Note:** `pool` is only supported by mysql & postgres.
+**Note:** `pool` is only supported by mysql & postgres. When 'pool' is set to true, your database connections are cached so that connections can be reused, optimizing performance. 
 
 Or as an object:
 

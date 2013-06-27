@@ -131,7 +131,9 @@ First, add the correct driver to your `package.json`:
 :----------------------|:---------------------------
  mysql                 | `"mysql" : "2.0.0-alpha7"`
  postgres<br/>redshift | `"pg": "~1.0.0"`
- sqlite                | `"sqlite3" : "2.1.9"`
+ sqlite                | `"sqlite3" : "2.1.7"`
+
+These are the versions tested. Use others (older or newer) at your own risk.
 
 ### Options
 
@@ -145,7 +147,7 @@ orm.connect("mysql://username:password@host/database?pool=true", function (err, 
 });
 ```
 
-**Note:** `pool` is only supported by mysql & postgres. When 'pool' is set to true, your database connections are cached so that connections can be reused, optimizing performance. 
+**Note:** `pool` is only supported by mysql & postgres. When 'pool' is set to true, your database connections are cached so that connections can be reused, optimizing performance.
 
 Or as an object:
 

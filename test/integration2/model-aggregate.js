@@ -150,7 +150,7 @@ describe("Model.aggregate()", function() {
 			before(setup());
 
 			it("should order items", function (done) {
-				Person.aggregate().count().groupBy('name').order('count', 'Z').get(function (err, rows) {
+				Person.aggregate().count().groupBy('name').order('-count').get(function (err, rows) {
 					should.equal(err, null);
 
 					rows.should.be.a("object");

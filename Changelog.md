@@ -1,3 +1,29 @@
+### v2.0.14 - 27 June 2013
+
+- Changes many errors to use the ErrorCodes generator (#206)
+- Changes Model.aggregate() to support multiple orders when calling .order() (#207)
+- Changes Readme.md sqlite3 version and adds warning.
+- Fix wrong import of debug output for aggregate functions
+- Fix orm when running on node v0.6 (at least) and module not found error has no code property
+- Adds model.namePrefix setting (#203)
+- Fixes bug when passing an array (object) of ids but no options object
+- Only mark model as dirty if a property has _really_ changed
+- Fix hasOne infinite loop
+- WIP: Fix hasOne infinite loop & migrate tests to mocha
+- Fixes ipv4 predefined validator match string (it was not matching correctly!)
+- Fixes Model.get() when passing cache: false and model has cache: true
+- Creates Singleton.clear() to clear cache, exports singleton in orm
+- Fix required property model.save only threw a single error with returnAllErrors = true
+- Fixes some hasMany association usage of Association.id to check for real id property name (#197)
+- Changes db.load() to return value from loaded and invoked function (#194)
+- Adds possibility to add a callback to ChainFind.find() (#190)
+- Adds .findByX(...) to .hasOne("X", ...)
+- Allow db.load() to work outside of module.exports
+- Fix mysql driver for non-autoincrement key
+- Test framework moving to mocha, not complete yet
+- Adds `make cov` to make for a test coverage
+- Many other bug fixes
+
 ### v2.0.13 - 5 June 2013
 
 - Avoids throwing when calling db.close() without a callback and using pool in mysql (fixes #180)

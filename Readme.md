@@ -149,6 +149,8 @@ orm.connect("mysql://username:password@host/database?pool=true", function (err, 
 
 **Note:** `pool` is only supported by mysql & postgres. When 'pool' is set to true, your database connections are cached so that connections can be reused, optimizing performance.
 
+**Note:** `strdates` is only supported by sqlite. When true, date fields are saved as strings, compatible with django
+
 Or as an object:
 
 ```js
@@ -161,7 +163,8 @@ var opts = {
   password : "..",
   query    : {
     pool     : true|false,   // optional, false by default
-    debug    : true|false    // optional, false by default
+    debug    : true|false,   // optional, false by default
+    strdates : true|false    // optional, false by default
   }
 };
 orm.connect(opts, function (err, db) {

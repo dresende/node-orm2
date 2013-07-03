@@ -601,7 +601,9 @@ var Person = db.define('person', {
 	cache   : false
 });
 ```
+
 and also globally:
+
 ```js
 orm.connect('...', function(err, db) {
   db.settings.set('instance.cache', false);
@@ -741,6 +743,7 @@ orm.connect("....", function (err, db) {
 An association is a relation between one or more tables.
 
 ### hasOne
+
 Is a **many to one** relationship. It's the same as **belongs to.**<br/>
 Eg: `Animal.hasOne('owner', Person)`.<br/>
 Animal can only have one owner, but Person can have many animals.<br/>
@@ -755,17 +758,20 @@ animal.removeOwner()                // Sets owner_id to 0
 ```
 
 **Reverse access**
+
 ```js
 Animal.hasOne('owner', Person, {reverse: 'pets'})
 ```
+
 will add the following:
+
 ```js
 person.getPets(function..)
 person.setPets(cat, function..)
 ```
 
-
 ### hasMany
+
 Is a **many to many** relationship (includes join table).<br/>
 Eg: `Patient.hasMany('doctors', Doctor, { why: String }, { reverse: 'patients' })`.<br/>
 Patient can have many different doctors. Each doctor can have many different patients.
@@ -779,6 +785,7 @@ This will create a join table `patient_doctors` when you call `Patient.sync()`:
  why         | varchar(255)
 
 The following functions will be available:
+
 ```js
 patient.getDoctors(function..)           // List of doctors
 patient.addDoctors(docs, function...)    // Adds entries to join table
@@ -791,10 +798,31 @@ etc...
 ```
 
 To associate a doctor to a patient:
+
 ```js
 patient.addDoctor(surgeon, {why: "remove appendix"}, function(err) { ... } )
 ```
+
 which will add `{patient_id: 4, doctor_id: 6, why: "remove appendix"}` to the join table.
+
+### extendsTo
+
+If you want to split maybe optional properties into different tables or collections. Every extension will be in a new table,
+where the unique identifier of each row is the main model instance id. For example:
+
+```js
+var Person = db.define("person", {
+    name : String
+});
+var PersonAddress = Person.extendsTo("address", {
+    street : String,
+    number : Number
+});
+```
+
+This will create a table `person` with columns `id` and `name`. The extension will create a table `person_address` with
+columns `person_id`, `street` and `number`. The methods available in the `Person` model are similar to an `hasOne`
+association. In this example you would be able to call `.getAddress(cb)`, `.setAddress(Address, cb)`, ..
 
 ### Examples & options
 

@@ -1,9 +1,8 @@
 language: node_js
 node_js:
-  - 0.4
-  - 0.6
-  - 0.8
-  - 0.10
+  - '0.6'
+  - '0.8'
+  - '0.10'
 before_script:
   - mysql -e 'create database orm_test;'
   - psql -c 'create database orm_test;' -U postgres

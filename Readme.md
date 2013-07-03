@@ -824,6 +824,10 @@ This will create a table `person` with columns `id` and `name`. The extension wi
 columns `person_id`, `street` and `number`. The methods available in the `Person` model are similar to an `hasOne`
 association. In this example you would be able to call `.getAddress(cb)`, `.setAddress(Address, cb)`, ..
 
+**Note:** you don't have to save the result from `Person.extendsTo`. It returns an extended model. You can use it to query
+directly this extended table (and even find the related model) but that's up to you. If you only want to access it using the
+original model you can just discard the return.
+
 ### Examples & options
 
 If you have a relation of 1 to n, you should use `hasOne` (belongs to) association.

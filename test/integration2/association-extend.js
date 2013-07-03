@@ -44,6 +44,50 @@ describe("Model.extendsTo()", function() {
 		return db.close();
 	});
 
+	describe("when calling hasAccessor", function () {
+		before(setup());
+
+		it("should return true if found", function (done) {
+			Person.get(1, function (err, John) {
+				should.equal(err, null);
+
+				John.hasAddress(function (err, hasAddress) {
+					should.equal(err, null);
+					hasAddress.should.equal(true);
+
+					return done();
+				});
+			});
+		});
+
+		it("should return false if not found", function (done) {
+			Person.get(1, function (err, John) {
+				should.equal(err, null);
+
+				John.removeAddress(function () {
+					John.hasAddress(function (err, hasAddress) {
+						err.should.be.a("object");
+						hasAddress.should.equal(false);
+
+						return done();
+					});
+				});
+			});
+		});
+
+		it("should return error if instance not with an ID", function (done) {
+			var Jane = new Person({
+				name: "Jane"
+			});
+			Jane.hasAddress(function (err, hasAddress) {
+				err.should.be.a("object");
+				err.should.have.property("code", ORM.ErrorCodes.NOT_DEFINED);
+
+				return done();
+			});
+		});
+	});
+
 	describe("when calling getAccessor", function () {
 		before(setup());
 
@@ -73,6 +117,18 @@ describe("Model.extendsTo()", function() {
 						return done();
 					});
 				});
+			});
+		});
+
+		it("should return error if instance not with an ID", function (done) {
+			var Jane = new Person({
+				name: "Jane"
+			});
+			Jane.getAddress(function (err, Address) {
+				err.should.be.a("object");
+				err.should.have.property("code", ORM.ErrorCodes.NOT_DEFINED);
+
+				return done();
 			});
 		});
 	});
@@ -141,6 +197,18 @@ describe("Model.extendsTo()", function() {
 						});
 					});
 				});
+			});
+		});
+
+		it("should return error if instance not with an ID", function (done) {
+			var Jane = new Person({
+				name: "Jane"
+			});
+			Jane.removeAddress(function (err) {
+				err.should.be.a("object");
+				err.should.have.property("code", ORM.ErrorCodes.NOT_DEFINED);
+
+				return done();
 			});
 		});
 	});

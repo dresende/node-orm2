@@ -14,7 +14,7 @@ describe("Hook", function() {
 		triggeredHooks[hook] = false;
 
 		return function () {
-			triggeredHooks[hook] = Date.now();
+			triggeredHooks[hook] = parseFloat(process.hrtime().join('.'));
 		};
 	};
 
@@ -263,6 +263,7 @@ describe("Hook", function() {
 
 		describe("if hook method has 1 argument", function () {
 			var beforeValidation = false;
+			this.timeout(500);
 
 			before(setup({
 				beforeValidation : function (next) {
@@ -276,9 +277,11 @@ describe("Hook", function() {
 				}
 			}));
 
-			it("should wait for hook to finish", function (done) {
-				this.timeout(500);
+			beforeEach(function () {
+				beforeValidation = false;
+			});
 
+			it("should wait for hook to finish", function (done) {
 				Person.create([{ name: "John Doe" }], function () {
 					beforeValidation.should.be.true;
 
@@ -287,12 +290,20 @@ describe("Hook", function() {
 			});
 
 			it("should trigger error if hook passes an error", function (done) {
-				this.timeout(500);
-
 				Person.create([{ name: "" }], function (err) {
 					beforeValidation.should.be.true;
 
 					err.should.equal("Name is missing");
+
+					return done();
+				});
+			});
+
+			it("should trigger when calling #validate", function (done) {
+				var person = new Person();
+
+				person.validate(function (err, validationErrors) {
+					beforeValidation.should.be.true;
 
 					return done();
 				});

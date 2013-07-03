@@ -7,14 +7,20 @@ var ORM      = require('../../');
 describe("Hook", function() {
 	var db = null;
 	var Person = null;
-
 	var triggeredHooks = {};
+	var getTimestamp; // Calling it 'getTime' causes strangeness.
+
+	if (process.hrtime) {
+		getTimestamp = function () { return parseFloat(process.hrtime().join('.')); };
+	} else {
+		getTimestamp = function () { return Date.now(); };
+	}
 
 	var checkHook = function (hook) {
 		triggeredHooks[hook] = false;
 
 		return function () {
-			triggeredHooks[hook] = parseFloat(process.hrtime().join('.'));
+			triggeredHooks[hook] = getTimestamp();
 		};
 	};
 

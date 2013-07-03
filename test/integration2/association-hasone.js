@@ -251,4 +251,62 @@ describe("hasOne", function() {
 			});
 		});
 	});
+
+	describe("if not passing another Model", function () {
+		it("should use same model", function (done) {
+			db.settings.set('instance.cache', false);
+			db.settings.set('instance.returnAllErrors', true);
+
+			var Person = db.define("person", {
+				name : String
+			});
+			Person.hasOne("parent", {
+				autoFetch : true
+			});
+
+			helper.dropSync(Person, function () {
+				var child = new Person({
+					name : "Child"
+				});
+				child.setParent(new Person({ name: "Parent" }), function (err) {
+					should.equal(err, null);
+
+					return done();
+				});
+			});
+		});
+	});
+
+	describe("findBy()", function () {
+		before(setup());
+
+		it("should throw if no conditions passed", function (done) {
+			(function () {
+				Leaf.findByTree(function () {});
+			}).should.throw();
+
+			return done();
+		});
+
+		it("should lookup in Model based on associated model properties", function (done) {
+			Leaf.findByTree({
+				type: "pine"
+			}, function (err, leafs) {
+				should.equal(err, null);
+				should(Array.isArray(leafs));
+				should(leafs.length == 1);
+
+				return done();
+			});
+		});
+
+		it("should return a ChainFind if no callback passed", function (done) {
+			var ChainFind = Leaf.findByTree({
+				type: "pine"
+			});
+			ChainFind.run.should.be.a("function");
+
+			return done();
+		});
+	});
 });

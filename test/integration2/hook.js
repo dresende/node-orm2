@@ -66,6 +66,44 @@ describe("Hook", function() {
 	// have hickups that could force this suite to timeout to the default value (2 secs)
 	this.timeout(30000);
 
+	describe("after Model creation", function () {
+		before(setup({}));
+
+		it("can be changed", function (done) {
+			var triggered = false;
+
+			Person.afterCreate(function () {
+				triggered = true;
+			});
+			Person.create([{ name: "John Doe" }], function () {
+				triggered.should.be.true;
+
+				return done();
+			});
+		});
+
+		it("can be removed", function (done) {
+			var triggered = false;
+
+			Person.afterCreate(function () {
+				triggered = true;
+			});
+			Person.create([{ name: "John Doe" }], function () {
+				triggered.should.be.true;
+
+				triggered = false;
+
+				Person.afterCreate(); // clears hook
+
+				Person.create([{ name: "Jane Doe" }], function () {
+					triggered.should.be.false;
+
+					return done();
+				});
+			});
+		});
+	});
+
 	describe("beforeCreate", function () {
 		before(setup());
 

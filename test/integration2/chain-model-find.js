@@ -361,7 +361,7 @@ describe("Model.find() chaining", function() {
 		describe(".save()", function () {
 			it("should save items after changes", function (done) {
 				Person.find({ surname: "Dean" }).each(function (person) {
-					person.should.not.equal(45);
+					person.age.should.not.equal(45);
 					person.age = 45;
 				}).save(function () {
 					Person.find({ surname: "Dean" }, function (err, people) {

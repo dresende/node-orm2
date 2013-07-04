@@ -277,6 +277,36 @@ describe("hasOne", function() {
 		});
 	});
 
+	describe("association name letter case", function () {
+		it("should be kept", function (done) {
+			db.settings.set('instance.cache', false);
+			db.settings.set('instance.returnAllErrors', true);
+
+			var Person = db.define("person", {
+				name : String
+			});
+			Person.hasOne("topParent", Person);
+
+			helper.dropSync(Person, function () {
+				Person.create({
+					name : "Child"
+				}, function (err) {
+					should.equal(err, null);
+
+					Person.get(1, function (err, person) {
+						should.equal(err, null);
+
+						person.setTopParent.should.be.a("function");
+						person.removeTopParent.should.be.a("function");
+						person.hasTopParent.should.be.a("function");
+
+						return done();
+					});
+				});
+			});
+		});
+	});
+
 	describe("findBy()", function () {
 		before(setup());
 

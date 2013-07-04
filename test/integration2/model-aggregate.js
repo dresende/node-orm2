@@ -69,7 +69,7 @@ describe("Model.aggregate()", function() {
 		before(setup());
 
 		it("should use them as properties if 1st argument is Array", function (done) {
-			Person.aggregate().select([ 'id' ]).count().groupBy('name').get(function (err, people) {
+			Person.aggregate().select([ 'id' ]).count('id').groupBy('id').get(function (err, people) {
 				should.equal(err, null);
 
 				should(Array.isArray(people));
@@ -84,7 +84,7 @@ describe("Model.aggregate()", function() {
 		});
 
 		it("should use them as properties", function (done) {
-			Person.aggregate().select('id', 'name').count().groupBy('name').get(function (err, people) {
+			Person.aggregate().select('id').count().groupBy('id').get(function (err, people) {
 				should.equal(err, null);
 
 				should(Array.isArray(people));
@@ -92,7 +92,7 @@ describe("Model.aggregate()", function() {
 
 				people[0].should.be.a("object");
 				people[0].should.have.property("id");
-				people[0].should.have.property("name");
+				people[0].should.not.have.property("name");
 
 				return done();
 			});

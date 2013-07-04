@@ -241,4 +241,39 @@ describe("Model.get()", function() {
 			return done();
 		});
 	});
+
+	describe("if primary key name is changed", function () {
+		before(function (done) {
+			Person = db.define("person", {
+				name : String
+			});
+
+			ORM.singleton.clear();
+
+			return helper.dropSync(Person, function () {
+				Person.create([{
+					name : "John Doe"
+				}, {
+					name : "Jane Doe"
+				}], done);
+			});
+		});
+
+		it("should search by key name and not 'id'", function (done) {
+			db.settings.set('properties.primary_key', 'name');
+
+			var OtherPerson = db.define("person", {
+				id : Number
+			});
+
+			OtherPerson.get("Jane Doe", function (err, person) {
+				should.equal(err, null);
+
+				person.id.should.be.a("number");
+				person.name.should.equal("Jane Doe");
+
+				return done();
+			});
+		});
+	});
 });

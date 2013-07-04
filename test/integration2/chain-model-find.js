@@ -12,9 +12,8 @@ describe("Model.find() chaining", function() {
 				name    : String,
 				surname : String,
 				age     : Number
-			}, {
-				cache : false
 			});
+			Person.hasMany("parents");
 
 			ORM.singleton.clear(); // clear cache
 
@@ -355,6 +354,34 @@ describe("Model.find() chaining", function() {
 					people[2].age.should.equal(18);
 
 					return done();
+				});
+			});
+		});
+
+		describe(".hasAccessor() for hasOne associations", function () {
+			it("should be chainable", function (done) {
+				Person.find({ name: "John" }, function (err, John) {
+					should.equal(err, null);
+
+					var Justin = new Person({
+						name : "Justin",
+						age  : 45
+					});
+
+					John[0].setParents([ Justin ], function (err) {
+						should.equal(err, null);
+
+						Person.find().hasParents(Justin.id).all(function (err, people) {
+							should.equal(err, null);
+
+							should(Array.isArray(people));
+
+							people.length.should.equal(1);
+							people[0].name.should.equal("John");
+
+							return done();
+						});
+					});
 				});
 			});
 		});

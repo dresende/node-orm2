@@ -65,6 +65,40 @@ describe("Model.aggregate()", function() {
 		});
 	});
 
+	describe("with select() with arguments", function () {
+		before(setup());
+
+		it("should use them as properties if 1st argument is Array", function (done) {
+			Person.aggregate().select([ 'id' ]).count().groupBy('name').get(function (err, people) {
+				should.equal(err, null);
+
+				should(Array.isArray(people));
+				people.length.should.be.above(0);
+
+				people[0].should.be.a("object");
+				people[0].should.have.property("id");
+				people[0].should.not.have.property("name");
+
+				return done();
+			});
+		});
+
+		it("should use them as properties", function (done) {
+			Person.aggregate().select('id', 'name').count().groupBy('name').get(function (err, people) {
+				should.equal(err, null);
+
+				should(Array.isArray(people));
+				people.length.should.be.above(0);
+
+				people[0].should.be.a("object");
+				people[0].should.have.property("id");
+				people[0].should.have.property("name");
+
+				return done();
+			});
+		});
+	});
+
 	describe("with get() without callback", function () {
 		before(setup());
 
@@ -162,6 +196,32 @@ describe("Model.aggregate()", function() {
 					return done();
 				});
 			});
+		});
+	});
+
+	describe("using as()", function () {
+		before(setup());
+
+		it("should use as an alias", function (done) {
+			Person.aggregate().count().as('total').groupBy('name').get(function (err, people) {
+				should.equal(err, null);
+
+				should(Array.isArray(people));
+				people.length.should.be.above(0);
+
+				people[0].should.be.a("object");
+				people[0].should.have.property("total");
+
+				return done();
+			});
+		});
+
+		it("should throw if no aggregates defined", function (done) {
+			(function () {
+				Person.aggregate().as('total');
+			}).should.throw();
+
+			return done();
 		});
 	});
 });

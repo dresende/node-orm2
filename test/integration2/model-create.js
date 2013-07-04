@@ -13,7 +13,7 @@ describe("Model.create()", function() {
 				name   : String
 			});
 			Pet = db.define("pet", {
-				name   : String
+				name   : { type: "text", defaultValue: "Mutt" }
 			});
 			Person.hasMany("pets", Pet);
 
@@ -105,6 +105,20 @@ describe("Model.create()", function() {
 				John.pets[0].should.have.property("name", "Deco");
 				John.pets[0].should.have.property("id");
 				John.pets[0].saved().should.be.true;
+
+				return done();
+			});
+		});
+	});
+
+	describe("when not passing a property", function () {
+		before(setup());
+
+		it("should use defaultValue if defined", function (done) {
+			Pet.create({}, function (err, Mutt) {
+				should.equal(err, null);
+
+				Mutt.should.have.property("name", "Mutt");
 
 				return done();
 			});

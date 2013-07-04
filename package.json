@@ -48,7 +48,7 @@
     "pg"      : "1.0.0",
     "sqlite3" : "2.1.7",
     "async"   : "*",
-    "mocha"   : "1.10.0",
+    "mocha"   : "1.12.0",
     "should"  : "1.2.2"
   },
   "optionalDependencies": {}

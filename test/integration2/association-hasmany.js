@@ -257,4 +257,202 @@ describe("hasMany", function() {
 			});
 		});
 	});
+
+	describe("addAccessor", function () {
+		before(setup());
+
+		it("might add duplicates", function (done) {
+			Pet.find({ name: "Mutt" }, function (err, pets) {
+				Person.find({ name: "Jane" }, function (err, people) {
+					should.equal(err, null);
+
+					people[0].addPets(pets[0], function (err) {
+						should.equal(err, null);
+
+						people[0].getPets("name", function (err, pets) {
+							should.equal(err, null);
+
+							should(Array.isArray(pets));
+							pets.length.should.equal(2);
+							pets[0].name.should.equal("Mutt");
+							pets[1].name.should.equal("Mutt");
+
+							return done();
+						});
+					});
+				});
+			});
+		});
+	});
+
+	describe("addAccessor", function () {
+		before(setup());
+
+		it("should keep associations and add new ones", function (done) {
+			Pet.find({ name: "Deco" }, function (err, pets) {
+				Person.find({ name: "Jane" }, function (err, people) {
+					should.equal(err, null);
+
+					people[0].addPets(pets[0], function (err) {
+						should.equal(err, null);
+
+						people[0].getPets("name", function (err, pets) {
+							should.equal(err, null);
+
+							should(Array.isArray(pets));
+							pets.length.should.equal(2);
+							pets[0].name.should.equal("Deco");
+							pets[1].name.should.equal("Mutt");
+
+							return done();
+						});
+					});
+				});
+			});
+		});
+	});
+
+	describe("addAccessor", function () {
+		before(setup());
+
+		it("should accept several arguments as associations", function (done) {
+			Pet.find(function (err, pets) {
+				Person.find({ name: "Justin" }, function (err, people) {
+					should.equal(err, null);
+
+					people[0].addPets(pets[0], pets[1], function (err) {
+						should.equal(err, null);
+
+						people[0].getPets(function (err, pets) {
+							should.equal(err, null);
+
+							should(Array.isArray(pets));
+							pets.length.should.equal(2);
+
+							return done();
+						});
+					});
+				});
+			});
+		});
+	});
+
+	describe("addAccessor", function () {
+		before(setup());
+
+		it("should accept array as list of associations", function (done) {
+			Pet.find(function (err, pets) {
+				Person.find({ name: "Justin" }, function (err, people) {
+					should.equal(err, null);
+
+					people[0].addPets(pets, function (err) {
+						should.equal(err, null);
+
+						people[0].getPets(function (err, all_pets) {
+							should.equal(err, null);
+
+							should(Array.isArray(all_pets));
+							all_pets.length.should.equal(pets.length);
+
+							return done();
+						});
+					});
+				});
+			});
+		});
+	});
+
+	describe("setAccessor", function () {
+		before(setup());
+
+		it("clears current associations", function (done) {
+			Pet.find({ name: "Deco" }, function (err, pets) {
+				var Deco = pets[0];
+
+				Person.find({ name: "Jane" }, function (err, people) {
+					should.equal(err, null);
+
+					people[0].getPets(function (err, pets) {
+						should.equal(err, null);
+
+						should(Array.isArray(pets));
+						pets.length.should.equal(1);
+						pets[0].name.should.equal("Mutt");
+
+						people[0].setPets(Deco, function (err) {
+							should.equal(err, null);
+
+							people[0].getPets(function (err, pets) {
+								should.equal(err, null);
+
+								should(Array.isArray(pets));
+								pets.length.should.equal(1);
+								pets[0].name.should.equal(Deco.name);
+
+								return done();
+							});
+						});
+					});
+				});
+			});
+		});
+	});
+
+	describe("setAccessor", function () {
+		before(setup());
+
+		it("should accept several arguments as associations", function (done) {
+			Pet.find(function (err, pets) {
+				Person.find({ name: "Justin" }, function (err, people) {
+					should.equal(err, null);
+
+					people[0].setPets(pets[0], pets[1], function (err) {
+						should.equal(err, null);
+
+						people[0].getPets(function (err, pets) {
+							should.equal(err, null);
+
+							should(Array.isArray(pets));
+							pets.length.should.equal(2);
+
+							return done();
+						});
+					});
+				});
+			});
+		});
+
+		it("should accept an array of associations", function (done) {
+			Pet.find(function (err, pets) {
+				Person.find({ name: "Justin" }, function (err, people) {
+					should.equal(err, null);
+
+					people[0].setPets(pets, function (err) {
+						should.equal(err, null);
+
+						people[0].getPets(function (err, all_pets) {
+							should.equal(err, null);
+
+							should(Array.isArray(all_pets));
+							all_pets.length.should.equal(pets.length);
+
+							return done();
+						});
+					});
+				});
+			});
+		});
+
+		it("should throw if no items passed", function (done) {
+			Person.find(1, function (err, people) {
+				should.equal(err, null);
+
+				(function () {
+					people[0].addPets(function () {});
+				}).should.throw();
+
+				return done();
+			});
+		});
+	});
 });

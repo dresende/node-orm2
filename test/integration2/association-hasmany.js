@@ -64,6 +64,91 @@ describe("hasMany", function() {
 		});
 	});
 
+	describe("getAccessor", function () {
+		before(setup());
+
+		it("should allow to specify order as string", function (done) {
+			Person.find({ name: "John" }, function (err, people) {
+				should.equal(err, null);
+
+				people[0].getPets("-name", function (err, pets) {
+					should.equal(err, null);
+
+					should(Array.isArray(pets));
+					pets.length.should.equal(2);
+					pets[0].name.should.equal("Mutt");
+					pets[1].name.should.equal("Deco");
+
+					return done();
+				});
+			});
+		});
+
+		it("should allow to specify order as Array", function (done) {
+			Person.find({ name: "John" }, function (err, people) {
+				should.equal(err, null);
+
+				people[0].getPets([ "name", "Z" ], function (err, pets) {
+					should.equal(err, null);
+
+					should(Array.isArray(pets));
+					pets.length.should.equal(2);
+					pets[0].name.should.equal("Mutt");
+					pets[1].name.should.equal("Deco");
+
+					return done();
+				});
+			});
+		});
+
+		it("should allow to specify a limit", function (done) {
+			Person.find({ name: "John" }, function (err, people) {
+				should.equal(err, null);
+
+				people[0].getPets(1, function (err, pets) {
+					should.equal(err, null);
+
+					should(Array.isArray(pets));
+					pets.length.should.equal(1);
+
+					return done();
+				});
+			});
+		});
+
+		it("should allow to specify conditions", function (done) {
+			Person.find({ name: "John" }, function (err, people) {
+				should.equal(err, null);
+
+				people[0].getPets({ name: "Mutt" }, function (err, pets) {
+					should.equal(err, null);
+
+					should(Array.isArray(pets));
+					pets.length.should.equal(1);
+					pets[0].name.should.equal("Mutt");
+
+					return done();
+				});
+			});
+		});
+
+		it("should return a chain if no callback defined", function (done) {
+			Person.find({ name: "John" }, function (err, people) {
+				should.equal(err, null);
+
+				var chain = people[0].getPets({ name: "Mutt" });
+
+				chain.should.be.a("object");
+				chain.find.should.be.a("function");
+				chain.only.should.be.a("function");
+				chain.limit.should.be.a("function");
+				chain.order.should.be.a("function");
+
+				return done();
+			});
+		});
+	});
+
 	describe("hasAccessor", function () {
 		before(setup());
 

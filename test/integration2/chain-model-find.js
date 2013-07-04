@@ -314,4 +314,49 @@ describe("Model.find() chaining", function() {
 			});
 		});
 	});
+
+	describe(".each()", function () {
+		before(setup());
+
+		it("should return a ChainFind", function (done) {
+			var chain = Person.find({ age: 22 }).each();
+
+			chain.should.be.a("object");
+			chain.filter.should.be.a("function");
+			chain.sort.should.be.a("function");
+			chain.count.should.be.a("function");
+			chain.get.should.be.a("function");
+			chain.save.should.be.a("function");
+
+			return done();
+		});
+
+		describe(".count()", function () {
+			it("should return the total filtered items", function (done) {
+				Person.find().each().filter(function (person) {
+					return (person.age > 18);
+				}).count(function (count) {
+					count.should.equal(1);
+
+					return done();
+				});
+			});
+		});
+
+		describe(".sort()", function () {
+			it("should return the items sorted using the sorted function", function (done) {
+				Person.find().each().sort(function (first, second) {
+					return (first.age < second.age);
+				}).get(function (people) {
+					should(Array.isArray(people));
+
+					people.length.should.equal(3);
+					people[0].age.should.equal(20);
+					people[2].age.should.equal(18);
+
+					return done();
+				});
+			});
+		});
+	});
 });

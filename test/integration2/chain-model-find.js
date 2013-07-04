@@ -358,6 +358,39 @@ describe("Model.find() chaining", function() {
 			});
 		});
 
+		describe(".save()", function () {
+			it("should save items after changes", function (done) {
+				Person.find({ surname: "Dean" }).each(function (person) {
+					person.should.not.equal(45);
+					person.age = 45;
+				}).save(function () {
+					Person.find({ surname: "Dean" }, function (err, people) {
+						should(Array.isArray(people));
+
+						people.length.should.equal(1);
+						people[0].age.should.equal(45);
+
+						return done();
+					});
+				});
+			});
+		});
+
+		describe("if passing a callback", function () {
+			it("should use it to .forEach()", function (done) {
+				Person.find({ surname: "Dean" }).each(function (person) {
+					person.fullName = person.name + " " + person.surname;
+				}).get(function (people) {
+					should(Array.isArray(people));
+
+					people.length.should.equal(1);
+					people[0].fullName = "Jane Dean";
+
+					return done();
+				});
+			});
+		});
+
 		describe(".hasAccessor() for hasOne associations", function () {
 			it("should be chainable", function (done) {
 				Person.find({ name: "John" }, function (err, John) {

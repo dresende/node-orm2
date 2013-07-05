@@ -268,6 +268,38 @@ describe("Predefined Validators", function () {
 	});
 
 
+	describe("password()", function () {
+		it("should pass 'Passw0r∂'", function (done) {
+			validators.password()('Passw0r∂', checkValidation(done));
+		});
+		it("should not pass 'password' with 'weak-password'", function (done) {
+			validators.password()('password', checkValidation(done, 'weak-password'));
+		});
+		it("should not pass 'Passw0rd' with 'weak-password'", function (done) {
+			validators.password()('Passw0rd', checkValidation(done, 'weak-password'));
+		});
+	});
+
+
+	describe("password('ln4', 'bad-pwd')", function () {
+		it("should pass 'Passw0r∂'", function (done) {
+			validators.password('ln4', 'bad-pwd')('Passw0r∂', checkValidation(done));
+		});
+		it("should pass 'Passw0rd'", function (done) {
+			validators.password('ln4', 'bad-pwd')('Passw0rd', checkValidation(done));
+		});
+		it("should not pass 'P12345' with 'bad-pwd'", function (done) {
+			validators.password('ln4', 'bad-pwd')('P12345', checkValidation(done, 'bad-pwd'));
+		});
+		it("should not pass 'password' with 'bad-pwd'", function (done) {
+			validators.password('ln4', 'bad-pwd')('password', checkValidation(done, 'bad-pwd'));
+		});
+		it("should not pass 'p12' with 'bad-pwd'", function (done) {
+			validators.password('ln4', 'bad-pwd')('p12', checkValidation(done, 'bad-pwd'));
+		});
+	});
+
+
 	describe("patterns.hexString()", function () {
 		it("should pass 'ABCDEF0123456789'", function (done) {
 			validators.patterns.hexString()('ABCDEF0123456789', checkValidation(done));

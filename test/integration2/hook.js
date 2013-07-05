@@ -371,6 +371,30 @@ describe("Hook", function() {
 
 			return done();
 		});
+
+		describe("if hook method has 1 argument", function () {
+			var afterLoad = false;
+
+			before(setup({
+				afterLoad : function (next) {
+					setTimeout(function () {
+						afterLoad = true;
+
+						return next();
+					}.bind(this), 200);
+				}
+			}));
+
+			it("should wait for hook to finish", function (done) {
+				this.timeout(500);
+
+				Person.create([{ name: "John Doe" }], function (err, items) {
+					afterLoad.should.be.true;
+
+					return done();
+				});
+			});
+		});
 	});
 
 	describe("beforeRemove", function () {

@@ -373,6 +373,7 @@ will be called when that event happens.
 Currently the following events are supported:
 
 - `afterLoad` : (no parameters) Right after loading and preparing an instance to be used;
+- `afterAutoFetch` : (no parameters) Right after auto-fetching associations (if any), it will trigger regardless of having associations or not;
 - `beforeSave` : (no parameters) Right before trying to save;
 - `afterSave` : (bool success) Right after saving;
 - `beforeCreate` : (no parameters) Right before trying to save a new instance (prior to `beforeSave`);

@@ -397,6 +397,48 @@ describe("Hook", function() {
 		});
 	});
 
+	describe("afterAutoFetch", function () {
+		var afterAutoFetch = false;
+
+		before(setup({
+			afterAutoFetch: function () {
+				afterAutoFetch = true;
+			}
+		}));
+
+		it("should trigger when defining a model", function (done) {
+			var John = new Person({ name: "John" });
+
+			afterAutoFetch.should.be.true;
+
+			return done();
+		});
+
+		describe("if hook method has 1 argument", function () {
+			var afterAutoFetch = false;
+
+			before(setup({
+				afterAutoFetch : function (next) {
+					setTimeout(function () {
+						afterAutoFetch = true;
+
+						return next();
+					}.bind(this), 200);
+				}
+			}));
+
+			it("should wait for hook to finish", function (done) {
+				this.timeout(500);
+
+				Person.create([{ name: "John Doe" }], function (err, items) {
+					afterAutoFetch.should.be.true;
+
+					return done();
+				});
+			});
+		});
+	});
+
 	describe("beforeRemove", function () {
 		before(setup());
 

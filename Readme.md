@@ -738,6 +738,69 @@ orm.connect("....", function (err, db) {
 });
 ```
 
+### Predefined Validations
+
+Predefined validations accept an optional last parameter `msg` that is the `Error.msg` if it's triggered.
+
+#### `required(msg)`
+
+Ensures property is not `null` or `undefined`. It does not trigger any error if property is `0` or empty string.
+
+#### `rangeNumber(min, max, msg)`
+
+Ensures a property is a number between `min` and `max`. Any of the parameters can be passed as `undefined`
+to exclude a minimum or maximum value.
+
+#### `rangeLength(min, max, msg)`
+
+Same as previous validator but for property length (strings).
+
+#### `insideList(list, msg)`
+
+Ensures a property value is inside a list of values.
+
+#### `outsideList(list, msg)`
+
+Ensures a property value is not inside a list of values.
+
+#### `equalToProperty(property, msg)`
+
+Ensures a property value is not the same as another property value in the instance. This validator is good for example for
+password and password repetition check.
+
+#### `notEmptyString(msg)`
+
+This is an alias for `rangeLength(1, undefined, 'empty-string')`.
+
+#### `unique(msg)`
+
+Ensures there's not another instance in your database already with that property value. This validator is good for example for
+unique identifiers.
+
+#### `password([ checks, ]msg)`
+
+Ensures the property value has some defined types of characters, usually wanted in a password. `checks` is optional and
+defaults to `"luns6"` which leans `l`owercase letters, `u`ppercase letters, `n`umbers, `s`pecial characters, with a minimum
+length of `6`.
+
+#### `patterns.match(pattern, modifiers, msg)`
+
+Ensures the property value passes the regular expression pattern (and regex modifiers).
+
+The next `patterns.*` are comodity alias to this one.
+
+#### `patterns.hexString(msg)`
+
+Ensures the property value is an hexadecimal string (uppercase or lowercase).
+
+#### `patterns.email(msg)`
+
+Ensures the property value is a valid e-mail (more or less).
+
+#### `patterns.ipv4(msg)`
+
+Ensures the property value is a valid IPv4 address. It does not accept masks (example: `0` as last number is not valid).
+
 ## Associations
 
 An association is a relation between one or more tables.

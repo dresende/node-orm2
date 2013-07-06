@@ -196,4 +196,23 @@ describe("Model.save()", function() {
 			});
 		});
 	});
+
+  describe("with a point property", function () {
+    before(setup({type: 'point'}, null));
+
+    it("should save the instance as a geospatial point", function (done) {
+      var John = new Person({
+        name: [51.5177, -0.0968]
+      });
+      John.save(function (err) {
+        should.equal(err, null);
+
+        John.name.should.be.an.instanceOf(Array);
+        John.name.should.have.length(2);
+        John.name[0].should.equal(51.5177);
+        John.name[1].should.equal(-0.0968);
+        return done();
+      });
+    });
+  });
 });

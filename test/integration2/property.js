@@ -61,6 +61,11 @@ describe("Property", function () {
 
 			return done();
 		});
+    it("should accept: 'point'", function(done) {
+      Property.normalize("point", ORM.settings).type.should.equal("point");
+      
+      return done();
+    });
 
 		describe("if not valid", function () {
 			it("should throw", function (done) {

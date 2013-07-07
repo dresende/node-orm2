@@ -276,4 +276,33 @@ describe("Model.get()", function() {
 			});
 		});
 	});
+
+  describe("with a point property type", function() {
+    before(function (done) {
+      Person = db.define("person", {
+        name : String,
+        location: {type: 'point'}
+      });
+
+      ORM.singleton.clear();
+
+      return helper.dropSync(Person, function () {
+        Person.create([{
+          name : "John Doe",
+          location: {x: 51.5177, y: -0.0968}
+        }], done);
+      });
+    });
+
+    it("should deserialize the point to an array", function (done) {
+      Person.get("John Doe", function(err, person) {
+        should.equal(err, null);
+
+        person.location.should.be.an.instanceOf(Object);
+        person.location.should.have.property('x', 51.5177);
+        person.location.should.have.property('y', -0.0968);
+        return done();
+      });
+    });
+  });
 });

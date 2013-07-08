@@ -17,11 +17,7 @@ module.exports.dropSync = function (models, done) {
 		item.drop(function (err) {
 			if (err) throw err
 
-			item.sync(function (err) {
-				if (err) throw err
-
-				return cb();
-			});
+			item.sync(cb);
 		});
 	}, done);
 };

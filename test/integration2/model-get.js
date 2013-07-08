@@ -277,32 +277,34 @@ describe("Model.get()", function() {
 		});
 	});
 
-  describe("with a point property type", function() {
-    before(function (done) {
-      Person = db.define("person", {
-        name : String,
-        location: {type: 'point'}
-      });
+	describe("with a point property type", function() {
+		it("should deserialize the point to an array", function (done) {
+			db.settings.set('properties.primary_key', 'id');
 
-      ORM.singleton.clear();
+			Person = db.define("person", {
+				name     : String,
+				location : { type: "point" }
+			});
 
-      return helper.dropSync(Person, function () {
-        Person.create([{
-          name : "John Doe",
-          location: {x: 51.5177, y: -0.0968}
-        }], done);
-      });
-    });
+			ORM.singleton.clear();
 
-    it("should deserialize the point to an array", function (done) {
-      Person.get("John Doe", function(err, person) {
-        should.equal(err, null);
+			return helper.dropSync(Person, function (err) {
+				if (err) {
+					return done(); // not supported
+				}
 
-        person.location.should.be.an.instanceOf(Object);
-        person.location.should.have.property('x', 51.5177);
-        person.location.should.have.property('y', -0.0968);
-        return done();
-      });
-    });
-  });
+				Person.create({
+					name     : "John Doe",
+					location : { x : 51.5177, y : -0.0968 }
+				}, function (err, person) {
+					should.equal(err, null);
+
+					person.location.should.be.an.instanceOf(Object);
+					person.location.should.have.property('x', 51.5177);
+					person.location.should.have.property('y', -0.0968);
+					return done();
+				});
+			});
+		});
+	});
 });

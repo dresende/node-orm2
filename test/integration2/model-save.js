@@ -197,21 +197,25 @@ describe("Model.save()", function() {
 		});
 	});
 
-  describe("with a point property", function () {
-    before(setup({type: 'point'}, null));
+	describe("with a point property", function () {
+		it("should save the instance as a geospatial point", function (done) {
+			setup({ type: "point" }, null)(function (err) {
+				if (err) {
+					return done(); // not supported
+				}
 
-    it("should save the instance as a geospatial point", function (done) {
-      var John = new Person({
-        name: {x: 51.5177, y: -0.0968}
-      });
-      John.save(function (err) {
-        should.equal(err, null);
+				var John = new Person({
+					name: { x: 51.5177, y: -0.0968 }
+				});
+				John.save(function (err) {
+					should.equal(err, null);
 
-        John.name.should.be.an.instanceOf(Object);
-        John.name.should.have.property('x', 51.5177);
-        John.name.should.have.property('y', -0.0968);
-        return done();
-      });
-    });
-  });
+					John.name.should.be.an.instanceOf(Object);
+					John.name.should.have.property('x', 51.5177);
+					John.name.should.have.property('y', -0.0968);
+					return done();
+				});
+			});
+		});
+	});
 });

@@ -1,3 +1,30 @@
+### v2.0.15 - 10 Jul 2013
+
+- Support for 'point' type as a property (#221)
+- .call() in aggregates for generic functions (#204)
+- Adds hook afterAutoFetch triggered after extending and auto fetching (if any) associations (#219)
+- Adds predefined validator .password()
+- Adds ability to have the afterLoad hook blocking (#219)
+- Changes Model.create() to wait for createInstance callback instead of using the returned value
+- Fixes problem with hasOne associations for none persisted instances and autoFetch active just blocking
+- Refactored Model.hasOne() constructor to be able to mix parameters
+- Fixes reversed hasOne association on the reversed model not being correctly saved (#216)
+- Changes Model.hasMany.addAccessor to throw just like .setAccessor when no associations are passed
+- Adds ability to pass an Array to hasMany.hasAccessor and also not passing any instance to hasAccessor and have it check for any associated item
+- Exposes Model methods to change hooks after model definition
+- Fixes postgres driver not returning numbers for number columns
+- Fixes passing json object instead of instances to Model.create() associations (#216)
+- Passes Model to Instance directly, changes Instance to use Model.properties instead of opts.properties
+- Exposes Model.properties
+- Removes old Property.js throw error in favour of new one
+- Adds initial Model.extendsTo(name, properties[, opts])
+- Avoids redefining properties in instances
+- Adds ErrorCodes.NOT_DEFINED
+- Adds db.drop() - similar to db.sync()
+- Changes hasMany.getAccessor to support order as string (closes #196)
+- Handle django string formatted sqlite datetime
+- Many bug fixes
+
 ### v2.0.14 - 27 June 2013
 
 - Changes many errors to use the ErrorCodes generator (#206)

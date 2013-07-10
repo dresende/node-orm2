@@ -29,3 +29,28 @@ describe("db.define()", function() {
 		return done();
 	});
 });
+
+describe("db.load()", function () {
+	var db = null;
+
+	before(function (done) {
+		helper.connect(function (connection) {
+			db = connection;
+
+			return done();
+		});
+	});
+
+	after(function () {
+		return db.close();
+	});
+
+	it("should require a file based on relative path", function (done) {
+		db.load("../support/spec_load", function () {
+			db.models.should.have.property("person");
+			db.models.should.have.property("pet");
+
+			return done();
+		});
+	});
+});

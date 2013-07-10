@@ -299,6 +299,30 @@ describe("Model.find()", function() {
 		});
 	});
 
+	describe("with cache disabled", function () {
+		it("should not return singletons", function (done) {
+			Person.find({ name: "Jasmine" }, { cache: false }, function (err, people) {
+				should.not.exist(err);
+				people.should.be.a("object");
+				people.should.have.property("length", 1);
+				people[0].name.should.equal("Jasmine");
+				people[0].surname.should.equal("Doe");
+
+				people[0].surname = "Dux";
+
+				Person.find({ name: "Jasmine" }, { cache: false }, function (err, people) {
+					should.not.exist(err);
+					people.should.be.a("object");
+					people.should.have.property("length", 1);
+					people[0].name.should.equal("Jasmine");
+					people[0].surname.should.equal("Doe");
+
+					return done();
+				});
+			});
+		});
+	});
+
 	describe("when using Model.all()", function () {
 		it("should work exactly the same", function (done) {
 			Person.all({ surname: "Doe" }, "-age", 1, function (err, people) {

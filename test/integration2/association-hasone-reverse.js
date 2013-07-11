@@ -70,7 +70,8 @@ describe("hasOne", function() {
 
 							Deco.getOwner(function (err, JohnCopy) {
 								should.not.exist(err);
-								John.should.eql(JohnCopy);
+								should(Array.isArray(JohnCopy));
+								John.should.eql(JohnCopy[0]);
 
 								return done();
 							});

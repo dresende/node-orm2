@@ -24,8 +24,8 @@ common.createConnection(function (err, db) {
 										var TestModelChild	= db.define('test_association_hasone_reverse_updown',	common.getModelProperties());
 										var TestModelGrandChild	= db.define('test_association_hasone_reverse_updown_down',	common.getModelProperties());
 										TestModelChild.hasOne("assocup", TestModelParent, {
-                      autoFetch: true, 
-                      reverse: "reverseassoc" 
+                      autoFetch: true,
+                      reverse: "reverseassoc"
                     });
 										TestModelChild.hasOne("assocdown", TestModelGrandChild, { autoFetch: true });
 

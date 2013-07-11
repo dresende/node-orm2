@@ -522,4 +522,39 @@ describe("Hook", function() {
 			});
 		});
 	});
+
+	describe("if model has autoSave", function () {
+		before(function (done) {
+			Person = db.define("person", {
+				name    : String,
+				surname : String
+			}, {
+				autoSave  : true,
+				hooks     : {
+					afterSave : checkHook("afterSave")
+				}
+			});
+
+			Person.settings.set("instance.returnAllErrors", false);
+
+			return helper.dropSync(Person, done);
+		});
+
+		it("should trigger for single property changes", function (done) {
+			Person.create({ name : "John", surname : "Doe" }, function (err, John) {
+				should.equal(err, null);
+
+				triggeredHooks.afterSave.should.be.a("number");
+				triggeredHooks.afterSave = false;
+
+				John.surname = "Dean";
+
+				setTimeout(function () {
+					triggeredHooks.afterSave.should.be.a("number");
+
+					return done();
+				}, 200);
+			});
+		});
+	});
 });

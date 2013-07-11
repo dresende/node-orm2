@@ -10,11 +10,13 @@ describe("Hook", function() {
 	var triggeredHooks = {};
 	var getTimestamp; // Calling it 'getTime' causes strangeness.
 
-	if (process.hrtime) {
-		getTimestamp = function () { return parseFloat(process.hrtime().join('.')); };
-	} else {
-		getTimestamp = function () { return Date.now(); };
-	}
+	getTimestamp = function () { return Date.now(); };
+	// this next lines are failing...
+	// if (process.hrtime) {
+	// 	getTimestamp = function () { return parseFloat(process.hrtime().join('.')); };
+	// } else {
+	// 	getTimestamp = function () { return Date.now(); };
+	// }
 
 	var checkHook = function (hook) {
 		triggeredHooks[hook] = false;

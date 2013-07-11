@@ -16,7 +16,7 @@ describe("hasMany", function() {
 				name    : String,
 				surname : String,
 				age     : Number
-			});
+			}, opts);
 			Pet = db.define('pet', {
 				name    : String
 			});
@@ -450,6 +450,24 @@ describe("hasMany", function() {
 				(function () {
 					people[0].addPets(function () {});
 				}).should.throw();
+
+				return done();
+			});
+		});
+	});
+
+	describe("with autoFetch turned on", function () {
+		before(setup({
+			autoFetch : true
+		}));
+
+		it("should fetch associations", function (done) {
+			Person.find({ name: "John" }).first(function (err, John) {
+				should.equal(err, null);
+
+				John.should.have.property("pets");
+				should(Array.isArray(John.pets));
+				John.pets.length.should.equal(2);
 
 				return done();
 			});

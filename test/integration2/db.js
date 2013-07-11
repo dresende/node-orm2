@@ -96,3 +96,52 @@ describe("db.load()", function () {
 		});
 	});
 });
+
+describe("db.serial()", function () {
+	var db = null;
+
+	before(function (done) {
+		helper.connect(function (connection) {
+			db = connection;
+
+			return done();
+		});
+	});
+
+	after(function () {
+		return db.close();
+	});
+
+	it("should be able to execute chains in serial", function (done) {
+		var Person = db.define("person", {
+			name    : String,
+			surname : String
+		});
+		helper.dropSync(Person, function () {
+			Person.create([
+				{ name : "John", surname : "Doe" },
+				{ name : "Jane", surname : "Doe" }
+			], function () {
+				db.serial(
+					Person.find({ surname : "Doe" }),
+					Person.find({ name    : "John" })
+				).get(function (err, DoeFamily, JohnDoe) {
+					should.equal(err, null);
+
+					should(Array.isArray(DoeFamily));
+					should(Array.isArray(JohnDoe));
+
+					DoeFamily.length.should.equal(2);
+					JohnDoe.length.should.equal(1);
+
+					DoeFamily[0].surname.should.equal("Doe");
+					DoeFamily[1].surname.should.equal("Doe");
+
+					JohnDoe[0].name.should.equal("John");
+
+					return done();
+				});
+			});
+		});
+	});
+});

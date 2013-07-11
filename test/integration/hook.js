@@ -134,7 +134,13 @@ describe("Hook", function() {
 					items.should.have.property("length", 1);
 					items[0].name.should.equal("Jane Doe");
 
-					return done();
+					// ensure it was really saved
+					Person.get(items[0].id, function (err, Item) {
+						should.equal(err, null);
+						Item.name.should.equal("Jane Doe");
+
+						return done();
+					});
 				});
 			});
 		});
@@ -209,6 +215,32 @@ describe("Hook", function() {
 				triggeredHooks.beforeSave.should.not.be.above(triggeredHooks.afterSave);
 
 				return done();
+			});
+		});
+
+		describe("when setting properties", function () {
+			before(setup({
+				beforeSave : function () {
+					this.name = "Jane Doe";
+				}
+			}));
+
+			it("should not be discarded", function (done) {
+				Person.create([{ }], function (err, items) {
+					should.equal(err, null);
+
+					items.should.be.a("object");
+					items.should.have.property("length", 1);
+					items[0].name.should.equal("Jane Doe");
+
+					// ensure it was really saved
+					Person.get(items[0].id, function (err, Item) {
+						should.equal(err, null);
+						Item.name.should.equal("Jane Doe");
+
+						return done();
+					});
+				});
 			});
 		});
 

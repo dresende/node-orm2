@@ -392,7 +392,7 @@ describe("Model.find() chaining", function() {
 		});
 
 		describe(".hasAccessor() for hasOne associations", function () {
-			it("should be chainable", function (done) {
+		    it("should be chainable", function (done) {
 				Person.find({ name: "John" }, function (err, John) {
 					should.equal(err, null);
 
@@ -404,8 +404,8 @@ describe("Model.find() chaining", function() {
 					John[0].setParents([ Justin ], function (err) {
 						should.equal(err, null);
 
-						Person.find().hasParents(Justin.id).all(function (err, people) {
-							should.equal(err, null);
+						Person.find().hasParents(Justin).all(function (err, people) {
+						    should.equal(err, null);
 
 							should(Array.isArray(people));
 

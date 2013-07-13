@@ -26,7 +26,8 @@
     { "name" : "Paul Dixon",       "email" : "paul.dixon@mintbridge.co.uk" },
     { "name" : "David Kosub" },
     { "name" : "Arek W" },
-    { "name" : "Joseph Gilley",    "email" : "joe.gilley@gmail.com" }
+    { "name" : "Joseph Gilley",    "email" : "joe.gilley@gmail.com" },
+	{ "name" : "Benjamin Pannell", "email" : "admin@sierrasoftworks.com" }
   ],
   "main"        : "./lib/ORM",
   "scripts"     : {
@@ -37,7 +38,7 @@
   },
   "analyse"     : false,
   "dependencies": {
-    "sql-query" : "0.1.3",
+    "sql-query" : "0.1.5",
     "hat"       : "0.0.3",
     "lodash"    : "1.3.1"
   },

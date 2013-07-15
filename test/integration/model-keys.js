@@ -56,7 +56,7 @@ describe("Model keys option", function() {
 				user   : String,
 				action : [ "in", "out" ]
 			}, {
-				keys   : [ "year", "month", "day" ]
+				id   : [ "year", "month", "day" ]
 			});
 
 			return helper.dropSync(DoorAccessHistory, function () {

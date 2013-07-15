@@ -2,7 +2,8 @@ var should = require('should');
 var helper = require('../support/spec_helper');
 var ORM    = require('../../');
 
-describe("hasMany", function() {
+describe("hasMany", function () {
+	this.timeout(4000);
 	var db     = null;
 	var Person = null;
 	var Pet    = null;

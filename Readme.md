@@ -357,6 +357,17 @@ var Pet = db.define("pet", {
 
 **Pet** model will have 2 columns, an `UID` and a `name`.
 
+It is also possible to have multiple IDs for a model in the database, this is done by specifying an array of IDs to use.
+
+```js
+var Person = db.define("person", {
+	firstname: String,
+	lastname: String
+}, {
+	id: ['firstname', 'lastname']
+});
+```
+
 Other options:
 
 - `cache` : (default: `true`) Set it to `false` to disable Instance cache ([Singletons](#singleton)) or set a timeout value (in seconds);
@@ -922,7 +933,7 @@ Animal.hasOne("owner", Person, { required: true });
 If you prefer to use another name for the field (owner_id) you can change this parameter in the settings.
 
 ```js
-db.settings.set("properties.association_key", "id_{name}"); // {name} will be replaced by 'owner' in this case
+db.settings.set("properties.association_key", "{field}_{name}"); // {name} will be replaced by 'owner' and {field} will be replaced by 'id' in this case
 ```
 
 **Note: This has to be done before the association is specified.**

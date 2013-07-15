@@ -1,4 +1,4 @@
-### v2.0.15 - 10 Jul 2013
+### v2.0.15 - 10 July 2013
 
 - Support for 'point' type as a property (#221)
 - .call() in aggregates for generic functions (#204)

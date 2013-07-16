@@ -6,20 +6,6 @@ var common   = require('../common');
 var ORM      = require('../../');
 
 describe("ORM", function() {
-	var db = null;
-
-	before(function (done) {
-		helper.connect(function (connection) {
-			db = connection;
-
-			return done();
-		});
-	});
-
-	after(function () {
-		return db.close();
-	});
-
 	describe("when loaded", function () {
 		it("should expose .express(), .use() and .connect()", function (done) {
 			ORM.express.should.a("function");

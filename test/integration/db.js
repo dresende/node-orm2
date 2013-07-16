@@ -25,7 +25,8 @@ describe("db.use()", function () {
 			return {
 				define: function (Model) {
 					Model.should.be.a("function");
-					Model.id.should.be.a("string");
+					Model.id.should.be.a("object");
+					Model.id[0].should.be.a("string");
 					calledDefine = true;
 				}
 			};

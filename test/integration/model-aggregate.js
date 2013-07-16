@@ -55,6 +55,56 @@ describe("Model.aggregate()", function() {
 		});
 	});
 
+	describe("with call()", function () {
+		before(setup());
+
+		it("should accept a function", function (done) {
+			Person.aggregate().call('COUNT').get(function (err, count) {
+				should.equal(err, null);
+
+				count.should.equal(3);
+
+				return done();
+			});
+		});
+
+		it("should accept arguments to the funciton as an Array", function (done) {
+			Person.aggregate().call('COUNT', [ 'id' ]).get(function (err, count) {
+				should.equal(err, null);
+
+				count.should.equal(3);
+
+				return done();
+			});
+		});
+
+		describe("if function is DISTINCT", function () {
+			it("should work as calling .distinct() directly", function (done) {
+				Person.aggregate().call('DISTINCT', [ 'name' ]).as('name').order('name').get(function (err, rows) {
+					should.equal(err, null);
+
+					should(Array.isArray(rows));
+					rows.length.should.equal(2);
+
+					rows[0].should.equal('Jane Doe');
+					rows[1].should.equal('John Doe');
+
+					return done();
+				});
+			});
+		});
+	});
+
+	describe("with as() without previous aggregates", function () {
+		before(setup());
+
+		it("should throw", function (done) {
+			Person.aggregate().as.should.throw();
+
+			return done();
+		});
+	});
+
 	describe("with select() without arguments", function () {
 		before(setup());
 

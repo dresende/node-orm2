@@ -18,28 +18,36 @@ describe("db.use()", function () {
 	});
 
 	it("should be able to register a plugin", function (done) {
-		var MyPlugin = function MyPlugin(DB, opts) {
-			db.should.equal(DB);
-			opts.should.eql({ option: true });
-
-			return {
-				define: function (Model) {
-					Model.should.be.a("function");
-					Model.id.should.be.a("object");
-					Model.id[0].should.be.a("string");
-					calledDefine = true;
-				}
-			};
+		var MyPlugin = require("../support/my_plugin");
+		var opts     = {
+			option       : true,
+			calledDefine : false
 		};
 
-		db.use(MyPlugin, { option: true });
+		db.use(MyPlugin, opts);
 
-		var calledDefine = false;
 		var MyModel = db.define("my_model", { // db.define should call plugin.define method
 			property: String
 		});
 
-		calledDefine.should.be.true;
+		opts.calledDefine.should.be.true;
+
+		return done();
+	});
+
+	it("should be able to register a plugin as string", function (done) {
+		var opts     = {
+			option       : true,
+			calledDefine : false
+		};
+
+		db.use("../support/my_plugin", opts);
+
+		var MyModel = db.define("my_model", { // db.define should call plugin.define method
+			property: String
+		});
+
+		opts.calledDefine.should.be.true;
 
 		return done();
 	});

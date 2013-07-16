@@ -16,7 +16,7 @@ Tests are done using [Travis CI](https://travis-ci.org/) for node versions `0.6.
 tests locally.
 
 ```sh
-make
+npm test
 ```
 
 ## DBMS Support

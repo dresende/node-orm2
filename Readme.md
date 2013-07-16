@@ -223,6 +223,7 @@ var Person = db.define('person', {        // 'person' will be the table in the d
 
 ##### string
 * `size`: max length of the string
+* `big`: true to make (LONG)TEXT columns instead of VARCHAR(size)
 
 ##### number
 * `rational`: true (default) creates a FLOAT/REAL, false an INTEGER

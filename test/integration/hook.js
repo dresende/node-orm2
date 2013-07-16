@@ -119,6 +119,21 @@ describe("Hook", function() {
 			});
 		});
 
+		it("should allow modification of instance", function (done) {
+		    Person.beforeCreate(function (next) {
+		        this.name = "Hook Worked";
+		        next();
+		    });
+
+		    Person.create([{ }], function (err, people) {
+		        should.not.exist(err);
+		        should.exist(people);
+		        should.equal(people.length, 1);
+		        should.equal(people[0].name, "Hook Worked");
+		        done();
+		    });
+		});
+
 		describe("when setting properties", function () {
 			before(setup({
 				beforeCreate : function () {
@@ -216,6 +231,20 @@ describe("Hook", function() {
 
 				return done();
 			});
+		});
+        
+		it("should allow modification of instance", function (done) {
+		    Person.beforeSave(function () {
+		        this.name = "Hook Worked";
+		    });
+
+		    Person.create([{ name: "John Doe" }], function (err, people) {
+		        should.not.exist(err);
+		        should.exist(people);
+		        should.equal(people.length, 1);
+		        should.equal(people[0].name, "Hook Worked");
+		        done();
+		    });
 		});
 
 		describe("when setting properties", function () {
@@ -337,6 +366,21 @@ describe("Hook", function() {
 
 				return done();
 			});
+		});
+
+
+		it("should allow modification of instance", function (done) {
+		    Person.beforeValidation(function () {
+		        this.name = "Hook Worked";
+		    });
+
+		    Person.create([{ name: "John Doe" }], function (err, people) {
+		        should.not.exist(err);
+		        should.exist(people);
+		        should.equal(people.length, 1);
+		        should.equal(people[0].name, "Hook Worked");
+		        done();
+		    });
 		});
 
 		describe("if hook method has 1 argument", function () {
@@ -588,5 +632,32 @@ describe("Hook", function() {
 				}, 200);
 			});
 		});
+	});
+
+	describe("instance modifications", function () {
+	    before(setup({
+	        beforeValidation: function () {
+	            should.equal(this.name, "John Doe");
+	            this.name = "beforeValidation";
+	        },
+	        beforeCreate: function () {
+	            should.equal(this.name, "beforeValidation");
+	            this.name = "beforeCreate";
+	        },
+	        beforeSave: function () {
+	            should.equal(this.name, "beforeCreate");
+	            this.name = "beforeSave";
+	        }
+	    }));
+
+	    it("should propagate down hooks", function (done) {
+	        Person.create([{ name: "John Doe" }], function (err, people) {
+	            should.not.exist(err);
+	            should.exist(people);
+	            should.equal(people.length, 1);
+	            should.equal(people[0].name, "beforeSave");
+	            done();
+	        });
+	    });
 	});
 });

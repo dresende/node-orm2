@@ -123,8 +123,6 @@ describe("Smart types", function () {
 		            should.not.exist(err);
 		            should.exist(groups);
 		            should.equal(groups.length, 2);
-		            should.equal(groups[0].name, 'developers');
-		            should.equal(groups[1].name, 'admins');
 
 		            done();
 		        });

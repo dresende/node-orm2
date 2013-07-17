@@ -72,6 +72,12 @@ common.getConnectionString = function () {
 				       (config.password ? ':' + config.password : '') +
 				       '@' + (config.host || 'localhost') +
 				       '/' + (config.database || 'orm_test');
+			case 'mongodb':
+				return 'mongo://' +
+				       (config.user || '') +
+				       (config.password ? ':' + config.password : '') +
+				       '@' + (config.host || 'localhost') +
+				       '/' + (config.database || 'test');
 			case 'sqlite':
 				return 'sqlite://' + (config.pathname || "");
 			default:

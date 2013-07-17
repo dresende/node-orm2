@@ -259,7 +259,7 @@ describe("Model.find() chaining", function() {
 		});
 
 		it("should allow sql where conditions", function (done) {
-			Person.find({ age: 18 }).find("LOWER(surname) LIKE 'dea%'").all(function (err, items) {
+			Person.find({ age: 18 }).where("LOWER(surname) LIKE 'dea%'").all(function (err, items) {
 				should.equal(err, null);
 				items.length.should.equal(1);
 
@@ -268,7 +268,7 @@ describe("Model.find() chaining", function() {
 		});
 
 		it("should allow sql where conditions with auto escaping", function (done) {
-			Person.find({ age: 18 }).find("LOWER(surname) LIKE ?", ['dea%']).all(function (err, items) {
+			Person.find({ age: 18 }).where("LOWER(surname) LIKE ?", ['dea%']).all(function (err, items) {
 				should.equal(err, null);
 				items.length.should.equal(1);
 
@@ -277,15 +277,15 @@ describe("Model.find() chaining", function() {
 		});
 
 		it("should append sql where conditions", function (done) {
-			Person.find().find("LOWER(surname) LIKE ?", ['do%']).all(function (err, items) {
+			Person.find().where("LOWER(surname) LIKE ?", ['do%']).all(function (err, items) {
 				should.equal(err, null);
 				items.length.should.equal(2);
 
-				Person.find().find("LOWER(name) LIKE ?", ['jane']).all(function (err, items) {
+				Person.find().where("LOWER(name) LIKE ?", ['jane']).all(function (err, items) {
 					should.equal(err, null);
 					items.length.should.equal(2);
 
-					Person.find().find("LOWER(surname) LIKE ?", ['do%']).find("LOWER(name) LIKE ?", ['jane']).all(function (err, items) {
+					Person.find().where("LOWER(surname) LIKE ?", ['do%']).where("LOWER(name) LIKE ?", ['jane']).all(function (err, items) {
 						should.equal(err, null);
 						items.length.should.equal(1);
 

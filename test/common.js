@@ -73,7 +73,7 @@ common.getConnectionString = function () {
 				       '@' + (config.host || 'localhost') +
 				       '/' + (config.database || 'orm_test');
 			case 'mongodb':
-				return 'mongo://' +
+				return 'mongodb://' +
 				       (config.user || '') +
 				       (config.password ? ':' + config.password : '') +
 				       '@' + (config.host || 'localhost') +

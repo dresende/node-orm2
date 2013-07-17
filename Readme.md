@@ -921,7 +921,7 @@ Animal.hasOne("owner", Person); // creates column 'owner_id' in 'animal' table
 // get animal with id = 123
 Animal.get(123, function (err, animal) {
     // animal is the animal model instance, if found
-    Foo.getOwner(function (err, person) {
+    animal.getOwner(function (err, person) {
         // if animal has really an owner, person points to it
     });
 });

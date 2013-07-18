@@ -258,6 +258,43 @@ describe("Model.find() chaining", function() {
 			});
 		});
 
+		it("should allow sql where conditions", function (done) {
+			Person.find({ age: 18 }).where("LOWER(surname) LIKE 'dea%'").all(function (err, items) {
+				should.equal(err, null);
+				items.length.should.equal(1);
+
+				return done();
+			});
+		});
+
+		it("should allow sql where conditions with auto escaping", function (done) {
+			Person.find({ age: 18 }).where("LOWER(surname) LIKE ?", ['dea%']).all(function (err, items) {
+				should.equal(err, null);
+				items.length.should.equal(1);
+
+				return done();
+			});
+		});
+
+		it("should append sql where conditions", function (done) {
+			Person.find().where("LOWER(surname) LIKE ?", ['do%']).all(function (err, items) {
+				should.equal(err, null);
+				items.length.should.equal(2);
+
+				Person.find().where("LOWER(name) LIKE ?", ['jane']).all(function (err, items) {
+					should.equal(err, null);
+					items.length.should.equal(2);
+
+					Person.find().where("LOWER(surname) LIKE ?", ['do%']).where("LOWER(name) LIKE ?", ['jane']).all(function (err, items) {
+						should.equal(err, null);
+						items.length.should.equal(1);
+
+						return done();
+					});
+				});
+			});
+		});
+
 		it("should return results if passed a callback as second argument", function (done) {
 			Person.find().find({ age: 18 }, function (err, instances) {
 				should.equal(err, null);

@@ -461,6 +461,8 @@ Person.find({ surname: "Doe" }, { offset: 2 }, function (err, people) {
 });
 ```
 
+You can also use raw SQL when searching. It's documented in the *Chaining* section below.
+
 ### Model.count([ conditions, ] cb)
 
 If you just want to count the number of items that match a condition you can just use `.count()` instead of finding all
@@ -529,6 +531,14 @@ Person.find({ surname: "Doe" }).limit(3).offset(2).only("name", "surname").run(f
     // returning only 'name' and 'surname' properties
 });
 ```
+
+Chaining allows for more complicated queries. For example, we can search by specifying custom SQL:
+```js
+Person.find({ age: 18 }).where("LOWER(surname) LIKE ?", ['dea%']).all( ... );
+```
+It's bad practice to manually escape SQL parameters as it's error prone and exposes your application to SQL injection.
+The `?` syntax takes care of escaping for you, by safely substituting the question mark in the query with the parameters provided.
+You can also chain multiple `where` clauses as needed.
 
 You can also chain and just get the count in the end. In this case, offset, limit and order are ignored.
 

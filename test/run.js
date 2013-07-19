@@ -9,9 +9,11 @@ var mocha    = new Mocha({
 runTests();
 
 function runTests() {
-	fs.readdirSync(location).filter(function(file){
+	fs.readdirSync(location).filter(function (file) {
 		return file.substr(-3) === '.js';
-	}).forEach(function(file){
+	}).forEach(function (file) {
+		if (!shouldRunTest(file)) return;
+
 		mocha.addFile(
 			path.join(location, file)
 		);
@@ -23,4 +25,15 @@ function runTests() {
 	mocha.run(function (failures) {
 		process.exit(failures);
 	});
+}
+
+function shouldRunTest(file) {
+	var name  = file.substr(0, file.length - 3);
+	var proto = process.env.ORM_PROTOCOL;
+
+	if (proto == "mongodb" && [ "association-hasmany-extra", "association-hasmany",
+	                            "model-aggregate",
+	                            "property-lazyload", "property-number-size" ].indexOf(name) >= 0) return false;
+
+	return true;
 }

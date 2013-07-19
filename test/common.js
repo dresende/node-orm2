@@ -27,6 +27,8 @@ common.getConfig = function () {
 				return { user: "postgres", host: "localhost", database: "orm_test" };
 			case 'sqlite':
 				return {};
+			case 'mongodb':
+				return { host: "localhost", database: "test" };
 			default:
 				throw new Error("Unknown protocol");
 		}
@@ -47,6 +49,8 @@ common.getConnectionString = function () {
 				return 'postgres://postgres@localhost/orm_test';
 			case 'sqlite':
 				return 'sqlite://';
+			case 'mongodb':
+				return 'mongodb://localhost/test';
 			default:
 				throw new Error("Unknown protocol");
 		}

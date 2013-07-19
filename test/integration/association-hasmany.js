@@ -1,11 +1,6 @@
 var should = require('should');
 var helper = require('../support/spec_helper');
 var ORM    = require('../../');
-var common = require('../common');
-
-if (common.protocol() == "mongodb") {
-	process.exit(0);
-}
 
 describe("hasMany", function () {
 	this.timeout(4000);

@@ -4,6 +4,10 @@ var helper   = require('../support/spec_helper');
 var ORM      = require('../../');
 var protocol = common.protocol().toLowerCase();
 
+if (protocol == "mongodb") {
+	process.exit(0);
+}
+
 // Round because different systems store floats in different
 // ways, thereby introducing small errors.
 function round(num, points) {

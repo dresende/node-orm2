@@ -1,6 +1,7 @@
 var should   = require('should');
 var helper   = require('../support/spec_helper');
 var ORM      = require('../../');
+var common   = require('../common');
 
 describe("Model.find() chaining", function() {
 	var db = null;
@@ -258,6 +259,17 @@ describe("Model.find() chaining", function() {
 			});
 		});
 
+		it("should return results if passed a callback as second argument", function (done) {
+			Person.find().find({ age: 18 }, function (err, instances) {
+				should.equal(err, null);
+				instances.should.have.property("length", 2);
+
+				return done();
+			});
+		});
+
+		if (common.protocol() == "mongodb") return;
+
 		it("should allow sql where conditions", function (done) {
 			Person.find({ age: 18 }).where("LOWER(surname) LIKE 'dea%'").all(function (err, items) {
 				should.equal(err, null);
@@ -292,15 +304,6 @@ describe("Model.find() chaining", function() {
 						return done();
 					});
 				});
-			});
-		});
-
-		it("should return results if passed a callback as second argument", function (done) {
-			Person.find().find({ age: 18 }, function (err, instances) {
-				should.equal(err, null);
-				instances.should.have.property("length", 2);
-
-				return done();
 			});
 		});
 	});
@@ -427,6 +430,8 @@ describe("Model.find() chaining", function() {
 				});
 			});
 		});
+
+		if (common.protocol() == "mongodb") return;
 
 		describe(".hasAccessor() for hasOne associations", function () {
 		    it("should be chainable", function (done) {

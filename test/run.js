@@ -31,9 +31,10 @@ function shouldRunTest(file) {
 	var name  = file.substr(0, file.length - 3);
 	var proto = process.env.ORM_PROTOCOL;
 
-	if (proto == "mongodb" && [ "association-hasmany-extra", "association-hasmany",
+	if (proto == "mongodb" && [ "association-hasmany-extra",
 	                            "model-aggregate",
-	                            "property-lazyload", "property-number-size" ].indexOf(name) >= 0) return false;
+	                            "property-lazyload", "property-number-size",
+	                            "smart-types" ].indexOf(name) >= 0) return false;
 
 	return true;
 }

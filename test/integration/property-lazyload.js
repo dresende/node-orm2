@@ -91,7 +91,7 @@ describe("LazyLoad properties", function() {
 				John.setPhoto(OtherPersonPhoto, function (err) {
 					should.equal(err, null);
 
-					Person.get(1, function (err, John) {
+					Person.find().first(function (err, John) {
 						should.equal(err, null);
 
 						John.should.be.a("object");

@@ -26,7 +26,7 @@ npm test
 - PostgreSQL
 - Amazon Redshift
 - SQLite
-- MongoDB (beta, some missing features)
+- MongoDB (beta, missing aggregation for now)
 
 ## Features
 
@@ -129,12 +129,12 @@ orm.connect("....", function (err, db) {
 
 First, add the correct driver to your `package.json`:
 
- driver                | dependency
-:----------------------|:---------------------------
- mysql                 | `"mysql" : "2.0.0-alpha7"`
- postgres<br/>redshift | `"pg": "~1.0.0"`
- sqlite                | `"sqlite3" : "2.1.7"`
- mongodb               | `"mongodb" : "1.3.11"`
+ driver                | npm package                | version
+:----------------------|:---------------------------|:-----
+ mysql                 | mysql                      | 2.0.0-alpha7
+ postgres<br/>redshift | pg                         | ~1.0.0
+ sqlite                | sqlite3                    | 2.1.7
+ mongodb               | mongodb                    | 1.3.11
 
 These are the versions tested. Use others (older or newer) at your own risk.
 

@@ -84,7 +84,7 @@ describe("Model.create()", function() {
 				should(Array.isArray(John.pets));
 
 				John.pets[0].should.have.property("name", "Deco");
-				John.pets[0].should.have.property("id");
+				John.pets[0].should.have.property(Pet.id);
 				John.pets[0].saved().should.be.true;
 
 				return done();
@@ -103,7 +103,7 @@ describe("Model.create()", function() {
 				should(Array.isArray(John.pets));
 
 				John.pets[0].should.have.property("name", "Deco");
-				John.pets[0].should.have.property("id");
+				John.pets[0].should.have.property(Pet.id);
 				John.pets[0].saved().should.be.true;
 
 				return done();

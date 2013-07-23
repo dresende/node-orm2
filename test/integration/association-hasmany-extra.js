@@ -56,7 +56,6 @@ describe("hasMany extra properties", function() {
 
 							John.pets.length.should.equal(2);
 
-							John.pets[0].should.have.property("id");
 							John.pets[0].should.have.property("name");
 							John.pets[0].should.have.property("extra");
 							John.pets[0].extra.should.be.a("object");

@@ -150,7 +150,7 @@ describe("Hook", function() {
 					items[0].name.should.equal("Jane Doe");
 
 					// ensure it was really saved
-					Person.get(items[0].id, function (err, Item) {
+					Person.get(items[0][Person.id], function (err, Item) {
 						should.equal(err, null);
 						Item.name.should.equal("Jane Doe");
 
@@ -232,7 +232,7 @@ describe("Hook", function() {
 				return done();
 			});
 		});
-        
+
 		it("should allow modification of instance", function (done) {
 		    Person.beforeSave(function () {
 		        this.name = "Hook Worked";
@@ -263,7 +263,7 @@ describe("Hook", function() {
 					items[0].name.should.equal("Jane Doe");
 
 					// ensure it was really saved
-					Person.get(items[0].id, function (err, Item) {
+					Person.get(items[0][Person.id], function (err, Item) {
 						should.equal(err, null);
 						Item.name.should.equal("Jane Doe");
 

@@ -3,8 +3,9 @@ var helper   = require('../support/spec_helper');
 var ORM      = require('../../');
 
 describe("Model.exists()", function() {
-	var db = null;
+	var db     = null;
 	var Person = null;
+	var good_id, bad_id;
 
 	var setup = function () {
 		return function (done) {
@@ -14,15 +15,24 @@ describe("Model.exists()", function() {
 
 			return helper.dropSync(Person, function () {
 				Person.create([{
-					id  : 1,
 					name: "Jeremy Doe"
 				}, {
-					id  : 2,
 					name: "John Doe"
 				}, {
-					id  : 3,
 					name: "Jane Doe"
-				}], done);
+				}], function (err, people) {
+					good_id = people[0][Person.id];
+
+					if (typeof good_id == "number") {
+						// numeric ID
+						bad_id = good_id * 100;
+					} else {
+						// string ID, keep same length..
+						bad_id = good_id.split('').reverse().join('');
+					}
+
+					return done();
+				});
 			});
 		};
 	};
@@ -53,7 +63,7 @@ describe("Model.exists()", function() {
 		before(setup());
 
 		it("should return true if found", function (done) {
-			Person.exists(2, function (err, exists) {
+			Person.exists(good_id, function (err, exists) {
 				should.equal(err, null);
 
 				exists.should.be.true;
@@ -63,7 +73,7 @@ describe("Model.exists()", function() {
 		});
 
 		it("should return false if not found", function (done) {
-			Person.exists(4, function (err, exists) {
+			Person.exists(bad_id, function (err, exists) {
 				should.equal(err, null);
 
 				exists.should.be.false;
@@ -77,7 +87,7 @@ describe("Model.exists()", function() {
 		before(setup());
 
 		it("should return true if found", function (done) {
-			Person.exists([ 2 ], function (err, exists) {
+			Person.exists([ good_id ], function (err, exists) {
 				should.equal(err, null);
 
 				exists.should.be.true;
@@ -87,7 +97,7 @@ describe("Model.exists()", function() {
 		});
 
 		it("should return false if not found", function (done) {
-			Person.exists([ 4 ], function (err, exists) {
+			Person.exists([ bad_id ], function (err, exists) {
 				should.equal(err, null);
 
 				exists.should.be.false;

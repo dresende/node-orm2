@@ -21,13 +21,10 @@ describe("Model instance", function() {
 
 			return helper.dropSync(Person, function () {
 				Person.create([{
-					id	: 1,
 					name: "Jeremy Doe"
 				}, {
-					id	: 2,
 					name: "John Doe"
 				}, {
-					id	: 3,
 					name: "Jane Doe"
 				}], done);
 			});
@@ -52,7 +49,8 @@ describe("Model instance", function() {
 		it("should always return true for instances", function (done) {
 			should.equal((new Person).isInstance, true);
 			should.equal((Person(4)).isInstance, true);
-			Person.get(2, function (err, item) {
+
+			Person.find().first(function (err, item) {
 				should.not.exist(err);
 				should.equal(item.isInstance, true);
 				return done();
@@ -67,7 +65,7 @@ describe("Model instance", function() {
 
 	describe("#isPersisted", function () {
 		it("should return true for persisted instances", function (done) {
-			Person.get(2, function (err, item) {
+			Person.find().first(function (err, item) {
 				should.not.exist(err);
 				should.equal(item.isPersisted(), true);
 				return done();
@@ -93,7 +91,7 @@ describe("Model instance", function() {
 		});
 
 		it("should return false for existing models", function (done) {
-			Person.get(2, function (err, item) {
+			Person.find().first(function (err, item) {
 				should.not.exist(err);
 				should.equal(item.isShell(), false);
 				return done();

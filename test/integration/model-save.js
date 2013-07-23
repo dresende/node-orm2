@@ -54,12 +54,12 @@ describe("Model.save()", function() {
 			});
 			John.save(function (err) {
 				should.equal(err, null);
-				John.id.should.be.a("number");
+				should.exist(John[Person.id]);
 
-				Person.get(John.id, function (err, JohnCopy) {
+				Person.get(John[Person.id], function (err, JohnCopy) {
 					should.equal(err, null);
 
-					JohnCopy.id.should.equal(John.id);
+					JohnCopy[Person.id].should.equal(John[Person.id]);
 					JohnCopy.name.should.equal(John.name);
 
 					return done();
@@ -78,12 +78,12 @@ describe("Model.save()", function() {
 			John.save();
 			John.on("save", function (err) {
 				should.equal(err, null);
-				John.id.should.be.a("number");
+				should.exist(John[Person.id]);
 
-				Person.get(John.id, function (err, JohnCopy) {
+				Person.get(John[Person.id], function (err, JohnCopy) {
 					should.equal(err, null);
 
-					JohnCopy.id.should.equal(John.id);
+					JohnCopy[Person.id].should.equal(John[Person.id]);
 					JohnCopy.name.should.equal(John.name);
 
 					return done();
@@ -101,13 +101,13 @@ describe("Model.save()", function() {
 			});
 			John.save({ name: "John" }, function (err) {
 				should.equal(err, null);
-				John.id.should.be.a("number");
+				should.exist(John[Person.id]);
 				John.name.should.equal("John");
 
-				Person.get(John.id, function (err, JohnCopy) {
+				Person.get(John[Person.id], function (err, JohnCopy) {
 					should.equal(err, null);
 
-					JohnCopy.id.should.equal(John.id);
+					JohnCopy[Person.id].should.equal(John[Person.id]);
 					JohnCopy.name.should.equal(John.name);
 
 					return done();
@@ -147,8 +147,8 @@ describe("Model.save()", function() {
 				John.saved().should.be.true;
 				Jane.saved().should.be.true;
 
-				John.id.should.be.a("number");
-				Jane.id.should.be.a("number");
+				should.exist(John[Person.id]);
+				should.exist(Jane[Person.id]);
 
 				return done();
 			});
@@ -170,8 +170,8 @@ describe("Model.save()", function() {
 				John.saved().should.be.true;
 				John.parent.saved().should.be.true;
 
-				John.id.should.be.a("number");
-				John.parent.id.should.be.a("number");
+				should.exist(John[Person.id]);
+				should.exist(John.parent[Person.id]);
 
 				return done();
 			});

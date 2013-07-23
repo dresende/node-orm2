@@ -42,11 +42,11 @@ describe("LazyLoad properties", function() {
 		before(setup());
 
 		it("should not be available when fetching an instance", function (done) {
-			Person.get(1, function (err, John) {
+			Person.find().first(function (err, John) {
 				should.equal(err, null);
 
 				John.should.be.a("object");
-				John.should.have.property("id", 1);
+
 				John.should.have.property("name", "John Doe");
 				John.should.have.property("photo", null);
 
@@ -55,7 +55,7 @@ describe("LazyLoad properties", function() {
 		});
 
 		it("should have apropriate accessors", function (done) {
-			Person.get(1, function (err, John) {
+			Person.find().first(function (err, John) {
 				should.equal(err, null);
 
 				John.should.be.a("object");
@@ -68,7 +68,7 @@ describe("LazyLoad properties", function() {
 		});
 
 		it("getAccessor should return property", function (done) {
-			Person.get(1, function (err, John) {
+			Person.find().first(function (err, John) {
 				should.equal(err, null);
 
 				John.should.be.a("object");
@@ -83,7 +83,7 @@ describe("LazyLoad properties", function() {
 		});
 
 		it("setAccessor should change property", function (done) {
-			Person.get(1, function (err, John) {
+			Person.find().first(function (err, John) {
 				should.equal(err, null);
 
 				John.should.be.a("object");
@@ -91,7 +91,7 @@ describe("LazyLoad properties", function() {
 				John.setPhoto(OtherPersonPhoto, function (err) {
 					should.equal(err, null);
 
-					Person.get(1, function (err, John) {
+					Person.find().first(function (err, John) {
 						should.equal(err, null);
 
 						John.should.be.a("object");
@@ -108,7 +108,7 @@ describe("LazyLoad properties", function() {
 		});
 
 		it("removeAccessor should change property", function (done) {
-			Person.get(1, function (err, John) {
+			Person.find().first(function (err, John) {
 				should.equal(err, null);
 
 				John.should.be.a("object");
@@ -116,7 +116,7 @@ describe("LazyLoad properties", function() {
 				John.removePhoto(function (err) {
 					should.equal(err, null);
 
-					Person.get(1, function (err, John) {
+					Person.get(John[Person.id], function (err, John) {
 						should.equal(err, null);
 
 						John.should.be.a("object");

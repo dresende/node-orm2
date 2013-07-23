@@ -48,7 +48,7 @@ describe("Model.extendsTo()", function() {
 		before(setup());
 
 		it("should return true if found", function (done) {
-			Person.get(1, function (err, John) {
+			Person.find().first(function (err, John) {
 				should.equal(err, null);
 
 				John.hasAddress(function (err, hasAddress) {
@@ -61,7 +61,7 @@ describe("Model.extendsTo()", function() {
 		});
 
 		it("should return false if not found", function (done) {
-			Person.get(1, function (err, John) {
+			Person.find().first(function (err, John) {
 				should.equal(err, null);
 
 				John.removeAddress(function () {
@@ -92,7 +92,7 @@ describe("Model.extendsTo()", function() {
 		before(setup());
 
 		it("should return extension if found", function (done) {
-			Person.get(1, function (err, John) {
+			Person.find().first(function (err, John) {
 				should.equal(err, null);
 
 				John.getAddress(function (err, Address) {
@@ -106,7 +106,7 @@ describe("Model.extendsTo()", function() {
 		});
 
 		it("should return error if not found", function (done) {
-			Person.get(1, function (err, John) {
+			Person.find().first(function (err, John) {
 				should.equal(err, null);
 
 				John.removeAddress(function () {
@@ -137,7 +137,7 @@ describe("Model.extendsTo()", function() {
 		before(setup());
 
 		it("should remove any previous extension", function (done) {
-			Person.get(1, function (err, John) {
+			Person.find().first(function (err, John) {
 				should.equal(err, null);
 
 				PersonAddress.find({ number: 123 }).count(function (err, c) {
@@ -174,7 +174,7 @@ describe("Model.extendsTo()", function() {
 		before(setup());
 
 		it("should remove any extension", function (done) {
-			Person.get(1, function (err, John) {
+			Person.find().first(function (err, John) {
 				should.equal(err, null);
 
 				PersonAddress.find({ number: 123 }).count(function (err, c) {

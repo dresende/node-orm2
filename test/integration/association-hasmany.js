@@ -1,6 +1,7 @@
 var should = require('should');
 var helper = require('../support/spec_helper');
 var ORM    = require('../../');
+var common = require('../common');
 
 describe("hasMany", function () {
 	this.timeout(4000);
@@ -103,10 +104,10 @@ describe("hasMany", function () {
 		});
 
 		it("should allow to specify a limit", function (done) {
-			Person.find({ name: "John" }, function (err, people) {
+			Person.find({ name: "John" }).first(function (err, John) {
 				should.equal(err, null);
 
-				people[0].getPets(1, function (err, pets) {
+				John.getPets(1, function (err, pets) {
 					should.equal(err, null);
 
 					should(Array.isArray(pets));
@@ -118,10 +119,10 @@ describe("hasMany", function () {
 		});
 
 		it("should allow to specify conditions", function (done) {
-			Person.find({ name: "John" }, function (err, people) {
+			Person.find({ name: "John" }).first(function (err, John) {
 				should.equal(err, null);
 
-				people[0].getPets({ name: "Mutt" }, function (err, pets) {
+				John.getPets({ name: "Mutt" }, function (err, pets) {
 					should.equal(err, null);
 
 					should(Array.isArray(pets));
@@ -132,6 +133,8 @@ describe("hasMany", function () {
 				});
 			});
 		});
+
+		if (common.protocol() == "mongodb") return;
 
 		it("should return a chain if no callback defined", function (done) {
 			Person.find({ name: "John" }, function (err, people) {
@@ -157,10 +160,10 @@ describe("hasMany", function () {
 			Pet.find({ name: "Mutt" }, function (err, pets) {
 				should.equal(err, null);
 
-				Person.find({ name: "Jane" }, function (err, people) {
+				Person.find({ name: "Jane" }).first(function (err, Jane) {
 					should.equal(err, null);
 
-					people[0].hasPets(pets[0], function (err, has_pets) {
+					Jane.hasPets(pets[0], function (err, has_pets) {
 						should.equal(err, null);
 						has_pets.should.be.true;
 
@@ -171,10 +174,10 @@ describe("hasMany", function () {
 		});
 
 		it("should return true if not passing any instance and has associated items", function (done) {
-			Person.find({ name: "Jane" }, function (err, people) {
+			Person.find({ name: "Jane" }).first(function (err, Jane) {
 				should.equal(err, null);
 
-				people[0].hasPets(function (err, has_pets) {
+				Jane.hasPets(function (err, has_pets) {
 					should.equal(err, null);
 					has_pets.should.be.true;
 
@@ -185,10 +188,10 @@ describe("hasMany", function () {
 
 		it("should return true if all passed instances are associated", function (done) {
 			Pet.find(function (err, pets) {
-				Person.find({ name: "John" }, function (err, people) {
+				Person.find({ name: "John" }).first(function (err, John) {
 					should.equal(err, null);
 
-					people[0].hasPets(pets, function (err, has_pets) {
+					John.hasPets(pets, function (err, has_pets) {
 						should.equal(err, null);
 						has_pets.should.be.true;
 
@@ -200,10 +203,10 @@ describe("hasMany", function () {
 
 		it("should return false if any passed instances are not associated", function (done) {
 			Pet.find(function (err, pets) {
-				Person.find({ name: "Jane" }, function (err, people) {
+				Person.find({ name: "Jane" }).first(function (err, Jane) {
 					should.equal(err, null);
 
-					people[0].hasPets(pets, function (err, has_pets) {
+					Jane.hasPets(pets, function (err, has_pets) {
 						should.equal(err, null);
 						has_pets.should.be.false;
 
@@ -240,13 +243,13 @@ describe("hasMany", function () {
 		});
 
 		it("should remove all associations if none passed", function (done) {
-			Person.find({ name: "John" }, function (err, people) {
+			Person.find({ name: "John" }).first(function (err, John) {
 				should.equal(err, null);
 
-				people[0].removePets(function (err) {
+				John.removePets(function (err) {
 					should.equal(err, null);
 
-					people[0].getPets(function (err, pets) {
+					John.getPets(function (err, pets) {
 						should.equal(err, null);
 
 						should(Array.isArray(pets));
@@ -261,6 +264,8 @@ describe("hasMany", function () {
 
 	describe("addAccessor", function () {
 		before(setup());
+
+		if (common.protocol() == "mongodb") return;
 
 		it("might add duplicates", function (done) {
 			Pet.find({ name: "Mutt" }, function (err, pets) {
@@ -290,14 +295,14 @@ describe("hasMany", function () {
 		before(setup());
 
 		it("should keep associations and add new ones", function (done) {
-			Pet.find({ name: "Deco" }, function (err, pets) {
-				Person.find({ name: "Jane" }, function (err, people) {
+			Pet.find({ name: "Deco" }).first(function (err, Deco) {
+				Person.find({ name: "Jane" }).first(function (err, Jane) {
 					should.equal(err, null);
 
-					people[0].addPets(pets[0], function (err) {
+					Jane.addPets(Deco, function (err) {
 						should.equal(err, null);
 
-						people[0].getPets("name", function (err, pets) {
+						Jane.getPets("name", function (err, pets) {
 							should.equal(err, null);
 
 							should(Array.isArray(pets));
@@ -318,13 +323,13 @@ describe("hasMany", function () {
 
 		it("should accept several arguments as associations", function (done) {
 			Pet.find(function (err, pets) {
-				Person.find({ name: "Justin" }, function (err, people) {
+				Person.find({ name: "Justin" }).first(function (err, Justin) {
 					should.equal(err, null);
 
-					people[0].addPets(pets[0], pets[1], function (err) {
+					Justin.addPets(pets[0], pets[1], function (err) {
 						should.equal(err, null);
 
-						people[0].getPets(function (err, pets) {
+						Justin.getPets(function (err, pets) {
 							should.equal(err, null);
 
 							should(Array.isArray(pets));
@@ -343,13 +348,13 @@ describe("hasMany", function () {
 
 		it("should accept array as list of associations", function (done) {
 			Pet.find(function (err, pets) {
-				Person.find({ name: "Justin" }, function (err, people) {
+				Person.find({ name: "Justin" }).first(function (err, Justin) {
 					should.equal(err, null);
 
-					people[0].addPets(pets, function (err) {
+					Justin.addPets(pets, function (err) {
 						should.equal(err, null);
 
-						people[0].getPets(function (err, all_pets) {
+						Justin.getPets(function (err, all_pets) {
 							should.equal(err, null);
 
 							should(Array.isArray(all_pets));
@@ -370,20 +375,20 @@ describe("hasMany", function () {
 			Pet.find({ name: "Deco" }, function (err, pets) {
 				var Deco = pets[0];
 
-				Person.find({ name: "Jane" }, function (err, people) {
+				Person.find({ name: "Jane" }).first(function (err, Jane) {
 					should.equal(err, null);
 
-					people[0].getPets(function (err, pets) {
+					Jane.getPets(function (err, pets) {
 						should.equal(err, null);
 
 						should(Array.isArray(pets));
 						pets.length.should.equal(1);
 						pets[0].name.should.equal("Mutt");
 
-						people[0].setPets(Deco, function (err) {
+						Jane.setPets(Deco, function (err) {
 							should.equal(err, null);
 
-							people[0].getPets(function (err, pets) {
+							Jane.getPets(function (err, pets) {
 								should.equal(err, null);
 
 								should(Array.isArray(pets));
@@ -404,13 +409,13 @@ describe("hasMany", function () {
 
 		it("should accept several arguments as associations", function (done) {
 			Pet.find(function (err, pets) {
-				Person.find({ name: "Justin" }, function (err, people) {
+				Person.find({ name: "Justin" }).first(function (err, Justin) {
 					should.equal(err, null);
 
-					people[0].setPets(pets[0], pets[1], function (err) {
+					Justin.setPets(pets[0], pets[1], function (err) {
 						should.equal(err, null);
 
-						people[0].getPets(function (err, pets) {
+						Justin.getPets(function (err, pets) {
 							should.equal(err, null);
 
 							should(Array.isArray(pets));
@@ -425,13 +430,13 @@ describe("hasMany", function () {
 
 		it("should accept an array of associations", function (done) {
 			Pet.find(function (err, pets) {
-				Person.find({ name: "Justin" }, function (err, people) {
+				Person.find({ name: "Justin" }).first(function (err, Justin) {
 					should.equal(err, null);
 
-					people[0].setPets(pets, function (err) {
+					Justin.setPets(pets, function (err) {
 						should.equal(err, null);
 
-						people[0].getPets(function (err, all_pets) {
+						Justin.getPets(function (err, all_pets) {
 							should.equal(err, null);
 
 							should(Array.isArray(all_pets));
@@ -445,11 +450,11 @@ describe("hasMany", function () {
 		});
 
 		it("should throw if no items passed", function (done) {
-			Person.find(1, function (err, people) {
+			Person.one(function (err, person) {
 				should.equal(err, null);
 
 				(function () {
-					people[0].addPets(function () {});
+					person.addPets(function () {});
 				}).should.throw();
 
 				return done();

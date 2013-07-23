@@ -16,7 +16,8 @@ describe("hasOne", function() {
 				name     : String
 			});
 			Person.hasOne('parent', Person, {
-				required : required
+				required : required,
+				field    : 'parentId'
 			});
 
 			return helper.dropSync(Person, done);
@@ -35,8 +36,8 @@ describe("hasOne", function() {
 
 		it("should not accept empty association", function (done) {
 			var John = new Person({
-				name      : "John",
-				parent_id : null
+				name     : "John",
+				parentId : null
 			});
 			John.save(function (err) {
 				should.exist(err);
@@ -46,8 +47,8 @@ describe("hasOne", function() {
 
 		it("should accept association", function (done) {
 			var John = new Person({
-				name      : "John",
-				parent_id : 1
+				name     : "John",
+				parentId : 1
 			});
 			John.save(function (err) {
 				should.not.exist(err);

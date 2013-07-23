@@ -31,16 +31,16 @@ describe("hasOne", function() {
 			return helper.dropSync([Tree, Stalk, Leaf], function() {
 				Tree.create({ type: 'pine' }, function (err, tree) {
 					should.not.exist(err);
-					treeId = tree.id;
+					treeId = tree[Tree.id];
 					Leaf.create({ size: 14 }, function (err, leaf) {
 						should.not.exist(err);
-						leafId = leaf.id;
+						leafId = leaf[Leaf.id];
 						leaf.setTree(tree, function (err) {
 							should.not.exist(err);
 							Stalk.create({ length: 20 }, function (err, stalk) {
 								should.not.exist(err);
 								should.exist(stalk);
-								stalkId = stalk.id;
+								stalkId = stalk[Stalk.id];
 								done();
 							});
 						});
@@ -76,7 +76,7 @@ describe("hasOne", function() {
 			Leaf(leafId).getTree(function (err, tree) {
 				should.not.exist(err);
 				should.exist(tree);
-				should.equal(tree.id, treeId);
+				should.equal(tree[Tree.id], treeId);
 				done();
 			});
 		});
@@ -111,7 +111,7 @@ describe("hasOne", function() {
 						should.not.exist(err);
 						Leaf.one({ size: 14 }, function (err, leaf) {
 							should.not.exist(err);
-							should.equal(leaf.stalkId, stalk.id);
+							should.equal(leaf.stalkId, stalk[Stalk.id]);
 							done();
 						});
 					});
@@ -131,7 +131,7 @@ describe("hasOne", function() {
 						should.not.exist(err);
 						Leaf.one({ size: 14 }, function (err, leaf) {
 							should.not.exist(err);
-							should.equal(leaf.stalkId, null)
+							should.equal(leaf.stalkId, null);
 							done();
 						});
 					});
@@ -168,11 +168,11 @@ describe("hasOne", function() {
 				});
 
 				it("should work when calling Instance.save", function (done) {
-					leaf = new Leaf({size: 4, treeId: tree.id});
+					leaf = new Leaf({size: 4, treeId: tree[Tree.id]});
 					leaf.save(function(err, leaf) {
 						should.not.exist(err);
 
-						Leaf.get(leaf.id, function(err, fetchedLeaf) {
+						Leaf.get(leaf[Leaf.id], function(err, fetchedLeaf) {
 							should.not.exist(err);
 							should.exist(fetchedLeaf);
 							should.equal(fetchedLeaf.treeId, leaf.treeId);
@@ -184,11 +184,11 @@ describe("hasOne", function() {
 
 				it("should work when calling Instance.save after initially setting parentId to null", function(done) {
 					leaf = new Leaf({size: 4, treeId: null});
-					leaf.treeId = tree.id;
+					leaf.treeId = tree[Tree.id];
 					leaf.save(function(err, leaf) {
 						should.not.exist(err);
 
-						Leaf.get(leaf.id, function(err, fetchedLeaf) {
+						Leaf.get(leaf[Leaf.id], function(err, fetchedLeaf) {
 							should.not.exist(err);
 							should.exist(fetchedLeaf);
 							should.equal(fetchedLeaf.treeId, leaf.treeId);
@@ -200,12 +200,12 @@ describe("hasOne", function() {
 
 				it("should work when specifying parentId in the save call", function (done) {
 					leaf = new Leaf({size: 4});
-					leaf.save({ treeId: tree.id }, function(err, leaf) {
+					leaf.save({ treeId: tree[Tree.id] }, function(err, leaf) {
 						should.not.exist(err);
 
 						should.exist(leaf.treeId);
 
-						Leaf.get(leaf.id, function(err, fetchedLeaf) {
+						Leaf.get(leaf[Leaf.id], function(err, fetchedLeaf) {
 							should.not.exist(err);
 							should.exist(fetchedLeaf);
 							should.equal(fetchedLeaf.treeId, leaf.treeId);
@@ -216,10 +216,10 @@ describe("hasOne", function() {
 				});
 
 				it("should work when calling Model.create", function (done) {
-					Leaf.create({size: 4, treeId: tree.id}, function (err, leaf) {
+					Leaf.create({size: 4, treeId: tree[Tree.id]}, function (err, leaf) {
 						should.not.exist(err);
 
-						Leaf.get(leaf.id, function(err, fetchedLeaf) {
+						Leaf.get(leaf[Leaf.id], function(err, fetchedLeaf) {
 							should.not.exist(err);
 
 							should.exist(fetchedLeaf);
@@ -290,10 +290,10 @@ describe("hasOne", function() {
 			helper.dropSync(Person, function () {
 				Person.create({
 					name : "Child"
-				}, function (err) {
+				}, function (err, person) {
 					should.equal(err, null);
 
-					Person.get(1, function (err, person) {
+					Person.get(person[Person.id], function (err, person) {
 						should.equal(err, null);
 
 						person.setTopParent.should.be.a("function");

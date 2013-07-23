@@ -89,7 +89,7 @@ describe("Validations", function() {
 
 				john.save(function (err) {
 					should.equal(err, null);
-					john.id.should.be.a('number');
+					should.exist(john[Person.id]);
 
 					return done();
 				});

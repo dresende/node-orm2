@@ -3,8 +3,9 @@ var helper   = require('../support/spec_helper');
 var ORM      = require('../../');
 
 describe("Model.get()", function() {
-	var db = null;
+	var db     = null;
 	var Person = null;
+	var John;
 
 	var setup = function (cache) {
 		return function (done) {
@@ -14,7 +15,7 @@ describe("Model.get()", function() {
 				cache  : cache,
 				methods: {
 					UID: function () {
-						return this.id;
+						return this[Person.id];
 					}
 				}
 			});
@@ -26,7 +27,11 @@ describe("Model.get()", function() {
 					name: "John Doe"
 				}, {
 					name: "Jane Doe"
-				}], done);
+				}], function (err, people) {
+					John = people[0];
+
+					return done();
+				});
 			});
 		};
 	};
@@ -47,11 +52,11 @@ describe("Model.get()", function() {
 		before(setup(true));
 
 		it("should return item with id 1", function (done) {
-			Person.get(1, function (err, John) {
+			Person.get(John[Person.id], function (err, John) {
 				should.equal(err, null);
 
 				John.should.be.a("object");
-				John.should.have.property("id", 1);
+				John.should.have.property(Person.id, John[Person.id]);
 				John.should.have.property("name", "John Doe");
 
 				return done();
@@ -59,11 +64,11 @@ describe("Model.get()", function() {
 		});
 
 		it("should have an UID method", function (done) {
-			Person.get(1, function (err, John) {
+			Person.get(John[Person.id], function (err, John) {
 				should.equal(err, null);
 
 				John.UID.should.be.a("function");
-				John.UID().should.equal(John.id);
+				John.UID().should.equal(John[Person.id]);
 
 				return done();
 			});
@@ -71,15 +76,15 @@ describe("Model.get()", function() {
 
 		describe("changing name and getting id 1 again", function () {
 			it("should return the original object with unchanged name", function (done) {
-				Person.get(1, function (err, John1) {
+				Person.get(John[Person.id], function (err, John1) {
 					should.equal(err, null);
 
 					John1.name = "James";
 
-					Person.get(1, function (err, John2) {
+					Person.get(John[Person.id], function (err, John2) {
 						should.equal(err, null);
 
-						John1.id.should.equal(John2.id);
+						John1[Person.id].should.equal(John2[Person.id]);
 						John2.name.should.equal("John Doe");
 
 						return done();
@@ -93,15 +98,15 @@ describe("Model.get()", function() {
 				Person.settings.set("instance.cacheSaveCheck", false);
 
 				it("should return the same object with the changed name", function (done) {
-					Person.get(1, function (err, John1) {
+					Person.get(John[Person.id], function (err, John1) {
 						should.equal(err, null);
 
 						John1.name = "James";
 
-						Person.get(1, function (err, John2) {
+						Person.get(John[Person.id], function (err, John2) {
 							should.equal(err, null);
 
-							John1.id.should.equal(John2.id);
+							John1[Person.id].should.equal(John2[Person.id]);
 							John2.name.should.equal("James");
 
 							return done();
@@ -117,12 +122,12 @@ describe("Model.get()", function() {
 
 		describe("fetching several times", function () {
 			it("should return different objects", function (done) {
-				Person.get(1, function (err, John1) {
+				Person.get(John[Person.id], function (err, John1) {
 					should.equal(err, null);
-					Person.get(1, function (err, John2) {
+					Person.get(John[Person.id], function (err, John2) {
 						should.equal(err, null);
 
-						John1.id.should.equal(John2.id);
+						John1[Person.id].should.equal(John2[Person.id]);
 						John1.should.not.equal(John2);
 
 						return done();
@@ -137,14 +142,14 @@ describe("Model.get()", function() {
 
 		describe("fetching again after 0.2 secs", function () {
 			it("should return same objects", function (done) {
-				Person.get(1, function (err, John1) {
+				Person.get(John[Person.id], function (err, John1) {
 					should.equal(err, null);
 
 					setTimeout(function () {
-						Person.get(1, function (err, John2) {
+						Person.get(John[Person.id], function (err, John2) {
 							should.equal(err, null);
 
-							John1.id.should.equal(John2.id);
+							John1[Person.id].should.equal(John2[Person.id]);
 							John1.should.equal(John2);
 
 							return done();
@@ -156,11 +161,11 @@ describe("Model.get()", function() {
 
 		describe("fetching again after 0.7 secs", function () {
 			it("should return different objects", function (done) {
-				Person.get(1, function (err, John1) {
+				Person.get(John[Person.id], function (err, John1) {
 					should.equal(err, null);
 
 					setTimeout(function () {
-						Person.get(1, function (err, John2) {
+						Person.get(John[Person.id], function (err, John2) {
 							should.equal(err, null);
 
 							John1.should.not.equal(John2);
@@ -177,11 +182,11 @@ describe("Model.get()", function() {
 		before(setup());
 
 		it("should return item with id 1 like previously", function (done) {
-			Person.get(1, {}, function (err, John) {
+			Person.get(John[Person.id], {}, function (err, John) {
 				should.equal(err, null);
 
 				John.should.be.a("object");
-				John.should.have.property("id", 1);
+				John.should.have.property(Person.id, John[Person.id]);
 				John.should.have.property("name", "John Doe");
 
 				return done();
@@ -194,7 +199,7 @@ describe("Model.get()", function() {
 
 		it("should throw", function (done) {
 			(function () {
-				Person.get(1);
+				Person.get(John[Person.id]);
 			}).should.throw();
 
 			return done();
@@ -218,11 +223,11 @@ describe("Model.get()", function() {
 		before(setup(true));
 
 		it("should accept and try to fetch", function (done) {
-			Person.get([ 1 ], function (err, John) {
+			Person.get([ John[Person.id] ], function (err, John) {
 				should.equal(err, null);
 
 				John.should.be.a("object");
-				John.should.have.property("id", 1);
+				John.should.have.property(Person.id, John[Person.id]);
 				John.should.have.property("name", "John Doe");
 
 				return done();
@@ -269,7 +274,6 @@ describe("Model.get()", function() {
 			OtherPerson.get("Jane Doe", function (err, person) {
 				should.equal(err, null);
 
-				person.id.should.be.a("number");
 				person.name.should.equal("Jane Doe");
 
 				return done();

@@ -895,6 +895,17 @@ patient.addDoctor(surgeon, {why: "remove appendix"}, function(err) { ... } )
 
 which will add `{patient_id: 4, doctor_id: 6, why: "remove appendix"}` to the join table.
 
+#### getAccessor
+
+This accessor in this type of association returns a `ChainFind` if not passing a callback. This means you can
+do things like:
+
+```js
+patient.getDoctors().order("name").offset(1).run(function (err, doctors), {
+	// ... all doctors, ordered by name, excluding first one
+});
+```
+
 ### extendsTo
 
 If you want to split maybe optional properties into different tables or collections. Every extension will be in a new table,

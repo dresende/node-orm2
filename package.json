@@ -38,7 +38,7 @@
 	},
 	"analyse"     : false,
 	"dependencies": {
-		"sql-query" : "0.1.7",
+		"sql-query" : "0.1.8",
 		"hat"       : "0.0.3",
 		"lodash"    : "1.3.1"
 	},

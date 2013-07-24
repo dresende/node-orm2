@@ -32,7 +32,7 @@ npm test
 
 - Create Models, sync, drop, bulk create, get, find, remove, count, aggregated functions
 - Create Model associations, find, check, create and remove
-- Define custom validations (several builtin validations, check instance properties before saving)
+- Define custom validations (several builtin validations, check instance properties before saving - see [enforce](http://github.com/dresende/node-enforce) for details)
 - Model instance caching and integrity (table rows fetched twice are the same object, changes to one change all)
 - Plugins: [MySQL FTS](http://dresende.github.io/node-orm-mysql-fts) , [Pagination](http://dresende.github.io/node-orm-paging) , [Transaction](http://dresende.github.io/node-orm-transaction)
 
@@ -63,7 +63,7 @@ orm.connect("mysql://username:password@host/database", function (err, db) {
 			}
 		},
 		validations: {
-			age: orm.validators.rangeNumber(18, undefined, "under-age")
+			age: orm.enforce.ranges.number(18, undefined, "under-age")
 		}
 	});
 
@@ -707,6 +707,10 @@ Person.get(1, function (err, John) {
 
 ## Validations
 
+The module [Enforce](http://github.com/dresende/node-enforce) is used for validations. For people using previous validators,
+they're still present, some as links to enforce, others not. We advise you to start using `orm.enforce` instead of `orm.validators`.
+For a list of possible validations, consult the [module](http://github.com/dresende/node-enforce).
+
 You can define validations for every property of a Model. You can have one or more validations for each property.
 You can also use the predefined validations or create your own.
 
@@ -716,8 +720,8 @@ var Person = db.define("person", {
 	age  : Number
 }, {
 	validations : {
-		name : orm.validators.rangeLength(1, undefined, "missing"), // "missing" is a name given to this validation, instead of default
-		age  : [ orm.validators.rangeNumber(0, 10), orm.validators.insideList([ 1, 3, 5, 7, 9 ]) ]
+		name : orm.enforce.ranges.length(1, undefined, "missing"), // "missing" is a name given to this validation, instead of default
+		age  : [ orm.enforce.ranges.number(0, 10), orm.enforce.lists.inside([ 1, 3, 5, 7, 9 ]) ]
 	}
 });
 ```
@@ -758,75 +762,12 @@ orm.connect("....", function (err, db) {
 	});
 	John.save(function (err) {
 		assert(Array.isArray(err));
-		// err[0].field = "name" , err[0].value = "" , err[0].msg = "missing"
-		// err[1].field = "age"  , err[1].value = 15 , err[1].msg = "out-of-range-number"
-		// err[2].field = "age"  , err[2].value = 15 , err[2].msg = "outside-list"
+		// err[0].property = "name" , err[0].value = "" , err[0].msg = "missing"
+		// err[1].property = "age"  , err[1].value = 15 , err[1].msg = "out-of-range-number"
+		// err[2].property = "age"  , err[2].value = 15 , err[2].msg = "outside-list"
 	});
 });
 ```
-
-### Predefined Validations
-
-Predefined validations accept an optional last parameter `msg` that is the `Error.msg` if it's triggered.
-
-#### `required(msg)`
-
-Ensures property is not `null` or `undefined`. It does not trigger any error if property is `0` or empty string.
-
-#### `rangeNumber(min, max, msg)`
-
-Ensures a property is a number between `min` and `max`. Any of the parameters can be passed as `undefined`
-to exclude a minimum or maximum value.
-
-#### `rangeLength(min, max, msg)`
-
-Same as previous validator but for property length (strings).
-
-#### `insideList(list, msg)`
-
-Ensures a property value is inside a list of values.
-
-#### `outsideList(list, msg)`
-
-Ensures a property value is not inside a list of values.
-
-#### `equalToProperty(property, msg)`
-
-Ensures a property value is not the same as another property value in the instance. This validator is good for example for
-password and password repetition check.
-
-#### `notEmptyString(msg)`
-
-This is an alias for `rangeLength(1, undefined, 'empty-string')`.
-
-#### `unique(msg)`
-
-Ensures there's not another instance in your database already with that property value. This validator is good for example for
-unique identifiers.
-
-#### `password([ checks, ]msg)`
-
-Ensures the property value has some defined types of characters, usually wanted in a password. `checks` is optional and
-defaults to `"luns6"` which leans `l`owercase letters, `u`ppercase letters, `n`umbers, `s`pecial characters, with a minimum
-length of `6`.
-
-#### `patterns.match(pattern, modifiers, msg)`
-
-Ensures the property value passes the regular expression pattern (and regex modifiers).
-
-The next `patterns.*` are comodity alias to this one.
-
-#### `patterns.hexString(msg)`
-
-Ensures the property value is an hexadecimal string (uppercase or lowercase).
-
-#### `patterns.email(msg)`
-
-Ensures the property value is a valid e-mail (more or less).
-
-#### `patterns.ipv4(msg)`
-
-Ensures the property value is a valid IPv4 address. It does not accept masks (example: `0` as last number is not valid).
 
 ## Associations
 

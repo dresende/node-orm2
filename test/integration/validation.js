@@ -45,12 +45,12 @@ describe("Validations", function() {
 			var john = new Person({name: 'fdhdjendfjkdfhshdfhakdfjajhfdjhbfgk'});
 
 			john.save(function (err) {
-				should.equal(typeof err, "object");
-				should.equal(err.field,  'name');
-				should.equal(err.value,  'fdhdjendfjkdfhshdfhakdfjajhfdjhbfgk');
-				should.equal(err.msg,    'out-of-range-length');
-				should.equal(err.type,   'validation');
-				should.equal(john.id,     null);
+				should.equal(typeof err,   "object");
+				should.equal(err.property, "name");
+				should.equal(err.value,    "fdhdjendfjkdfhshdfhakdfjajhfdjhbfgk");
+				should.equal(err.msg,      "out-of-range-length");
+				should.equal(err.type,     "validation");
+				should.equal(john.id,      null);
 
 				return done();
 			});
@@ -71,7 +71,7 @@ describe("Validations", function() {
 					should.equal(err, null);
 					create(function (err) {
 						should.deepEqual(err, _.extend(new Error(),{
-							field: 'name', value: 'broom', msg: 'not-unique'
+							property: 'name', value: 'broom', msg: 'not-unique'
 						}));
 						return done();
 					});
@@ -100,11 +100,11 @@ describe("Validations", function() {
 
 				john.save(function (err) {
 					should.notEqual(err, null);
-					should.equal(err.field, 'height');
-					should.equal(err.value, 4);
-					should.equal(err.msg, 'out-of-range-number');
-					should.equal(err.type, 'validation');
-					should.equal(john.id, null);
+					should.equal(err.property, 'height');
+					should.equal(err.value,     4);
+					should.equal(err.msg,      'out-of-range-number');
+					should.equal(err.type,     'validation');
+					should.equal(john.id,      null);
 
 					return done();
 				});
@@ -130,11 +130,11 @@ describe("Validations", function() {
 
 				john.save(function (err) {
 					should.notEqual(err, null);
-					should.equal(err.field, 'name');
-					should.equal(err.value, null);
-					should.equal(err.msg, 'required');
-					should.equal(err.type, 'validation');
-					should.equal(john.id, null);
+					should.equal(err.property, 'name');
+					should.equal(err.value,    null);
+					should.equal(err.msg,      'required');
+					should.equal(err.type,     'validation');
+					should.equal(john.id,      null);
 
 					return done();
 				});
@@ -155,11 +155,11 @@ describe("Validations", function() {
 					should.equal(err.length, 2);
 
 					should.deepEqual(err[0], _.extend(new Error(),{
-						field: 'name', value: 'n', msg: 'out-of-range-length'
+						property: 'name', value: 'n', msg: 'out-of-range-length'
 					}));
 
 					should.deepEqual(err[1], _.extend(new Error(),{
-						field: 'height', value: '4', msg: 'out-of-range-number'
+						property: 'height', value: '4', msg: 'out-of-range-number'
 					}));
 
 					should.equal(john.id, null);
@@ -182,15 +182,15 @@ describe("Validations", function() {
 
 					// `type` is a non enumerable undocumented property of `Error` in V8.
 					should.deepEqual(err[0], _.extend(new Error(),{
-						field: 'name', value: null, msg: 'required'
+						property: 'name', value: null, msg: 'required'
 					}));
 
 					should.deepEqual(err[1], _.extend(new Error(),{
-						field: 'name', value: null, msg: 'undefined'
+						property: 'name', value: null, msg: 'undefined'
 					}));
 
 					should.deepEqual(err[2], _.extend(new Error(),{
-						field: 'height', value: '4', msg: 'out-of-range-number'
+						property: 'height', value: '4', msg: 'out-of-range-number'
 					}));
 
 					should.equal(john.id, null);

@@ -222,6 +222,7 @@ var Person = db.define('person', {        // 'person' will be the table in the d
 
 ##### [all types]
 * `required`: true marks the column as `NOT NULL`, false (default)
+* `unique`: true marks the column with a `UNIQUE` index
 * `defaultValue`: sets the default value for the field
 
 ##### string

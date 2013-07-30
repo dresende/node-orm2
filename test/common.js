@@ -17,6 +17,18 @@ common.createConnection = function(cb) {
 	ORM.connect(this.getConnectionString(), cb);
 };
 
+common.hasConfig = function (proto) {
+	var config;
+
+	try {
+		config = require("./config");
+	} catch (ex) {
+		return 'not-found';
+	}
+
+	return (config.hasOwnProperty(proto) ? 'found' : 'not-defined');
+};
+
 common.getConfig = function () {
 	if (common.isTravis()) {
 		switch (this.protocol()) {

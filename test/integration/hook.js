@@ -130,7 +130,14 @@ describe("Hook", function() {
 		        should.exist(people);
 		        should.equal(people.length, 1);
 		        should.equal(people[0].name, "Hook Worked");
-		        done();
+
+		        // garantee it was correctly saved on database
+		        Person.one({ name: "Hook Worked" }, function (err, person) {
+		        	should.not.exist(err);
+		        	should.exist(person);
+
+		        	return done();
+		        });
 		    });
 		});
 
@@ -150,9 +157,9 @@ describe("Hook", function() {
 					items[0].name.should.equal("Jane Doe");
 
 					// ensure it was really saved
-					Person.get(items[0][Person.id], function (err, Item) {
-						should.equal(err, null);
-						Item.name.should.equal("Jane Doe");
+					Person.find({ name: "Hook Worked" }, { cache: false }, 1, function (err, people) {
+						should.not.exist(err);
+						should(Array.isArray(people));
 
 						return done();
 					});
@@ -243,7 +250,14 @@ describe("Hook", function() {
 		        should.exist(people);
 		        should.equal(people.length, 1);
 		        should.equal(people[0].name, "Hook Worked");
-		        done();
+
+				// garantee it was correctly saved on database
+				Person.find({ name: "Hook Worked" }, { cache: false }, 1, function (err, people) {
+					should.not.exist(err);
+					should(Array.isArray(people));
+
+					return done();
+				});
 		    });
 		});
 

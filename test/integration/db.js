@@ -35,6 +35,28 @@ describe("db.use()", function () {
 		return done();
 	});
 
+	it("a plugin should be able to catch models before defining them", function (done) {
+		var MyPlugin = require("../support/my_plugin");
+		var opts     = {
+			option       : true,
+			calledDefine : false,
+			beforeDefine : function (name, props, opts) {
+				props.otherprop = Number;
+			}
+		};
+
+		db.use(MyPlugin, opts);
+
+		var MyModel = db.define("my_model", { // db.define should call plugin.define method
+			property: String
+		});
+
+		opts.calledDefine.should.be.true;
+		MyModel.properties.should.have.property("otherprop");
+
+		return done();
+	});
+
 	it("should be able to register a plugin as string", function (done) {
 		var opts     = {
 			option       : true,

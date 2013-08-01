@@ -124,6 +124,7 @@ orm.connect("....", function (err, db) {
 	console.log(db.settings.get("some.deep"));       // { value: 123 }
 });
 ```
+More in the [wiki](https://github.com/dresende/node-orm2/wiki/Settings).
 
 ## Connecting
 

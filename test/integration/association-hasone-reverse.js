@@ -4,7 +4,7 @@ var should = require('should');
 var async  = require('async');
 var _      = require('lodash');
 
-describe("hasOne", function() {
+describe("hasOne", function () {
 	var db     = null;
 	var Person = null;
 
@@ -21,13 +21,12 @@ describe("hasOne", function() {
 			});
 
 			return helper.dropSync([ Person, Pet ], function () {
-				Person.create({
-					name : "John Doe"
-				}, function () {
-					Pet.create({
-						name : "Deco"
-					}, done);
-				});
+				async.parallel([
+					Person.create.bind(Person, { name: "John Doe" }),
+					Person.create.bind(Person, { name: "Jane Doe" }),
+					Pet.create.bind(Pet, { name: "Deco" }),
+					Pet.create.bind(Pet, { name: "Fido" }),
+				], done);
 			});
 		};
 	};
@@ -72,6 +71,32 @@ describe("hasOne", function() {
 								should.not.exist(err);
 								should(Array.isArray(JohnCopy));
 								John.should.eql(JohnCopy[0]);
+
+								return done();
+							});
+						});
+					});
+				});
+			});
+		});
+
+		it("should be able to set an array of people as the owner", function (done) {
+			Person.find({ name: ["John Doe", "Jane Doe"] }, function (err, owners) {
+				Pet.find({ name: "Fido" }).first(function (err, Fido) {
+					Fido.hasOwner(function (err, has_owner) {
+						should.not.exist(err);
+						has_owner.should.be.false;
+
+						Fido.setOwner(owners, function (err) {
+							should.not.exist(err);
+
+							Fido.getOwner(function (err, ownersCopy) {
+								should.not.exist(err);
+								should(Array.isArray(owners));
+								owners.length.should.equal(2);
+
+								owners[0].should.eql(ownersCopy[0]);
+								owners[1].should.eql(ownersCopy[1]);
 
 								return done();
 							});

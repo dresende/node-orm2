@@ -95,8 +95,13 @@ describe("hasOne", function () {
 								should(Array.isArray(owners));
 								owners.length.should.equal(2);
 
-								owners[0].should.eql(ownersCopy[0]);
-								owners[1].should.eql(ownersCopy[1]);
+								if (owners[0] == ownersCopy[0]) {
+									owners[0].should.eql(ownersCopy[0]);
+									owners[1].should.eql(ownersCopy[1]);
+								} else {
+									owners[0].should.eql(ownersCopy[1]);
+									owners[1].should.eql(ownersCopy[0]);
+								}
 
 								return done();
 							});

@@ -1,3 +1,28 @@
+### v2.1.0 - 3 Aug 2013
+
+- Adds License (MIT) file (closes #271)
+- Make Model.get respect Model autoFetch default value (#277)
+- Changes the way ":" is added to sqlite db paths (#270)
+- Fixes duplicated debug lines for postgres (#258)
+- Fixes not saving associations if no changes (other than associations) are made (#256)
+- Fixes autoFetch being discarded in Model.get options (closes #266)
+- Adds beforeDefine to plugins (#263)
+- Allows user to pass an object to extendsTo.setAccessor instead of an instance (detected via #250)
+- Changes autoFetch to avoid autofetching if instance is not saved (it's new!) (#242)
+- Changes validations and predefined validators to use enforce@0.1.1
+- Adds support for setting properties.association_key to be a function (name, field)
+- Passes connection settings to database drivers
+- Creates initial mongodb driver and 'mongo' driver alias
+- Allow querying chainfind with sql conditions
+- Allow passing extra options to extended models
+- Allow big text fields
+- Allow before* hooks to modify the instance
+- Fixes #226 - hasOne delAccessor not working
+- Adds Utilities.getRealPath to look for the real path to load based on the file where it was called from (for db.load and db.use)
+- Fixes Model.aggregate().call() to accept no arguments except function name
+- Fix problem with extendsTo and custom key types
+- Better association typing and multikey support
+
 ### v2.0.15 - 10 July 2013
 
 - Support for 'point' type as a property (#221)

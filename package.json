@@ -11,13 +11,10 @@
 		"redshift",
 		"sqlite"
 	],
-	"version"     : "2.0.15",
+	"version"     : "2.1.0",
 	"license"     : "MIT",
 	"homepage"    : "http://dresende.github.io/node-orm2",
 	"repository"  : "http://github.com/dresende/node-orm2.git",
-	"scripts"     : {
-		"test"      : "make"
-	},
 	"contributors": [
 		{ "name" : "Bramus Van Damme", "email" : "bramus@bram.us" },
 		{ "name" : "Lorien Gamaroff",  "email" : "lorien@gamaroff.org" },

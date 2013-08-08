@@ -102,13 +102,5 @@ describe("Model keys option", function() {
 				});
 			})
 		});
-
-		it("should throw if defining hasMany association", function (done) {
-			(function () {
-				DoorAccessHistory.hasMany("...");
-			}).should.throw();
-
-			return done();
-		});
 	});
 });

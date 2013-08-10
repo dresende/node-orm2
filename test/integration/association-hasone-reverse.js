@@ -131,7 +131,7 @@ describe("hasOne", function () {
 		                        Person.find({ pet_id: Deco.id }).first(function (err, owner) {
 		                            should.not.exist(err);
 		                            should.exist(owner);
-		                            should.equal(owner.id, John.id);
+		                            owner.id.should.equal(John.id);
 		                            done();
 		                        });
 
@@ -158,10 +158,40 @@ describe("hasOne", function () {
 		                        Person.find({ pet: Deco }).first(function (err, owner) {
 		                            should.not.exist(err);
 		                            should.exist(owner);
-		                            should.equal(owner.id, John.id);
+		                            owner.id.should.equal(John.id);
 		                            done();
 		                        });
 
+		                    });
+		                });
+		            });
+		        });
+		    });
+            
+		    it("should be able to find given a number of association instances with a single primary key", function (done) {
+		        Person.find({ name: "John Doe" }).first(function (err, John) {
+		            should.not.exist(err);
+		            should.exist(John);
+		            Pet.all(function (err, pets) {
+		                should.not.exist(err);
+		                should.exist(pets);
+		                should.equal(pets.length, 2);
+
+		                pets[0].hasOwner(function (err, has_owner) {
+		                    should.not.exist(err);
+		                    has_owner.should.be.false;
+
+		                    pets[0].setOwner(John, function (err) {
+		                        should.not.exist(err);
+
+		                        Person.find({ pet: pets }, function (err, owners) {
+		                            should.not.exist(err);
+		                            should.exist(owners);
+		                            owners.length.should.equal(1);
+
+		                            owners[0].id.should.equal(John.id);
+		                            done();
+		                        });
 		                    });
 		                });
 		            });

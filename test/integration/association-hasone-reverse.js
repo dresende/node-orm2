@@ -17,7 +17,8 @@ describe("hasOne", function () {
 				name     : String
 			});
 			Person.hasOne('pet', Pet, {
-				reverse : 'owner'
+			    reverse: 'owner',
+                field: 'ownerId'
 			});
 
 			return helper.dropSync([ Person, Pet ], function () {
@@ -109,6 +110,58 @@ describe("hasOne", function () {
 					});
 				});
 			});
+		});
+
+		describe("find", function () {
+		    before(setup());
+
+		    it("should be able to find given an association id", function (done) {
+		        Person.find({ name: "John Doe" }).first(function (err, John) {
+		            should.not.exist(err);
+		            Pet.find({ name: "Deco" }).first(function (err, Deco) {
+		                should.not.exist(err);
+		                Deco.hasOwner(function (err, has_owner) {
+		                    should.not.exist(err);
+		                    has_owner.should.be.false;
+
+		                    Deco.setOwner(John, function (err) {
+		                        should.not.exist(err);
+
+		                        Pet.find({ ownerId: John.id }).first(function (err, owner) {
+		                            should.not.exist(err);
+		                            should.equal(owner.id, John.id);
+		                            done();
+		                        });
+
+		                    });
+		                });
+		            });
+		        });
+		    });
+
+		    it("should be able to find given an association instance", function (done) {
+		        Person.find({ name: "John Doe" }).first(function (err, John) {
+		            should.not.exist(err);
+		            Pet.find({ name: "Deco" }).first(function (err, Deco) {
+		                should.not.exist(err);
+		                Deco.hasOwner(function (err, has_owner) {
+		                    should.not.exist(err);
+		                    has_owner.should.be.false;
+
+		                    Deco.setOwner(John, function (err) {
+		                        should.not.exist(err);
+
+		                        Pet.find({ owner: John }).first(function (err, owner) {
+		                            should.not.exist(err);
+		                            should.equal(owner.id, John.id);
+		                            done();
+		                        });
+
+		                    });
+		                });
+		            });
+		        });
+		    });
 		});
 	});
 });

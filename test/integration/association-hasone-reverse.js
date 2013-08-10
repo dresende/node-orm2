@@ -17,8 +17,7 @@ describe("hasOne", function () {
 				name     : String
 			});
 			Person.hasOne('pet', Pet, {
-			    reverse: 'owner',
-                field: 'ownerId'
+			    reverse: 'owner'
 			});
 
 			return helper.dropSync([ Person, Pet ], function () {
@@ -118,8 +117,10 @@ describe("hasOne", function () {
 		    it("should be able to find given an association id", function (done) {
 		        Person.find({ name: "John Doe" }).first(function (err, John) {
 		            should.not.exist(err);
+		            should.exist(John);
 		            Pet.find({ name: "Deco" }).first(function (err, Deco) {
 		                should.not.exist(err);
+		                should.exist(Deco);
 		                Deco.hasOwner(function (err, has_owner) {
 		                    should.not.exist(err);
 		                    has_owner.should.be.false;
@@ -127,8 +128,9 @@ describe("hasOne", function () {
 		                    Deco.setOwner(John, function (err) {
 		                        should.not.exist(err);
 
-		                        Pet.find({ ownerId: John.id }).first(function (err, owner) {
+		                        Person.find({ pet_id: Deco.id }).first(function (err, owner) {
 		                            should.not.exist(err);
+		                            should.exist(owner);
 		                            should.equal(owner.id, John.id);
 		                            done();
 		                        });
@@ -142,8 +144,10 @@ describe("hasOne", function () {
 		    it("should be able to find given an association instance", function (done) {
 		        Person.find({ name: "John Doe" }).first(function (err, John) {
 		            should.not.exist(err);
+		            should.exist(John);
 		            Pet.find({ name: "Deco" }).first(function (err, Deco) {
 		                should.not.exist(err);
+		                should.exist(Deco);
 		                Deco.hasOwner(function (err, has_owner) {
 		                    should.not.exist(err);
 		                    has_owner.should.be.false;
@@ -151,8 +155,9 @@ describe("hasOne", function () {
 		                    Deco.setOwner(John, function (err) {
 		                        should.not.exist(err);
 
-		                        Pet.find({ owner: John }).first(function (err, owner) {
+		                        Person.find({ pet: Deco }).first(function (err, owner) {
 		                            should.not.exist(err);
+		                            should.exist(owner);
 		                            should.equal(owner.id, John.id);
 		                            done();
 		                        });

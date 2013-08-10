@@ -17,7 +17,8 @@ describe("hasOne", function () {
 				name     : String
 			});
 			Person.hasOne('pet', Pet, {
-			    reverse: 'owner'
+			    reverse: 'owner',
+                field: 'pet_id'
 			});
 
 			return helper.dropSync([ Person, Pet ], function () {
@@ -110,93 +111,94 @@ describe("hasOne", function () {
 				});
 			});
 		});
+	});
 
-		describe("find", function () {
-		    before(setup());
 
-		    it("should be able to find given an association id", function (done) {
-		        Person.find({ name: "John Doe" }).first(function (err, John) {
-		            should.not.exist(err);
-		            should.exist(John);
-		            Pet.find({ name: "Deco" }).first(function (err, Deco) {
-		                should.not.exist(err);
-		                should.exist(Deco);
-		                Deco.hasOwner(function (err, has_owner) {
-		                    should.not.exist(err);
-		                    has_owner.should.be.false;
+	describe("reverse find", function () {
+	    before(setup());
 
-		                    Deco.setOwner(John, function (err) {
-		                        should.not.exist(err);
+	    it("should be able to find given an association id", function (done) {
+	        Person.find({ name: "John Doe" }).first(function (err, John) {
+	            should.not.exist(err);
+	            should.exist(John);
+	            Pet.find({ name: "Deco" }).first(function (err, Deco) {
+	                should.not.exist(err);
+	                should.exist(Deco);
+	                Deco.hasOwner(function (err, has_owner) {
+	                    should.not.exist(err);
+	                    has_owner.should.be.false;
 
-		                        Person.find({ pet_id: Deco.id }).first(function (err, owner) {
-		                            should.not.exist(err);
-		                            should.exist(owner);
-		                            owner.id.should.equal(John.id);
-		                            done();
-		                        });
+	                    Deco.setOwner(John, function (err) {
+	                        should.not.exist(err);
 
-		                    });
-		                });
-		            });
-		        });
-		    });
+	                        Person.find({ pet_id: Deco.id }).first(function (err, owner) {
+	                            should.not.exist(err);
+	                            should.exist(owner);
+	                            should.equal(owner.name, John.name);
+	                            done();
+	                        });
 
-		    it("should be able to find given an association instance", function (done) {
-		        Person.find({ name: "John Doe" }).first(function (err, John) {
-		            should.not.exist(err);
-		            should.exist(John);
-		            Pet.find({ name: "Deco" }).first(function (err, Deco) {
-		                should.not.exist(err);
-		                should.exist(Deco);
-		                Deco.hasOwner(function (err, has_owner) {
-		                    should.not.exist(err);
-		                    has_owner.should.be.false;
+	                    });
+	                });
+	            });
+	        });
+	    });
 
-		                    Deco.setOwner(John, function (err) {
-		                        should.not.exist(err);
+	    it("should be able to find given an association instance", function (done) {
+	        Person.find({ name: "John Doe" }).first(function (err, John) {
+	            should.not.exist(err);
+	            should.exist(John);
+	            Pet.find({ name: "Deco" }).first(function (err, Deco) {
+	                should.not.exist(err);
+	                should.exist(Deco);
+	                Deco.hasOwner(function (err, has_owner) {
+	                    should.not.exist(err);
+	                    has_owner.should.be.false;
 
-		                        Person.find({ pet: Deco }).first(function (err, owner) {
-		                            should.not.exist(err);
-		                            should.exist(owner);
-		                            owner.id.should.equal(John.id);
-		                            done();
-		                        });
+	                    Deco.setOwner(John, function (err) {
+	                        should.not.exist(err);
 
-		                    });
-		                });
-		            });
-		        });
-		    });
-            
-		    it("should be able to find given a number of association instances with a single primary key", function (done) {
-		        Person.find({ name: "John Doe" }).first(function (err, John) {
-		            should.not.exist(err);
-		            should.exist(John);
-		            Pet.all(function (err, pets) {
-		                should.not.exist(err);
-		                should.exist(pets);
-		                should.equal(pets.length, 2);
+	                        Person.find({ pet: Deco }).first(function (err, owner) {
+	                            should.not.exist(err);
+	                            should.exist(owner);
+	                            should.equal(owner.name, John.name);
+	                            done();
+	                        });
 
-		                pets[0].hasOwner(function (err, has_owner) {
-		                    should.not.exist(err);
-		                    has_owner.should.be.false;
+	                    });
+	                });
+	            });
+	        });
+	    });
 
-		                    pets[0].setOwner(John, function (err) {
-		                        should.not.exist(err);
+	    it("should be able to find given a number of association instances with a single primary key", function (done) {
+	        Person.find({ name: "John Doe" }).first(function (err, John) {
+	            should.not.exist(err);
+	            should.exist(John);
+	            Pet.all(function (err, pets) {
+	                should.not.exist(err);
+	                should.exist(pets);
+	                should.equal(pets.length, 2);
 
-		                        Person.find({ pet: pets }, function (err, owners) {
-		                            should.not.exist(err);
-		                            should.exist(owners);
-		                            owners.length.should.equal(1);
+	                pets[0].hasOwner(function (err, has_owner) {
+	                    should.not.exist(err);
+	                    has_owner.should.be.false;
 
-		                            owners[0].id.should.equal(John.id);
-		                            done();
-		                        });
-		                    });
-		                });
-		            });
-		        });
-		    });
-		});
+	                    pets[0].setOwner(John, function (err) {
+	                        should.not.exist(err);
+
+	                        Person.find({ pet: pets }, function (err, owners) {
+	                            should.not.exist(err);
+	                            should.exist(owners);
+	                            owners.length.should.equal(1);
+
+	                            should.equal(owners[0].name, John.name);
+	                            done();
+	                        });
+	                    });
+	                });
+	            });
+	        });
+	    });
 	});
 });

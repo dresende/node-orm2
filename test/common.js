@@ -20,6 +20,8 @@ common.createConnection = function(cb) {
 common.hasConfig = function (proto) {
 	var config;
 
+	if (common.isTravis()) return 'found';
+
 	try {
 		config = require("./config");
 	} catch (ex) {

@@ -107,85 +107,17 @@ You can call `orm.express` more than once to have multiple database connections.
 will be joined together in `req.models`. **Don't forget to use it before `app.use(app.router)`, preferably right after your
 assets public folder(s).**
 
+## Documentation
+
+Documentation is moving to the [wiki](https://github.com/dresende/node-orm2/wiki/).
+
 ## Settings
 
-Settings are used to store key value pairs. A settings object is stored on the global orm object and on each database connection.
-
-```js
-var orm = require("orm");
-
-orm.settings.set("some.deep.value", 123);
-
-orm.connect("....", function (err, db) {
-	// db.settings is a snapshot of the settings at the moment
-	// of orm.connect(). changes to it don't affect orm.settings
-
-	console.log(db.settings.get("some.deep.value")); // 123
-	console.log(db.settings.get("some.deep"));       // { value: 123 }
-});
-```
-More in the [wiki](https://github.com/dresende/node-orm2/wiki/Settings).
+See information in the [wiki](https://github.com/dresende/node-orm2/wiki/Settings).
 
 ## Connecting
 
-First, add the correct driver to your `package.json`:
-
- driver                | npm package                | version
-:----------------------|:---------------------------|:-----
- mysql                 | mysql                      | 2.0.0-alpha7
- postgres<br/>redshift | pg                         | ~1.0.0
- sqlite                | sqlite3                    | 2.1.7
- mongodb               | mongodb                    | 1.3.11
-
-These are the versions tested. Use others (older or newer) at your own risk.
-
-### Options
-
-You can pass in connection options either as a string:
-
-```js
-var orm = require("orm");
-
-orm.connect("mysql://username:password@host/database?pool=true", function (err, db) {
-	// ...
-});
-```
-
-**Note:** `pool` is only supported by mysql & postgres. When 'pool' is set to true, your database connections are cached so that connections can be reused, optimizing performance.
-
-**Note:** `strdates` is only supported by sqlite. When true, date fields are saved as strings, compatible with django
-
-Or as an object:
-
-```js
-var opts = {
-  database : "dbname",
-  protocol : "[mysql|postgres|redshift|sqlite]",
-  host     : "127.0.0.1",
-  port     : 3306,         // optional, defaults to database default
-  user     : "..",
-  password : "..",
-  query    : {
-    pool     : true|false,   // optional, false by default
-    debug    : true|false,   // optional, false by default
-    strdates : true|false    // optional, false by default
-  }
-};
-orm.connect(opts, function (err, db) {
-	// ...
-});
-```
-
-You can also avoid passing a callback and just listen for the connect event:
-
-```js
-var orm = require("orm");
-var db  = orm.connect("mysql://username:password@host/database");
-
-db.on("connect", function (err, db) {
-	// ...
-});
-```
+See information in the [wiki](https://github.com/dresende/node-orm2/wiki/Connecting-to-Database).
 
 ## Models
 
@@ -195,50 +127,11 @@ Models support behaviours for accessing and manipulating table data.
 
 ## Defining Models
 
-Call `define` on the database connection to setup a model. The name of the table and model is used as an identifier for the model on the database connection, so you can easily access the model later using the connection.
-
-```js
-var Person = db.define('person', {        // 'person' will be the table in the database as well as the model id
-	// properties
-	name    : String,                     // you can use native objects to define the property type
-	surname : { type: "text", size: 50 }  // or you can be specific and define aditional options
-}, {
-	// options (optional)
-});
-```
+See information in the [wiki](https://github.com/dresende/node-orm2/wiki/Defining-Models).
 
 ### Properties
 
-#### Types
-
-
- Native   | String     | Native   | String
- :--------|:-----------|:---------|:---------
- String   | 'text'     | Date     | 'date '
- Number   | 'number'   | Object   | 'object'
- Boolean  | 'boolean'  | Buffer   | 'binary'
-          |            |  ---     | 'enum'
-
-#### Options
-
-##### [all types]
-* `required`: true marks the column as `NOT NULL`, false (default)
-* `unique`: true marks the column with a `UNIQUE` index
-* `defaultValue`: sets the default value for the field
-
-##### string
-* `size`: max length of the string
-* `big`: true to make (LONG)TEXT columns instead of VARCHAR(size)
-
-##### number
-* `rational`: true (default) creates a FLOAT/REAL, false an INTEGER
-* `size`: byte size of number, default is 4. Note that 8 byte numbers [have limitations](http://stackoverflow.com/questions/307179/what-is-javascripts-max-int-whats-the-highest-integer-value-a-number-can-go-t)
-* `unsigned`: true to make INTEGER unsigned, default is false
-
-##### date
-* `time`: true (default) creates a DATETIME/TIMESTAMP, false a DATE
-
-Note that these may vary accross drivers.
+See information in the [wiki](https://github.com/dresende/node-orm2/wiki/Model-Properties).
 
 ### Instance Methods
 
@@ -384,44 +277,7 @@ Other options:
 
 ## Hooks
 
-If you want to listen for a type of event than occurs in instances of a Model, you can attach a function that
-will be called when that event happens.
-
-Currently the following events are supported:
-
-- `afterLoad` : (no parameters) Right after loading and preparing an instance to be used;
-- `afterAutoFetch` : (no parameters) Right after auto-fetching associations (if any), it will trigger regardless of having associations or not;
-- `beforeSave` : (no parameters) Right before trying to save;
-- `afterSave` : (bool success) Right after saving;
-- `beforeCreate` : (no parameters) Right before trying to save a new instance (prior to `beforeSave`);
-- `afterCreate` : (bool success) Right after saving a new instance;
-- `beforeRemove` : (no parameters) Right before trying to remove an instance;
-- `afterRemove` : (bool success) Right after removing an instance;
-- `beforeValidation` : (no parameters) Before all validations and prior to `beforeCreate` and `beforeSave`;
-
-All hook function are called with `this` as the instance so you can access anything you want related to it.
-
-For all `before*` hooks, you can add an additional parameter to the hook function. This parameter will be a function that
-must be called to tell if the hook allows the execution to continue or to break. You might be familiar with this workflow
-already from Express. Here's an example:
-
-```js
-var Person = db.define("person", {
-	name    : String,
-	surname : String
-}, {
-	hooks: {
-		beforeCreate: function (next) {
-			if (this.surname == "Doe") {
-				return next(new Error("No Does allowed"));
-			}
-			return next();
-		}
-	}
-});
-```
-
-This workflow allows you to make asynchronous work before calling `next`.
+See information in the [wiki](https://github.com/dresende/node-orm2/wiki/Model-Hooks).
 
 ## Finding Items
 
@@ -709,74 +565,7 @@ Person.get(1, function (err, John) {
 
 ## Validations
 
-The module [Enforce](http://github.com/dresende/node-enforce) is used for validations. For people using previous validators,
-they're still present, some as links to enforce, others not. We advise you to start using `orm.enforce` instead of `orm.validators`.
-For a list of possible validations, consult the [module](http://github.com/dresende/node-enforce).
-
-There's also a `unique` validator built into ORM accessible via:
-```js
-name: orm.enforce.unique("name already taken!")
-name: orm.enforce.unique({ scope: ['age'] }, "Sorry, name already taken for this age group")
-name: orm.enforce.unique({ ignoreCase: true }) // 'John' is same as 'john' (mysql is case insensitive by default)
-```
-
-You can define validations for every property of a Model. You can have one or more validations for each property.
-You can also use the predefined validations or create your own.
-
-```js
-var Person = db.define("person", {
-	name : String,
-	age  : Number
-}, {
-	validations : {
-		name : orm.enforce.ranges.length(1, undefined, "missing"), // "missing" is a name given to this validation, instead of default
-		age  : [ orm.enforce.ranges.number(0, 10), orm.enforce.lists.inside([ 1, 3, 5, 7, 9 ]) ]
-	}
-});
-```
-
-The code above defines that the `name` length must be between 1 and undefined (undefined means any) and `age`
-must be a number between 0 and 10 (inclusive) but also one of the listed values. The example might not make sense
-but you get the point.
-
-When saving an item, if it fails to validate any of the defined validations you'll get an `error` object with the property
-name and validation error description. This description should help you identify what happened.
-
-```js
-var John = new Person({
-	name : "",
-	age : 20
-});
-John.save(function (err) {
-	// err.field = "name" , err.value = "" , err.msg = "missing"
-});
-```
-
-The validation stops after the first validation error. If you want it to validate every property and return all validation
-errors, you can change this behavior on global or local settings:
-
-```js
-var orm = require("orm");
-
-orm.settings.set("instance.returnAllErrors", true); // global or..
-
-orm.connect("....", function (err, db) {
-	db.settings.set("instance.returnAllErrors", true); // .. local
-
-	// ...
-
-	var John = new Person({
-		name : "",
-		age : 15
-	});
-	John.save(function (err) {
-		assert(Array.isArray(err));
-		// err[0].property = "name" , err[0].value = "" , err[0].msg = "missing"
-		// err[1].property = "age"  , err[1].value = 15 , err[1].msg = "out-of-range-number"
-		// err[2].property = "age"  , err[2].value = 15 , err[2].msg = "outside-list"
-	});
-});
-```
+See information in the [wiki](https://github.com/dresende/node-orm2/wiki/Model-Validations).
 
 ## Associations
 

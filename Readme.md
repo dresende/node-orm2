@@ -713,6 +713,13 @@ The module [Enforce](http://github.com/dresende/node-enforce) is used for valida
 they're still present, some as links to enforce, others not. We advise you to start using `orm.enforce` instead of `orm.validators`.
 For a list of possible validations, consult the [module](http://github.com/dresende/node-enforce).
 
+There's also a `unique` validator built into ORM accessible via:
+```js
+name: orm.enforce.unique("name already taken!")
+name: orm.enforce.unique({ scope: ['age'] }, "Sorry, name already taken for this age group")
+name: orm.enforce.unique({ ignoreCase: true }) // 'John' is same as 'john' (mysql is case insensitive by default)
+```
+
 You can define validations for every property of a Model. You can have one or more validations for each property.
 You can also use the predefined validations or create your own.
 

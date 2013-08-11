@@ -2,6 +2,8 @@ var _        = require('lodash');
 var should   = require('should');
 var helper   = require('../support/spec_helper');
 var async    = require('async');
+var common   = require('../common');
+var protocol = common.protocol().toLowerCase();
 var ORM      = require('../../');
 
 describe("Validations", function() {
@@ -56,27 +58,136 @@ describe("Validations", function() {
 			});
 		});
 
-		it("unique validator should work", function(done) {
-			var Product = db.define("person_unique", { name: String }, {
-				validations: { name: ORM.validators.unique() }
-			});
-			var create = function (cb) {
-				var p = new Product({ name: 'broom' });
+		describe("unique", function() {
+			var Product = null;
 
-				return p.save(cb);
-			};
+			var setupUnique = function (ignoreCase, scope, msg) {
+		    return function (done) {
+		      Product = db.define("product_unique", {
+		        name     : String,
+		        category : String
+		      }, {
+		        validations: {
+		          name: [ORM.validators.unique({ ignoreCase: ignoreCase, scope: scope }, msg)]
+		        }
+		      });
 
-			helper.dropSync(Product, function() {
-				create(function (err) {
-					should.equal(err, null);
-					create(function (err) {
-						should.deepEqual(err, _.extend(new Error(),{
-							property: 'name', value: 'broom', msg: 'not-unique'
-						}));
-						return done();
-					});
-				});
-			});
+		      return helper.dropSync(Product, done);
+		    };
+		  };
+
+		  describe("simple", function () {
+		  	before(setupUnique(false, false));
+
+		  	it("should return validation error for duplicate name", function (done) {
+		  	  Product.create({name: 'fork'}, function (err, product) {
+            should.not.exist(err);
+
+            Product.create({name: 'fork'}, function (err, product) {
+              should.exist(err);
+
+              return done();
+            });
+          });
+			  });
+
+			  it("should pass with different names", function (done) {
+		  	  Product.create({name: 'spatula'}, function (err, product) {
+            should.not.exist(err);
+
+            Product.create({name: 'plate'}, function (err, product) {
+              should.not.exist(err);
+
+              return done();
+            });
+          });
+			  });
+		  });
+
+		  describe("scope", function () {
+        describe("to other property", function () {
+          before(setupUnique(false, ['category']));
+
+          it("should return validation error if other property also matches", function(done) {
+            Product.create({name: 'red', category: 'chair'}, function (err, product) {
+              should.not.exist(err);
+
+              Product.create({name: 'red', category: 'chair'}, function (err, product) {
+                should.exist(err);
+                should.equal(err.msg, 'not-unique');
+
+                return done();
+              });
+            });
+          });
+
+          it("should pass if other peroperty is different", function (done) {
+            Product.create({name: 'blue', category: 'chair'}, function (err, product) {
+              should.not.exist(err);
+
+              Product.create({name: 'blue', category: 'pen'}, function (err, product) {
+                should.not.exist(err);
+
+                return done();
+              });
+            });
+          });
+        });
+      });
+
+      describe("ignoreCase", function () {
+        if (protocol != 'mysql') {
+          it("false should do a case sensitive comparison", function (done) {
+            setupUnique(false, false)(function (err) {
+              should.not.exist(err);
+
+              Product.create({name: 'spork'}, function (err, product) {
+                should.not.exist(err);
+
+                Product.create({name: 'spOrk'}, function (err, product) {
+                  should.not.exist(err);
+
+                  return done();
+                });
+              });
+            });
+          });
+        }
+
+        it("true should do a case insensitive comparison", function (done) {
+          setupUnique(true, false)(function (err) {
+            should.not.exist(err);
+
+            Product.create({name: 'stapler'}, function (err, product) {
+              should.not.exist(err);
+
+              Product.create({name: 'staplER'}, function (err, product) {
+                should.exist(err);
+                should.equal(err.msg, 'not-unique');
+
+                return done();
+              });
+            });
+          });
+        });
+
+        it("true should do a case insensitive comparison on scoped properties too", function (done) {
+          setupUnique(true, ['category'], "name already taken for this category")(function (err) {
+            should.not.exist(err);
+
+            Product.create({name: 'black', category: 'pen'}, function (err, product) {
+              should.not.exist(err);
+
+              Product.create({name: 'Black', category: 'Pen'}, function (err, product) {
+                should.exist(err);
+                should.equal(err.msg, "name already taken for this category");
+
+                return done();
+              });
+            });
+          });
+        });
+      });
 		});
 	});
 

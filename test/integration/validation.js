@@ -150,6 +150,19 @@ describe("Validations", function() {
 							});
 						});
 					});
+
+					// In SQL unique index land, NULL values are not considered equal.
+					it("should pass if other peroperty is null", function (done) {
+						Product.create({name: 'blue', category: null}, function (err, product) {
+							should.not.exist(err);
+
+							Product.create({name: 'blue', category: null}, function (err, product) {
+								should.not.exist(err);
+
+								return done();
+							});
+						});
+					});
 				});
 			});
 

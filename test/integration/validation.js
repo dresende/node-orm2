@@ -62,150 +62,150 @@ describe("Validations", function() {
 			var Product = null;
 
 			var setupUnique = function (ignoreCase, scope, msg) {
-		    return function (done) {
-		      Product = db.define("product_unique", {
-		        instock  : { type: 'boolean', required: true, defaultValue: false },
-            name     : String,
-		        category : String
-		      }, {
-            cache: false,
-		        validations: {
-              name      : ORM.validators.unique({ ignoreCase: ignoreCase, scope: scope }, msg),
-              instock   : ORM.validators.required(),
-              productId : ORM.validators.unique() // this must be straight after a required & validated row.
-		        }
-		      });
-          Product.hasOne('product', Product, { field: 'productId', required: false, autoFetch: true });
+				return function (done) {
+					Product = db.define("product_unique", {
+						instock  : { type: 'boolean', required: true, defaultValue: false },
+						name     : String,
+						category : String
+					}, {
+						cache: false,
+						validations: {
+							name      : ORM.validators.unique({ ignoreCase: ignoreCase, scope: scope }, msg),
+							instock   : ORM.validators.required(),
+							productId : ORM.validators.unique() // this must be straight after a required & validated row.
+						}
+					});
+					Product.hasOne('product', Product, { field: 'productId', required: false, autoFetch: true });
 
-		      return helper.dropSync(Product, done);
-		    };
-		  };
+					return helper.dropSync(Product, done);
+				};
+			};
 
-		  describe("simple", function () {
-		  	before(setupUnique(false, false));
+			describe("simple", function () {
+				before(setupUnique(false, false));
 
-		  	it("should return validation error for duplicate name", function (done) {
-		  	  Product.create({name: 'fork'}, function (err, product) {
-            should.not.exist(err);
+				it("should return validation error for duplicate name", function (done) {
+					Product.create({name: 'fork'}, function (err, product) {
+						should.not.exist(err);
 
-            Product.create({name: 'fork'}, function (err, product) {
-              should.exist(err);
+						Product.create({name: 'fork'}, function (err, product) {
+							should.exist(err);
 
-              return done();
-            });
-          });
-			  });
+							return done();
+						});
+					});
+				});
 
-			  it("should pass with different names", function (done) {
-		  	  Product.create({name: 'spatula'}, function (err, product) {
-            should.not.exist(err);
+				it("should pass with different names", function (done) {
+					Product.create({name: 'spatula'}, function (err, product) {
+						should.not.exist(err);
 
-            Product.create({name: 'plate'}, function (err, product) {
-              should.not.exist(err);
+						Product.create({name: 'plate'}, function (err, product) {
+							should.not.exist(err);
 
-              return done();
-            });
-          });
-			  });
+							return done();
+						});
+					});
+				});
 
-        // Technically this is covered by the tests above, but I'm putting it here for clarity's sake. 3 HOURS WASTED *sigh.
-        it("should not leak required state from previous validation for association properties [regression test]", function (done) {
-          Product.create({ name: 'pencil', productId: null}, function (err, product) {
-            should.not.exist(err);
+				// Technically this is covered by the tests above, but I'm putting it here for clarity's sake. 3 HOURS WASTED *sigh.
+				it("should not leak required state from previous validation for association properties [regression test]", function (done) {
+					Product.create({ name: 'pencil', productId: null}, function (err, product) {
+						should.not.exist(err);
 
-            Product.create({ name: 'pencilcase', productId: null }, function (err, product) {
-              should.not.exist(err);
+						Product.create({ name: 'pencilcase', productId: null }, function (err, product) {
+							should.not.exist(err);
 
-              return done();
-            });
-          });
-        });
-		  });
+							return done();
+						});
+					});
+				});
+			});
 
-		  describe("scope", function () {
-        describe("to other property", function () {
-          before(setupUnique(false, ['category']));
+			describe("scope", function () {
+				describe("to other property", function () {
+					before(setupUnique(false, ['category']));
 
-          it("should return validation error if other property also matches", function(done) {
-            Product.create({name: 'red', category: 'chair'}, function (err, product) {
-              should.not.exist(err);
+					it("should return validation error if other property also matches", function(done) {
+						Product.create({name: 'red', category: 'chair'}, function (err, product) {
+							should.not.exist(err);
 
-              Product.create({name: 'red', category: 'chair'}, function (err, product) {
-                should.exist(err);
-                should.equal(err.msg, 'not-unique');
+							Product.create({name: 'red', category: 'chair'}, function (err, product) {
+								should.exist(err);
+								should.equal(err.msg, 'not-unique');
 
-                return done();
-              });
-            });
-          });
+								return done();
+							});
+						});
+					});
 
-          it("should pass if other peroperty is different", function (done) {
-            Product.create({name: 'blue', category: 'chair'}, function (err, product) {
-              should.not.exist(err);
+					it("should pass if other peroperty is different", function (done) {
+						Product.create({name: 'blue', category: 'chair'}, function (err, product) {
+							should.not.exist(err);
 
-              Product.create({name: 'blue', category: 'pen'}, function (err, product) {
-                should.not.exist(err);
+							Product.create({name: 'blue', category: 'pen'}, function (err, product) {
+								should.not.exist(err);
 
-                return done();
-              });
-            });
-          });
-        });
-      });
+								return done();
+							});
+						});
+					});
+				});
+			});
 
-      describe("ignoreCase", function () {
-        if (protocol != 'mysql') {
-          it("false should do a case sensitive comparison", function (done) {
-            setupUnique(false, false)(function (err) {
-              should.not.exist(err);
+			describe("ignoreCase", function () {
+				if (protocol != 'mysql') {
+					it("false should do a case sensitive comparison", function (done) {
+						setupUnique(false, false)(function (err) {
+							should.not.exist(err);
 
-              Product.create({name: 'spork'}, function (err, product) {
-                should.not.exist(err);
+							Product.create({name: 'spork'}, function (err, product) {
+								should.not.exist(err);
 
-                Product.create({name: 'spOrk'}, function (err, product) {
-                  should.not.exist(err);
+								Product.create({name: 'spOrk'}, function (err, product) {
+									should.not.exist(err);
 
-                  return done();
-                });
-              });
-            });
-          });
-        }
+									return done();
+								});
+							});
+						});
+					});
+				}
 
-        it("true should do a case insensitive comparison", function (done) {
-          setupUnique(true, false)(function (err) {
-            should.not.exist(err);
+				it("true should do a case insensitive comparison", function (done) {
+					setupUnique(true, false)(function (err) {
+						should.not.exist(err);
 
-            Product.create({name: 'stapler'}, function (err, product) {
-              should.not.exist(err);
+						Product.create({name: 'stapler'}, function (err, product) {
+							should.not.exist(err);
 
-              Product.create({name: 'staplER'}, function (err, product) {
-                should.exist(err);
-                should.equal(err.msg, 'not-unique');
+							Product.create({name: 'staplER'}, function (err, product) {
+								should.exist(err);
+								should.equal(err.msg, 'not-unique');
 
-                return done();
-              });
-            });
-          });
-        });
+								return done();
+							});
+						});
+					});
+				});
 
-        it("true should do a case insensitive comparison on scoped properties too", function (done) {
-          setupUnique(true, ['category'], "name already taken for this category")(function (err) {
-            should.not.exist(err);
+				it("true should do a case insensitive comparison on scoped properties too", function (done) {
+					setupUnique(true, ['category'], "name already taken for this category")(function (err) {
+						should.not.exist(err);
 
-            Product.create({name: 'black', category: 'pen'}, function (err, product) {
-              should.not.exist(err);
+						Product.create({name: 'black', category: 'pen'}, function (err, product) {
+							should.not.exist(err);
 
-              Product.create({name: 'Black', category: 'Pen'}, function (err, product) {
-                should.exist(err);
-                should.equal(err.msg, "name already taken for this category");
+							Product.create({name: 'Black', category: 'Pen'}, function (err, product) {
+								should.exist(err);
+								should.equal(err.msg, "name already taken for this category");
 
-                return done();
-              });
-            });
-          });
-        });
-      });
+								return done();
+							});
+						});
+					});
+				});
+			});
 		});
 	});
 

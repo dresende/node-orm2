@@ -229,6 +229,18 @@ describe("hasOne", function() {
 						});
 					});
 				});
+
+				it("shouldn't cause an infinite loop when getting and saving", function (done) {
+					Leaf.get(leafId, function (err, leaf) {
+						should.not.exist(err);
+
+						leaf.save( function (err) {
+							should.not.exist(err);
+
+							done();
+						});
+					});
+				});
 			});
 		});
 	});

@@ -64,13 +64,18 @@ describe("Validations", function() {
 			var setupUnique = function (ignoreCase, scope, msg) {
 		    return function (done) {
 		      Product = db.define("product_unique", {
-		        name     : String,
+		        instock  : { type: 'boolean', required: true, defaultValue: false },
+            name     : String,
 		        category : String
 		      }, {
+            cache: false,
 		        validations: {
-		          name: [ORM.validators.unique({ ignoreCase: ignoreCase, scope: scope }, msg)]
+              name      : ORM.validators.unique({ ignoreCase: ignoreCase, scope: scope }, msg),
+              instock   : ORM.validators.required(),
+              productId : ORM.validators.unique() // this must be straight after a required & validated row.
 		        }
 		      });
+          Product.hasOne('product', Product, { field: 'productId', required: false, autoFetch: true });
 
 		      return helper.dropSync(Product, done);
 		    };
@@ -102,6 +107,19 @@ describe("Validations", function() {
             });
           });
 			  });
+
+        // Technically this is covered by the tests above, but I'm putting it here for clarity's sake. 3 HOURS WASTED *sigh.
+        it("should not leak required state from previous validation for association properties [regression test]", function (done) {
+          Product.create({ name: 'pencil', productId: null}, function (err, product) {
+            should.not.exist(err);
+
+            Product.create({ name: 'pencilcase', productId: null }, function (err, product) {
+              should.not.exist(err);
+
+              return done();
+            });
+          });
+        });
 		  });
 
 		  describe("scope", function () {

@@ -131,7 +131,7 @@ describe("hasOne", function () {
 	                    Deco.setOwner(John, function (err) {
 	                        should.not.exist(err);
 
-	                        Person.find({ pet_id: Deco.id }).first(function (err, owner) {
+	                        Person.find({ pet_id: Deco[Pet.id[0]] }).first(function (err, owner) {
 	                            should.not.exist(err);
 	                            should.exist(owner);
 	                            should.equal(owner.name, John.name);

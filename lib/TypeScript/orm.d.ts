@@ -1,4 +1,5 @@
 ﻿/// <reference path="enforce.d.ts"/>
+/// <reference path="sql-query.d.ts"/>
 
 declare module orm {
     export interface ORMStatic {
@@ -6,6 +7,11 @@ declare module orm {
         enforce: enforce.EnforceStatic;
         singleton: SingletonStatic;
         settings: Settings;
+
+        Property: PropertyStatic;
+        Settings: SettingsStatic;
+        ErrorCodes: ErrorCodesStatic;
+        Text: sqlquery.TextStatic;
 
         express(uri: string, options: {
             define: (db: ORM, models: Model[]) => void;
@@ -56,47 +62,65 @@ declare module orm {
     }
 
     export interface SingletonStatic {
+        clear(key?: string): SingletonStatic;
+        get(key: string, opts: { cache?: any; save_check?: boolean; },
+            createCallback: (object: any) => void,
+            returnCallback: (object: any) => void);
+    }
 
+    export interface SettingsStatic {
+        defaults: () => SettingsStore;
+
+        Container(settings: SettingsStore): Settings;
     }
 
     export interface Settings {
-        defaults: () => Settings;
-        
-        constructor(settings: Settings): {
-            set(key: string, value: any): Settings;
-            get(key: string, def: any): any;
-            unset(...keys: string[]): Settings;
+        set(key: string, value: any): Settings;
+        get(key: string, def: any): any;
+        unset(...keys: string[]): Settings;
+    }
+
+    export interface SettingsStore {
+        properties: {
+            primary_key: string;
+            association_key: string;
+            required: string;
         }
 
-        properties?: {
-            primary_key?: string;
-            association_key?: string;
-            required?: string;
+        instance: {
+            cache: boolean;
+            cacheSaveCheck: boolean;
+            autoSave: boolean;
+            autoFetch: boolean;
+            autoFetchLimit: number;
+            cascadeRemove: boolean;
+            returnAllErrors: boolean;
         }
 
-        instance?: {
-            cache?: boolean;
-            cacheSaveCheck?: boolean;
-            autoSave?: boolean;
-            autoFetch?: boolean;
-            autoFetchLimit?: number;
-            cascadeRemove?: boolean;
-            returnAllErrors?: boolean;
-        }
-
-        connection?: {
-            reconnect?: boolean;
-            poll?: boolean;
-            debug?: boolean;
+        connection: {
+            reconnect: boolean;
+            poll: boolean;
+            debug: boolean;
         }
     }
 
-    export interface Property {
-
+    export interface PropertyStatic {
+        normalize(property: Function, settings: Settings): ModelProperty;
+        normalize(property: string, settings: Settings): ModelProperty;
+        normalize(property: any[], settings: Settings): ModelProperty;
+        validate(value: any, property: ModelProperty): any;
     }
 
-    export interface ErrorCodes {
+    export interface ErrorCodesStatic {
+        QUERY_ERROR: number;
+        NOT_FOUND: number;
+        NOT_DEFINED: number;
+        NO_SUPPORT: number;
+        MISSING_CALLBACK: number;
+        PARAM_MISSMATCH: number;
+        CONNECTION_LOST: number;
 
+        generateError(code: number, message: string, extra: { [property: string]: any }): Error;
     }
 
     export interface Express {
@@ -267,5 +291,12 @@ declare module orm {
         count(cb: (count: number) => any): () => ChainInstance;
         get(cb: (instances: Instance[]) => any): () => ChainInstance;
         save(cb: (instance: Instance) => any): () => ChainInstance;
+    }
+}
+
+declare module enforce {
+    export interface EnforceStatic {
+        equalToProperty(name: string, message?: string): enforce.Validator;
+        unique(): enforce.Validator;
     }
 }

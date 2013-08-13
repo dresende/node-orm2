@@ -1,6 +1,8 @@
 var should     = require('should');
 var helper     = require('../support/spec_helper');
 var validators = require('../../').validators;
+var common = require('../common');
+var protocol = common.protocol().toLowerCase();
 var undef      = undefined;
 
 function checkValidation(done, expected) {
@@ -26,6 +28,8 @@ describe("Predefined Validators", function () {
 	});
 
 	describe("unique()", function () {
+	    if (protocol === "mongodb") return;
+
 		var db = null;
 		var Person = null;
 

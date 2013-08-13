@@ -58,7 +58,9 @@ describe("Validations", function() {
 			});
 		});
 
-		describe("unique", function() {
+		describe("unique", function () {
+		    if (protocol === "mongodb") return;
+
 			var Product = null;
 
 			var setupUnique = function (ignoreCase, scope, msg) {

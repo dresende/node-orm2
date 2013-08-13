@@ -236,7 +236,6 @@ describe("hasOne", function() {
 
 						leaf.save( function (err) {
 							should.not.exist(err);
-
 							done();
 						});
 					});

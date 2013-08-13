@@ -11,7 +11,7 @@ declare module orm {
         Property: PropertyStatic;
         Settings: SettingsStatic;
         ErrorCodes: ErrorCodesStatic;
-        Text: sqlquery.TextStatic;
+        Text: sqlquery.TextQuery;
 
         express(uri: string, options: {
             define: (db: ORM, models: Model[]) => void;
@@ -171,7 +171,55 @@ declare module orm {
         create(values: InstanceProperties, cb: (err: Error, newInstance: Instance) => void): Model;
         create(values: InstanceProperties[], cb: (err: Error, newInstance: Instance) => void): Model;
 
-        clear(cb: (err: Error) => void): Model; 
+        clear(cb: (err: Error) => void): Model;
+
+        hasOne(name: string, model: Model, options: {
+            autoFetch?: boolean;
+            autoFetchLimit?: number;
+            field?: string;
+            reverse?: string;
+            accessor?: string;
+            reverseAccessor?: string;
+            required?: boolean;
+            getAccessor?: string;
+            setAccessor?: string;
+            hasAccessor?: string;
+            delAccessor?: string;
+        }): Association;
+
+        extendsTo(name: string, properties: ModelProperties, options: {
+            autoFetch?: boolean;
+            autoFetchLimit?: number;
+            field?: string;
+            table?: string;
+            required?: boolean;
+            getAccessor?: string;
+            setAccessor?: string;
+            hasAccessor?: string;
+            delAccessor?: string;
+            cache?: boolean;
+            autoSave?: boolean;
+            cascadeRemove?: boolean;
+            hooks?: { [hook: string]: (cb?: () => void) => void; };
+            methods?: { [name: string]: Function; };
+            validations?: { [property: string]: enforce.Validator[];[property: string]: enforce.Validator; };
+        }): Model;
+
+        hasMany(name: string, model: Model, properties: ModelProperties, options: {
+            autoFetch?: boolean;
+            autoFetchLimit?: number;
+            accessor?: string;
+            reverse?: string;
+            field?: string[];
+            mergeTable?: string;
+            mergeId?: string[];
+            mergeAssocId?: string[];
+            getAccessor?: string;
+            setAccessor?: string;
+            hasAccessor?: string;
+            delAccessor?: string;
+            addAccessor?: string;
+        }): Association;
     }
 
     export interface ModelProperties {
@@ -291,6 +339,16 @@ declare module orm {
         count(cb: (count: number) => any): () => ChainInstance;
         get(cb: (instances: Instance[]) => any): () => ChainInstance;
         save(cb: (instance: Instance) => any): () => ChainInstance;
+    }
+
+    export interface Association {
+        prepare(model: Model, associations: Association[], association_properties: string[], model_fields: string[]);
+        extend(model: Model, instance: Instance, driver: Driver, associations: Association[], options: {});
+        autoFetch(instance: Instance, associations: Association[], options: {}, cb: () => void);
+    }
+
+    export interface Driver {
+
     }
 }
 

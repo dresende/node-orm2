@@ -35,7 +35,24 @@ declare module orm {
     }
 
     export interface ValidatorsStatic {
-
+        required(message?: string): enforce.Validator;
+        notEmptyString(message?: string): enforce.Validator;
+        rangeNumber(min: number, max: number, message?: string): enforce.Validator;
+        rangeLength(min: number, max: number, message?: string): enforce.Validator;
+        insideList(list: string[], message?: string): enforce.Validator;
+        insideList(list: number[], message?: string): enforce.Validator;
+        outsideList(list: string[], message?: string): enforce.Validator;
+        outsideList(list: number[], message?: string): enforce.Validator;
+        password(checks: string, message?: string): enforce.Validator;
+        patterns: {
+            match(pattern: RegExp, message?: string): enforce.Validator;
+            match(pattern: string, modifiers: string, message?: string): enforce.Validator;
+            hexString(message?: string): enforce.Validator;
+            email(message?: string): enforce.Validator;
+            ipv4(message?: string): enforce.Validator;
+        }
+        equalToProperty(name: string, message?: string): enforce.Validator;
+        unique(): enforce.Validator;
     }
 
     export interface SingletonStatic {

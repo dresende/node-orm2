@@ -17,3 +17,7 @@ exports.postgres = {
 	password : "",
 	database : "test"
 };
+exports.mongodb = {
+    host: "localhost",
+    database: "test"
+};

@@ -230,7 +230,7 @@ describe("hasOne", function() {
 					});
 				});
 
-				it("shouldn't cause an infinite loop when getting and saving", function (done) {
+				it("shouldn't cause an infinite loop when getting and saving with no changes", function (done) {
 					Leaf.get(leafId, function (err, leaf) {
 						should.not.exist(err);
 
@@ -240,17 +240,21 @@ describe("hasOne", function() {
 						});
 					});
 				});
+
+				it("shouldn't cause an infinite loop when getting and saving with changes", function (done) {
+					Leaf.get(leafId, function (err, leaf) {
+						should.not.exist(err);
+
+						leaf.save({ size: 14 }, function (err) {
+							should.not.exist(err);
+							done();
+						});
+					});
+				});
 			});
 		});
 	});
 
-    /**
-     * DISABLED:    Impossible for this test to pass given the validation constraints
-     *              provided, unless we update enforce to allow an "orUndefined" validator
-     *              extension.
-     */
-
-    /*
 	describe("validations", function () {
 		before(setup({validations: { stalkId: ORM.validators.rangeNumber(undefined, 50) }}));
 
@@ -269,7 +273,6 @@ describe("hasOne", function() {
 			});
 		});
 	});
-    */
 
 	describe("if not passing another Model", function () {
 		it("should use same model", function (done) {

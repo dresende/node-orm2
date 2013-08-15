@@ -472,6 +472,13 @@ a few examples to describe it:
 { col1: orm.like(12 + "%") } // `col1` like '12%'
 ```
 
+#### Raw queries
+
+Note: This may change in future.
+```js
+db.driver.execQuery("SELECT id, email FROM user", function (err, data) { ... })
+```
+
 ### Caching & Integrity
 
 Model instances are cached. If multiple different queries will result in the same result, you will

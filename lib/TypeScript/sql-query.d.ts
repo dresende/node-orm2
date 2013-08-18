@@ -1,24 +1,22 @@
 ﻿declare module sqlquery {
-    export interface QueryStatic {
-        Query(dialect: string): Query;
-        Query(options: {
+    export class Query {
+        constructor(dialect: string);
+        constructor(options: {
             dialect: string;
-        }): Query;
-        Text(type: string): TextQuery;
+        });
+        static Text(type: string): TextQuery;
 
-        Comparators: string[];
-        between(a: number, b: number): Comparator;
-        not_between(a: number, b: number): Comparator;
-        like(expression: string): Comparator;
-        eq(value: any): Comparator;
-        ne(value: any): Comparator;
-        gt(value: any): Comparator;
-        gte(value: any): Comparator;
-        lt(value: any): Comparator;
-        lte(value: any): Comparator;
-    }
+        static Comparators: string[];
+        static between(a: number, b: number): Comparator;
+        static not_between(a: number, b: number): Comparator;
+        static like(expression: string): Comparator;
+        static eq(value: any): Comparator;
+        static ne(value: any): Comparator;
+        static gt(value: any): Comparator;
+        static gte(value: any): Comparator;
+        static lt(value: any): Comparator;
+        static lte(value: any): Comparator;
 
-    export interface Query {
         escapeId(id: string): string;
         escapeId(id: string, table: string): string;
         escapeVal(value: any): string;

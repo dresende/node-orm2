@@ -104,3 +104,38 @@ common.getConnectionString = function () {
 	}
 	return url;
 };
+
+common.retry = function (run, until, done, args) {
+    if (typeof until === "number") {
+        var countDown = until;
+        until = function (err) {
+            if (err && --countDown > 0) return false;
+            return true;
+        }
+    }
+
+    if (typeof args === "undefined") args = [];
+
+    var handler = function (err) {
+        if (until(err)) return done.apply(this, arguments);
+        return runNext(err);
+    }
+    
+    args.push(handler);
+
+    var runNext = function () {
+        try {
+            if (run.length == args.length) {
+                return run.apply(this, args);
+            } else {
+                run.apply(this, args);
+                handler();
+            }
+        }
+        catch(e) {
+            handler(e);
+        }
+    }
+
+    runNext();
+}

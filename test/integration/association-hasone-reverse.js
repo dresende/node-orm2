@@ -116,10 +116,8 @@ describe("hasOne", function () {
 
 
     describe("reverse find", function () {
-        before(setup());
-
         it("should be able to find given an association id", function (done) {
-            common.retry(function (done) {
+            common.retry(setup(), function (done) {
                 Person.find({ name: "John Doe" }).first(function (err, John) {
                     should.not.exist(err);
                     should.exist(John);
@@ -148,7 +146,7 @@ describe("hasOne", function () {
         });
 
         it("should be able to find given an association instance", function (done) {
-            common.retry(function (done) {
+            common.retry(setup(), function (done) {
                 Person.find({ name: "John Doe" }).first(function (err, John) {
                     should.not.exist(err);
                     should.exist(John);
@@ -177,7 +175,7 @@ describe("hasOne", function () {
         });
 
         it("should be able to find given a number of association instances with a single primary key", function (done) {
-            common.retry(function (done) {
+            common.retry(setup(), function (done) {
                 Person.find({ name: "John Doe" }).first(function (err, John) {
                     should.not.exist(err);
                     should.exist(John);

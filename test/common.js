@@ -105,37 +105,58 @@ common.getConnectionString = function () {
 	return url;
 };
 
-common.retry = function (run, until, done, args) {
+common.retry = function (before, run, until, done, args) {
     if (typeof until === "number") {
         var countDown = until;
         until = function (err) {
             if (err && --countDown > 0) return false;
             return true;
-        }
+        };
     }
 
     if (typeof args === "undefined") args = [];
 
     var handler = function (err) {
         if (until(err)) return done.apply(this, arguments);
-        return runNext(err);
-    }
-    
+        return runNext();
+    };
+
     args.push(handler);
+
+    var runCurrent = function () {
+        if (run.length == args.length) {
+            return run.apply(this, args);
+        } else {
+            run.apply(this, args);
+            handler();
+        }
+    };
 
     var runNext = function () {
         try {
-            if (run.length == args.length) {
-                return run.apply(this, args);
+            if (before.length > 0) {
+                before(function (err) {
+                    if (until(err)) return done(err);
+                    return runCurrent();
+                });
             } else {
-                run.apply(this, args);
-                handler();
+                before();
+                runCurrent();
             }
         }
-        catch(e) {
+        catch (e) {
             handler(e);
         }
-    }
+    };
 
-    runNext();
-}
+    if (before.length > 0) {
+        before(function (err) {
+            if (err) return done(err);
+            runNext();
+        });
+    }
+    else {
+        before();
+        runNext();
+    }
+};

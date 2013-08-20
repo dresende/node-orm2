@@ -486,6 +486,25 @@ describe("Hook", function() {
 					return done();
 				});
 			});
+
+			describe("if hook returns an error", function () {
+				before(setup({
+					afterLoad : function (next) {
+						return next(new Error("AFTERLOAD_FAIL"));
+					}
+				}));
+
+				it("should return error", function (done) {
+					this.timeout(500);
+
+					Person.create([{ name: "John Doe" }], function (err, items) {
+						err.should.exist;
+						err.message.should.equal("AFTERLOAD_FAIL");
+
+						return done();
+					});
+				});
+			});
 		});
 	});
 

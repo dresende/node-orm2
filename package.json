@@ -35,7 +35,7 @@
 	},
 	"analyse"     : false,
 	"dependencies": {
-		"enforce"   : "0.1.1",
+		"enforce"   : "0.1.2",
 		"sql-query" : "0.1.9",
 		"hat"       : "0.0.3",
 		"lodash"    : "1.3.1"

@@ -91,8 +91,10 @@ var orm = require('orm');
 var app = express();
 
 app.use(orm.express("mysql://username:password@host/database", {
-	define: function (db, models) {
+	define: function (db, models, next) {
 		models.person = db.define("person", { ... });
+
+		return next();
 	}
 }));
 app.listen(80);

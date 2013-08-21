@@ -476,9 +476,22 @@ a few examples to describe it:
 
 #### Raw queries
 
-Note: This may change in future.
 ```js
 db.driver.execQuery("SELECT id, email FROM user", function (err, data) { ... })
+
+// You can escape identifiers and values.
+db.driver.execQuery(
+  "SELECT user.??, user.?? FROM user WHERE user.?? LIKE ? AND user.?? > ?",
+  ['id', 'name', 'name', 'john', 'id', 55],
+  function (err, data) { ... }
+)
+
+// Identifiers don't need to be scaped most of the time
+db.driver.execQuery(
+  "SELECT user.id, user.name FROM user WHERE user.name LIKE ? AND user.id > ?",
+  ['john', 55],
+  function (err, data) { ... }
+)
 ```
 
 ### Caching & Integrity

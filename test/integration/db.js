@@ -176,3 +176,65 @@ describe("db.serial()", function () {
 		});
 	});
 });
+
+describe("db.driver", function () {
+	var db = null;
+
+	before(function (done) {
+		helper.connect(function (connection) {
+			db = connection;
+
+			var Log = db.define('log', {
+				what : { type: 'text' },
+				when : { type: 'date', time: true },
+				who  : { type: 'text' }
+			});
+
+			helper.dropSync(Log, function (err) {
+				if (err) return done(err);
+
+				Log.create([
+					{ what: "password reset", when: new Date('2013/04/07 12:33:05'), who: "jane" },
+					{ what: "user login",     when: new Date('2013/04/07 13:01:44'), who: "jane" },
+					{ what: "user logout",    when: new Date('2013/05/12 04:09:31'), who: "john" }
+				], done);
+			});
+		});
+	});
+
+	after(function () {
+		return db.close();
+	});
+
+	it("should be available", function () {
+		should.exist(db.driver);
+	});
+
+	describe("query", function () {
+		it("should be available", function () {
+			should.exist(db.driver.query);
+		});
+
+		describe("#execQuery", function () {
+			it("should execute sql queries", function (done) {
+				db.driver.execQuery("SELECT id FROM log", function (err, data) {
+					should.not.exist(err);
+
+					should(JSON.stringify(data) == JSON.stringify([{ id: 1 }, { id: 2 }, { id: 3 }]));
+					done();
+				});
+			});
+
+			it("should escape sql queries", function (done) {
+				var query = "SELECT log.?? FROM log WHERE log.?? LIKE ? AND log.?? > ?";
+				var args  = ['what', 'who', 'jane', 'when', new Date('2013/04/07 12:40:00')];
+				db.driver.execQuery(query, args, function (err, data) {
+					should.not.exist(err);
+
+					should(JSON.stringify(data) == JSON.stringify([{ "what": "user login" }]));
+					done();
+				});
+			});
+		});
+	});
+});

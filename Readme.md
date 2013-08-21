@@ -480,6 +480,8 @@ a few examples to describe it:
 db.driver.execQuery("SELECT id, email FROM user", function (err, data) { ... })
 
 // You can escape identifiers and values.
+// For identifier substitution use: ??
+// For value substitution use: ?
 db.driver.execQuery(
   "SELECT user.??, user.?? FROM user WHERE user.?? LIKE ? AND user.?? > ?",
   ['id', 'name', 'name', 'john', 'id', 55],

@@ -1,6 +1,7 @@
-var should   = require('should');
-var helper   = require('../support/spec_helper');
-var ORM      = require('../../');
+var should = require('should');
+var helper = require('../support/spec_helper');
+var ORM    = require('../../');
+var common = require('../common');
 
 describe("db.use()", function () {
 	var db = null;
@@ -209,6 +210,8 @@ describe("db.driver", function () {
 	it("should be available", function () {
 		should.exist(db.driver);
 	});
+
+	if (common.protocol() == "mongodb") return;
 
 	describe("query", function () {
 		it("should be available", function () {

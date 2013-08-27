@@ -497,32 +497,13 @@ describe("Model.find() chaining", function() {
 		before(setup());
 
 		it("should return a Promise with .fail() method", function (done) {
-			Person.find({ notExistingField: "" }).fail(function (err) {
-				should.exist(err);
+			Person.find().fail(function (err) {
+				// never called..
 			}).success(function (people) {
 				// never called..
 			}).then(function () {
-				// never called..
-			}, function () {
-				return done()
-			});
-		});
-
-		it("should allow multiple invocations", function (done) {
-			var invocations = 0;
-
-			Person.find({ notExistingField: "" }).fail(function (err) {
-				invocations++;
-				should.exist(err);
-			}).fail(function (err) {
-				invocations++;
-				should.exist(err);
-			});
-
-			setTimeout(function () {
-				should.equal(invocations, 2);
 				return done();
-			}, 500);
+			});
 		});
 	});
 
@@ -571,17 +552,6 @@ describe("Model.find() chaining", function() {
 				should.equal(err, null);
 			}).then(function () {
 				return done()
-			});
-		});
-
-		it("should call the error callback on error", function (done) {
-			Person.find({ notExistingField: "" }).fail(function (err) {
-				should.exist(err);
-			}).then(function () {
-				// never called..
-			}, function (err) {
-				should.exist(err);
-				return done();
 			});
 		});
 

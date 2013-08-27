@@ -1,5 +1,6 @@
 var should   = require('should');
 var helper   = require('../support/spec_helper');
+var common   = require('../common');
 var ORM      = require('../../');
 
 describe("Model.get()", function() {
@@ -282,6 +283,8 @@ describe("Model.get()", function() {
 	});
 
 	describe("with a point property type", function() {
+		if (common.protocol() == 'sqlite' || common.protocol() == 'mongodb') return;
+
 		it("should deserialize the point to an array", function (done) {
 			db.settings.set('properties.primary_key', 'id');
 
@@ -292,11 +295,7 @@ describe("Model.get()", function() {
 
 			ORM.singleton.clear();
 
-			return helper.dropSync(Person, function (err) {
-				if (err) {
-					return done(); // not supported
-				}
-
+			return helper.dropSync(Person, function () {
 				Person.create({
 					name     : "John Doe",
 					location : { x : 51.5177, y : -0.0968 }

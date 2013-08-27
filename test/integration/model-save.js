@@ -1,5 +1,6 @@
 var should   = require('should');
 var helper   = require('../support/spec_helper');
+var common   = require('../common');
 var ORM      = require('../../');
 
 describe("Model.save()", function() {
@@ -198,12 +199,10 @@ describe("Model.save()", function() {
 	});
 
 	describe("with a point property", function () {
-		it("should save the instance as a geospatial point", function (done) {
-			setup({ type: "point" }, null)(function (err) {
-				if (err) {
-					return done(); // not supported
-				}
+		if (common.protocol() == 'sqlite' || common.protocol() == 'mongodb') return;
 
+		it("should save the instance as a geospatial point", function (done) {
+			setup({ type: "point" }, null)(function () {
 				var John = new Person({
 					name: { x: 51.5177, y: -0.0968 }
 				});

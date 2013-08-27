@@ -1,5 +1,6 @@
 var common = require('../common');
 var async  = require('async');
+var should = require('should');
 
 module.exports.connect = function(cb) {
 	common.createConnection(function (err, conn) {
@@ -19,5 +20,8 @@ module.exports.dropSync = function (models, done) {
 
 			item.sync(cb);
 		});
-	}, done);
+	}, function (err) {
+		should.not.exist(err);
+		done(err);
+	});
 };

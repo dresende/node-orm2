@@ -468,25 +468,61 @@ describe("Model.find() chaining", function() {
 		it("should return a Promise with .fail() method", function (done) {
 			Person.find().success(function (people) {
 				should(Array.isArray(people));
-
-				return done();
 			}).fail(function (err) {
 				// never called..
+			}).then(function () {
+				return done()
 			});
+		});
+
+		it("should allow multiple invocations", function (done) {
+			var invocations = 0;
+
+			Person.find().success(function (people) {
+				invocations++;
+				should(Array.isArray(people));
+			}).success(function (people) {
+				invocations++;
+				should(Array.isArray(people));
+			});
+
+			setTimeout(function () {
+				should.equal(invocations, 2);
+				return done();
+			}, 500);
 		});
 	});
 
 	describe(".fail()", function () {
 		before(setup());
 
-		it("should return a Promise with .success() method", function (done) {
-			Person.find().fail(function (err) {
-				// never called..
+		it("should return a Promise with .fail() method", function (done) {
+			Person.find({ notExistingField: "" }).fail(function (err) {
+				should.exist(err);
 			}).success(function (people) {
-				should(Array.isArray(people));
-
-				return done();
+				// never called..
+			}).then(function () {
+				// never called..
+			}, function () {
+				return done()
 			});
+		});
+
+		it("should allow multiple invocations", function (done) {
+			var invocations = 0;
+
+			Person.find({ notExistingField: "" }).fail(function (err) {
+				invocations++;
+				should.exist(err);
+			}).fail(function (err) {
+				invocations++;
+				should.exist(err);
+			});
+
+			setTimeout(function () {
+				should.equal(invocations, 2);
+				return done();
+			}, 500);
 		});
 	});
 
@@ -497,9 +533,73 @@ describe("Model.find() chaining", function() {
 			Person.find().complete(function (err, people) {
 				should(Array.isArray(people));
 				should.equal(err, null);
+			}).success(function (people) {
+				should(Array.isArray(people));
+			}).fail(function (err) {
+				should.equal(err, null);
+			}).then(function () {
+				return done()
+			});
+		});
 
+		it("should allow multiple invocations", function (done) {
+			var invocations = 0;
+
+			Person.find().complete(function (err, people) {
+				invocations++;
+				should(Array.isArray(people));
+				should.equal(err, null);
+			}).complete(function (err, people) {
+				invocations++;
+				should(Array.isArray(people));
+				should.equal(err, null);
+			});
+
+			setTimeout(function () {
+				should.equal(invocations, 2);
+				return done();
+			}, 500);
+		});
+	});
+
+	describe(".then()", function () {
+		before(setup());
+
+		it("should return a Promise with .then() method", function (done) {
+			Person.find().complete(function (err, people) {
+				should(Array.isArray(people));
+				should.equal(err, null);
+			}).then(function () {
+				return done()
+			});
+		});
+
+		it("should call the error callback on error", function (done) {
+			Person.find({ notExistingField: "" }).fail(function (err) {
+				should.exist(err);
+			}).then(function () {
+				// never called..
+			}, function (err) {
+				should.exist(err);
 				return done();
 			});
-		})
+		});
+
+		it("should allow multiple invocations", function (done) {
+			var invocations = 0;
+
+			Person.find().then(function (people) {
+				invocations++;
+				should(Array.isArray(people));
+			}).then(function (people) {
+				invocations++;
+				should(Array.isArray(people));
+			});
+
+			setTimeout(function () {
+				should.equal(invocations, 2);
+				return done();
+			}, 500);
+		});
 	});
 });

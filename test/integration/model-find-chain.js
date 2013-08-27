@@ -462,15 +462,15 @@ describe("Model.find() chaining", function() {
 		});
 	});
 
-	describe(".success()", function () {
+	describe(".done()", function () {
 		before(setup());
 
-		it("should return a Promise with .fail() method", function (done) {
-			Person.find().success(function (people) {
+		it("should return a Promise with .done() method", function (done) {
+			Person.find().done(function (people) {
 				should(Array.isArray(people));
 			}).fail(function (err) {
 				// never called..
-			}).then(function () {
+			}).always(function () {
 				return done()
 			});
 		});
@@ -478,10 +478,10 @@ describe("Model.find() chaining", function() {
 		it("should allow multiple invocations", function (done) {
 			var invocations = 0;
 
-			Person.find().success(function (people) {
+			Person.find().done(function (people) {
 				invocations++;
 				should(Array.isArray(people));
-			}).success(function (people) {
+			}).done(function (people) {
 				invocations++;
 				should(Array.isArray(people));
 			});
@@ -496,41 +496,53 @@ describe("Model.find() chaining", function() {
 	describe(".fail()", function () {
 		before(setup());
 
-		it("should return a Promise with .fail() method", function (done) {
-			Person.find().fail(function (err) {
-				// never called..
-			}).success(function (people) {
-				// never called..
-			}).then(function () {
-				return done();
-			});
-		});
+//		it("should return a Promise with .fail() method that calles the callback on query failure", function (done) {
+//			Person.find().fail(function (err) {
+//				should.exist(err);
+//			}).done(function (people) {
+//				// never called...
+//			}).always(function () {
+//				return done();
+//			});
+//		});
+
+//		it("should allow multiple invocations", function (done) {
+//			var invocations = 0;
+//
+//			Person.find().fail(function (err) {
+//				invocations++;
+//				should.exist(err);
+//			}).fail(function (err) {
+//				invocations++;
+//				should.exist(err);
+//			});
+//
+//			setTimeout(function () {
+//				should.equal(invocations, 2);
+//				return done();
+//			}, 500);
+//		});
 	});
 
-	describe(".complete()", function () {
+	describe(".always()", function () {
 		before(setup());
 
-		it("should return a Promise with .complete() method", function (done) {
-			Person.find().complete(function (err, people) {
+		it("should return a Promise with .always() method", function (done) {
+			Person.find().always(function (err, people) {
 				should(Array.isArray(people));
 				should.equal(err, null);
-			}).success(function (people) {
-				should(Array.isArray(people));
-			}).fail(function (err) {
-				should.equal(err, null);
-			}).then(function () {
-				return done()
+				return done();
 			});
 		});
 
 		it("should allow multiple invocations", function (done) {
 			var invocations = 0;
 
-			Person.find().complete(function (err, people) {
+			Person.find().always(function (err, people) {
 				invocations++;
 				should(Array.isArray(people));
 				should.equal(err, null);
-			}).complete(function (err, people) {
+			}).always(function (err, people) {
 				invocations++;
 				should(Array.isArray(people));
 				should.equal(err, null);
@@ -547,13 +559,27 @@ describe("Model.find() chaining", function() {
 		before(setup());
 
 		it("should return a Promise with .then() method", function (done) {
-			Person.find().complete(function (err, people) {
+			Person.find().then(function (people) {
+				should(Array.isArray(people));
+			}, function (err) {
+				// never called
+			}).always(function (err, people) {
 				should(Array.isArray(people));
 				should.equal(err, null);
-			}).then(function () {
-				return done()
+				return done();
 			});
 		});
+
+//		it("should call the provided fail callback on failure", function (done) {
+//			Person.find().remove().then(function (people) {
+//				// never called
+//			}, function (err) {
+//				should.exist(err);
+//			}).always(function (err, people) {
+//				should.exist(err);
+//				return done();
+//			});
+//		});
 
 		it("should allow multiple invocations", function (done) {
 			var invocations = 0;
@@ -561,9 +587,13 @@ describe("Model.find() chaining", function() {
 			Person.find().then(function (people) {
 				invocations++;
 				should(Array.isArray(people));
+			}, function (err) {
+				// never called
 			}).then(function (people) {
 				invocations++;
 				should(Array.isArray(people));
+			}, function (err) {
+				// never called
 			});
 
 			setTimeout(function () {

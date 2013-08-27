@@ -489,4 +489,17 @@ describe("Model.find() chaining", function() {
 			});
 		});
 	});
+
+	describe(".complete()", function () {
+		before(setup());
+
+		it("should return a Promise with .complete() method", function (done) {
+			Person.find().complete(function (err, people) {
+				should(Array.isArray(people));
+				should.equal(err, null);
+
+				return done();
+			});
+		})
+	});
 });

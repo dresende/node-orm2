@@ -130,7 +130,7 @@ describe("Model instance", function() {
 
 	describe("properties", function () {
 		describe("Number", function () {
-			it("should be saved for valid numbers", function (done) {
+			it("should be saved for valid numbers, using both save & create", function (done) {
 				var person1 = new Person({ height: 190 });
 
 				person1.save(function (err) {
@@ -186,7 +186,7 @@ describe("Model instance", function() {
 					});
 				});
 
-				it("should raise an error for nonsensical integers", function (done) {
+				it("should raise an error for nonsensical integers, for both save & create", function (done) {
 					var person = new Person({ height: 'bugz' });
 
 					person.save(function (err) {
@@ -197,7 +197,12 @@ describe("Model instance", function() {
 
 						should.equal(err.message, msg);
 
-						done();
+						Person.create({ height: 'bugz' }, function (err, instance) {
+							should.exist(err);
+							should.equal(err.message, msg);
+
+							done();
+						});
 					});
 				});
 			}

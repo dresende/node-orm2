@@ -104,7 +104,7 @@ declare module orm {
         NOT_DEFINED: number;
         NO_SUPPORT: number;
         MISSING_CALLBACK: number;
-        PARAM_MISSMATCH: number;
+        PARAM_MISMATCH: number;
         CONNECTION_LOST: number;
 
         generateError(code: number, message: string, extra: any): Error;

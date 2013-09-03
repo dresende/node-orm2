@@ -1,6 +1,23 @@
 ### v2.2.0 - (todo, in future)
 - Fixes error code spelling: `PARAM_MISSMATCH` -> `PARAM_MISMATCH`
 
+### v2.1.next - (available on master but not on NPM yet)
+- Add TypeScript interface
+- Add support for custom property types (#305)
+- Add promises to query chain (#316)
+- Unique validator can be scoped and case insensitive (#288)
+- Allow finding by associations (#293)
+- Allow custom join tables (#276)
+- Allow async express middleware (#291)
+- Allow auto-escaping for custom queries (#304)
+- Deprecated `PARAM_MISSMATCH` ErrorCode in favour of correctly spelt `PARAM_MISMATCH` (#315)
+- Fix `NaN` handling (#310)
+- Fixes stack overflow when saving auto-fetched model with relations (#279)
+- Fix `afterLoad` hook error handling (#301)
+- Fix sqlite find with boolean (#292)
+- Fix saving Instance.extra fields (#312)
+- Fix incorrect SQL query (#313)
+
 ### v2.1.0 - 3 Aug 2013
 
 - Adds License (MIT) file (closes #271)

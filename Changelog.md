@@ -1,3 +1,6 @@
+### v2.2.0 - (todo, in future)
+- Fixes error code spelling: `PARAM_MISSMATCH` -> `PARAM_MISMATCH`
+
 ### v2.1.0 - 3 Aug 2013
 
 - Adds License (MIT) file (closes #271)

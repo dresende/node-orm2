@@ -400,6 +400,13 @@ It's bad practice to manually escape SQL parameters as it's error prone and expo
 The `?` syntax takes care of escaping for you, by safely substituting the question mark in the query with the parameters provided.
 You can also chain multiple `where` clauses as needed.
 
+You can also `order` or `orderRaw`:
+```js
+Person.find({ age: 18 }).order('-name').all( ... );
+// see the 'Raw queries' section below for more details
+Person.find({ age: 18 }).orderRaw("?? DESC", ['age']).all( ... );
+```
+
 You can also chain and just get the count in the end. In this case, offset, limit and order are ignored.
 
 ```js

@@ -127,6 +127,8 @@ describe("Model.find() chaining", function() {
 	});
 
 	describe("orderRaw", function () {
+		if (common.protocol() == 'mongodb') return;
+
 		before(setup());
 
 		it("should allow ordering by SQL", function (done) {

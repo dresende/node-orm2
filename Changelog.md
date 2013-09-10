@@ -10,6 +10,7 @@
 - Allow custom join tables (#276)
 - Allow async express middleware (#291)
 - Allow auto-escaping for custom queries (#304)
+- Allow passing timezone in database connection string - mysql only for now (#325, #303)
 - Deprecated `PARAM_MISSMATCH` ErrorCode in favour of correctly spelt `PARAM_MISMATCH` (#315)
 - Fix `NaN` handling (#310)
 - Fixes stack overflow when saving auto-fetched model with relations (#279)

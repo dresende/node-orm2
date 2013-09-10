@@ -42,7 +42,7 @@ describe("Timezones", function() {
 				});
 
 				it("should get back the same date that was stored", function (done) {
-					var when = new Date(2013,12,5,11,34,27);
+					var when = new Date(2013,12,5,5,34,27);
 
 					Event.create({ name: "raid fridge", when: when }, function (err) {
 						should.not.exist(err);
@@ -60,8 +60,6 @@ describe("Timezones", function() {
 	});
 
 	describe("different for each connection", function () {
-		before(setup({ query: { timezone: '-1234' } }));
-
 		after(function () {
 			return db.close();
 		});

@@ -1,7 +1,10 @@
-var common = exports;
-var path   = require('path');
-var async  = require('async');
-var ORM    = require('../');
+var common      = exports;
+var path        = require('path');
+var async       = require('async');
+var _           = require('lodash');
+var util        = require('util');
+var querystring = require('querystring');
+var ORM         = require('../');
 
 common.ORM = ORM;
 
@@ -13,8 +16,8 @@ common.isTravis = function() {
 	return Boolean(process.env.CI);
 };
 
-common.createConnection = function(cb) {
-	ORM.connect(this.getConnectionString(), cb);
+common.createConnection = function(opts, cb) {
+	ORM.connect(this.getConnectionString(opts), cb);
 };
 
 common.hasConfig = function (proto) {
@@ -51,58 +54,49 @@ common.getConfig = function () {
 	}
 };
 
-common.getConnectionString = function () {
-	var url;
+common.getConnectionString = function (opts) {
+	var config, query;
+  var protocol = this.protocol();
 
-	if (common.isTravis()) {
-		switch (this.protocol()) {
-			case 'mysql':
-				return 'mysql://root@localhost/orm_test';
-			case 'postgres':
-			case 'redshift':
-				return 'postgres://postgres@localhost/orm_test';
-			case 'sqlite':
-				return 'sqlite://';
-			case 'mongodb':
-				return 'mongodb://localhost/test';
-			default:
-				throw new Error("Unknown protocol");
-		}
-	} else {
-		var config = require("./config")[this.protocol()];
+  if (common.isTravis()) {
+    config = {};
+  } else {
+    config = require("./config")[protocol];
+  }
 
-		switch (this.protocol()) {
-			case 'mysql':
-				return 'mysql://' +
-				       (config.user || 'root') +
-				       (config.password ? ':' + config.password : '') +
-				       '@' + (config.host || 'localhost') +
-				       '/' + (config.database || 'orm_test');
-			case 'postgres':
-				return 'postgres://' +
-				       (config.user || 'postgres') +
-				       (config.password ? ':' + config.password : '') +
-				       '@' + (config.host || 'localhost') +
-				       '/' + (config.database || 'orm_test');
-			case 'redshift':
-				return 'redshift://' +
-				       (config.user || 'postgres') +
-				       (config.password ? ':' + config.password : '') +
-				       '@' + (config.host || 'localhost') +
-				       '/' + (config.database || 'orm_test');
-			case 'mongodb':
-				return 'mongodb://' +
-				       (config.user || '') +
-				       (config.password ? ':' + config.password : '') +
-				       '@' + (config.host || 'localhost') +
-				       '/' + (config.database || 'test');
-			case 'sqlite':
-				return 'sqlite://' + (config.pathname || "");
-			default:
-				throw new Error("Unknown protocol");
-		}
-	}
-	return url;
+  opts = opts || {};
+  _.defaults(config, {
+    user     : { postgres: 'postgres', redshift: 'postgres' }[protocol] || 'root',
+    database : { mongodb:  'test'     }[protocol] || 'orm_test',
+    password : '',
+    host     : 'localhost',
+    pathname : '',
+    query    : {}
+  });
+  _.merge(config, opts);
+  query = querystring.stringify(config.query);
+
+	switch (protocol) {
+    case 'mysql':
+    case 'postgres':
+    case 'redshift':
+    case 'mongodb':
+      if (common.isTravis()) {
+      	if (protocol == 'redshift') protocol = 'postgres';
+        return util.format("%s://%s@%s/%s?%s",
+          protocol, config.user, config.host, config.database, query
+        );
+      } else {
+        return util.format("%s://%s:%s@%s/%s?%s",
+          protocol, config.user, config.password,
+          config.host, config.database, query
+        );
+      }
+    case 'sqlite':
+      return util.format("%s://%s?%s", protocol, config.pathname, query);
+    default:
+      throw new Error("Unknown protocol " + protocol);
+  }
 };
 
 common.retry = function (before, run, until, done, args) {

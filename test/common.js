@@ -66,7 +66,7 @@ common.getConnectionString = function (opts) {
 
   opts = opts || {};
   _.defaults(config, {
-    user     : { postgres: 'postgres', redshift: 'postgres' }[protocol] || 'root',
+    user     : { postgres: 'postgres', redshift: 'postgres', mongodb: '' }[protocol] || 'root',
     database : { mongodb:  'test'     }[protocol] || 'orm_test',
     password : '',
     host     : 'localhost',
@@ -90,7 +90,7 @@ common.getConnectionString = function (opts) {
         return util.format("%s://%s:%s@%s/%s?%s",
           protocol, config.user, config.password,
           config.host, config.database, query
-        );
+        ).replace(':@','@');
       }
     case 'sqlite':
       return util.format("%s://%s?%s", protocol, config.pathname, query);

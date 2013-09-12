@@ -3,7 +3,7 @@ var helper   = require('../support/spec_helper');
 var common   = require('../common');
 var ORM      = require('../../');
 
-// Only MySql support for now
+// Only MySql & Postgres support for now
 if (common.protocol() == 'mongodb' || common.protocol() == 'sqlite') return;
 
 describe("Timezones", function() {

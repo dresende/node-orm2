@@ -1,24 +1,34 @@
-### v2.2.0 - (todo, in future)
+### v2.2.0 - (to do, in future)
 - Fixes error code spelling: `PARAM_MISSMATCH` -> `PARAM_MISMATCH`
 
-### v2.1.next - (available on master but not on NPM yet)
+### v2.1.1 - 13 Sep 2013
+
 - Add TypeScript interface
-- Add support for custom property types (#305)
-- Add promises to query chain (#316)
-- Unique validator can be scoped and case insensitive (#288)
-- Allow finding by associations (#293)
 - Allow custom join tables (#276)
-- Allow async express middleware (#291)
-- Allow auto-escaping for custom queries (#304)
-- Allow passing timezone in database connection string - mysql & postgres only for now (#325, #303)
-- Allow ordering by raw sql - .orderRaw() when chaining (#308, #311)
-- Deprecated `PARAM_MISSMATCH` ErrorCode in favour of correctly spelt `PARAM_MISMATCH` (#315)
-- Fix `NaN` handling (#310)
 - Fixes stack overflow when saving auto-fetched model with relations (#279)
-- Fix `afterLoad` hook error handling (#301)
+- Unique validator can be scoped and case insensitive (#288)
+- Allow async express middleware (#291)
+- Allow finding by associations (#293)
 - Fix sqlite find with boolean (#292)
+- Fix `afterLoad` hook error handling (#301)
+- Allow auto-escaping for custom queries (#304)
+- Add support for custom property types (#305)
+- Allow ordering by raw sql - .orderRaw() when chaining (#308, #311)
 - Fix saving Instance.extra fields (#312)
+- Fix `NaN` handling (#310)
 - Fix incorrect SQL query (#313)
+- Deprecated `PARAM_MISSMATCH` ErrorCode in favour of correctly spelt `PARAM_MISMATCH` (#315)
+- Add promises to query chain (#316)
+- Adds a test for hasMany.delAccessor with arguments switched (#320)
+- Allow passing timezone in database connection string, local timezone is now default (#325, #303)
+- Adds ability to call db.load() with multiple files (closes #329)
+- For mysql driver, when using pool, use con.release() instead of con.end() (if defined) (closes #335)
+- Passes error from afterLoad hook to ready event
+- Most errors now have a model property
+- Adds connection.pool and connection.debug settings
+- Fixes throw when calling ChainFind.first() or .last() and it has an error
+- Removes upper limit on VARCHAR column size
+- Allows multi-key models to support hasMany
 
 ### v2.1.0 - 3 Aug 2013
 

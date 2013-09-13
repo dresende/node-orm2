@@ -9,9 +9,10 @@
 		"mysql",
 		"postgres",
 		"redshift",
-		"sqlite"
+		"sqlite",
+		"mongodb"
 	],
-	"version"     : "2.1.0",
+	"version"     : "2.1.1",
 	"license"     : "MIT",
 	"homepage"    : "http://dresende.github.io/node-orm2",
 	"repository"  : "http://github.com/dresende/node-orm2.git",
@@ -22,7 +23,7 @@
 		{ "name" : "Chris Cowan",      "email" : "me@chriscowan.us" },
 		{ "name" : "Paul Dixon",       "email" : "paul.dixon@mintbridge.co.uk" },
 		{ "name" : "David Kosub" },
-		{ "name" : "Arek W" },
+		{ "name" : "Arek W",           "email" : "arek01@gmail.com" },
 		{ "name" : "Joseph Gilley",    "email" : "joe.gilley@gmail.com" },
 		{ "name" : "Benjamin Pannell", "email" : "admin@sierrasoftworks.com" }
 	],

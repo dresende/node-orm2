@@ -3,9 +3,6 @@ var helper   = require('../support/spec_helper');
 var common   = require('../common');
 var ORM      = require('../../');
 
-// Only MySql & Postgres support for now
-if (common.protocol() == 'mongodb' || common.protocol() == 'sqlite') return;
-
 describe("Timezones", function() {
 	var db    = null;
 	var Event = null;
@@ -59,7 +56,7 @@ describe("Timezones", function() {
 		}
 	});
 
-	xdescribe("different for each connection", function () {
+	describe.skip("different for each connection", function () {
 		after(function () {
 			return db.close();
 		});

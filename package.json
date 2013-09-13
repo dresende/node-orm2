@@ -41,7 +41,7 @@
 		"lodash"    : "2.0.0"
 	},
 	"devDependencies": {
-		"mysql"   : "2.0.0-alpha8",
+		"mysql"   : "2.0.0-alpha9",
 		"pg"      : "1.0.0",
 		"sqlite3" : "2.1.7",
 		"async"   : "*",

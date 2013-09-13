@@ -43,7 +43,7 @@
 	},
 	"devDependencies": {
 		"mysql"   : "2.0.0-alpha9",
-		"pg"      : "1.0.0",
+		"pg"      : "2.6.2",
 		"sqlite3" : "2.1.7",
 		"async"   : "*",
 		"mocha"   : "1.12.1",

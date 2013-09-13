@@ -28,10 +28,7 @@ module.exports.dropSync = function (models, done) {
 		});
 	}, function (err) {
 		if (common.protocol() != 'sqlite') {
-			if (err) {
-				console.trace(err);
-			}
-			should.not.exist(err);
+			should.eql(err, null);
 		}
 		done(err);
 	});

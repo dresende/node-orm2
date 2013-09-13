@@ -129,6 +129,56 @@ describe("db.load()", function () {
 	});
 });
 
+describe("db.load()", function () {
+	var db = null;
+
+	before(function (done) {
+		helper.connect(function (connection) {
+			db = connection;
+
+			return done();
+		});
+	});
+
+	after(function () {
+		return db.close();
+	});
+
+	it("should be able to load more than one file", function (done) {
+		db.load("../support/spec_load_second", "../support/spec_load_third", function () {
+			db.models.should.have.property("person");
+			db.models.should.have.property("pet");
+
+			return done();
+		});
+	});
+});
+
+describe("db.load()", function () {
+	var db = null;
+
+	before(function (done) {
+		helper.connect(function (connection) {
+			db = connection;
+
+			return done();
+		});
+	});
+
+	after(function () {
+		return db.close();
+	});
+
+	it("should be able to load more than one file passed as Array", function (done) {
+		db.load([ "../support/spec_load_second", "../support/spec_load_third" ], function () {
+			db.models.should.have.property("person");
+			db.models.should.have.property("pet");
+
+			return done();
+		});
+	});
+});
+
 describe("db.serial()", function () {
 	var db = null;
 

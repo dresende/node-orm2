@@ -28,7 +28,7 @@ describe("Timezones", function() {
 	};
 
 	describe("specified", function () {
-		var a, zones = ['local', '-0734', '+11:22'];
+		var a, zones = [ 'local', '-0734', '+11:22' ];
 
 		for (a = 0; a < zones.length; a++ ) {
 			describe(zones[a], function () {
@@ -39,16 +39,16 @@ describe("Timezones", function() {
 				});
 
 				it("should get back the same date that was stored", function (done) {
-					var when = new Date(2013,12,5,5,34,27);
+					var when = new Date(2013, 12, 5, 5, 34, 27);
 
 					Event.create({ name: "raid fridge", when: when }, function (err) {
 						should.not.exist(err);
 
 						Event.one({ name: "raid fridge" }, function (err, item) {
 							should.not.exist(err);
-							when.should.eql(item.when);
+							item.when.should.eql(when);
 
-							done();
+							return done();
 						});
 					});
 				});
@@ -56,33 +56,40 @@ describe("Timezones", function() {
 		}
 	});
 
-	describe.skip("different for each connection", function () {
+	describe("different for each connection", function () {
+		before(setup({
+			sync  : true,
+			query : { timezone: '+0200' }
+		}));
+
 		after(function () {
 			return db.close();
 		});
 
 		// This isn't consistent accross drivers. Needs more thinking and investigation.
 		it("should get back a correctly offset time", function (done) {
-			var when = new Date(2013,12,5,5,34,27);
+			var when = new Date(2013, 12, 5, 5, 34, 27);
 
-			setup({ sync: true, query: { timezone: '+0200' }})(function () {
-				Event.create({ name: "raid fridge", when: when }, function (err) {
+			Event.create({ name: "raid fridge", when: when }, function (err, new_event) {
+				should.not.exist(err);
+
+				Event.one({ name: "raid fridge" }, function (err, item) {
 					should.not.exist(err);
+					new_event.should.not.equal(item); // new_event was not cached
+					should.equal(new_event.when.toISOString(), item.when.toISOString());
 
-					Event.one({ name: "raid fridge" }, function (err, item) {
-						should.not.exist(err);
-						when.should.eql(item.when);
-
-						db.close();
-
-						setup({ query: { timezone: '+0400' }})(function () {
+					db.close(function () {
+						setup({
+							sync  : false, // don't recreate table, don't want to loose previous value
+							query : { timezone: '+0400' }
+						})(function () {
 							Event.one({ name: "raid fridge" }, function (err, item) {
-								var expected = new Date(2013,12,5,3,34,27);
+								var expected = new Date(2013, 12, 5, 3, 34, 27);
 
 								should.not.exist(err);
-								expected.should.eql(item.when);
+								item.when.should.eql(expected);
 
-								done();
+								return done();
 							});
 						});
 					});
@@ -90,5 +97,4 @@ describe("Timezones", function() {
 			});
 		});
 	});
-
 });

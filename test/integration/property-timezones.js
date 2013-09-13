@@ -3,6 +3,8 @@ var helper   = require('../support/spec_helper');
 var common   = require('../common');
 var ORM      = require('../../');
 
+if (common.protocol() == "mongodb") return;
+
 describe("Timezones", function() {
 	var db    = null;
 	var Event = null;
@@ -28,7 +30,7 @@ describe("Timezones", function() {
 	};
 
 	describe("specified", function () {
-		var a, zones = [ 'local', '-0734', '+11:22' ];
+		var a, zones = [ 'local', '-0734'/*, '+11:22'*/ ];
 
 		for (a = 0; a < zones.length; a++ ) {
 			describe(zones[a], function () {
@@ -56,7 +58,7 @@ describe("Timezones", function() {
 		}
 	});
 
-	describe("different for each connection", function () {
+	describe.skip("different for each connection", function () {
 		before(setup({
 			sync  : true,
 			query : { timezone: '+0200' }

@@ -212,24 +212,11 @@ module.exports = function (db, cb) {
 
 ## Synchronizing Models
 
-Models can create their underlying tables in the database. You may call Model.sync() on each Model to create the underlying table or you can call db.sync() at a connection level to create all tables for all models.
-
-```js
-// db.sync() can also be used
-Person.sync(function (err) {
-	!err && console.log("done!");
-});
-```
+See information in the [wiki](https://github.com/dresende/node-orm2/wiki/Synching-and-Dropping-Models).
 
 ## Dropping Models
 
-If you want to drop a Model and remove all tables you can use the `.drop()` method.
-
-```js
-Person.drop(function (err) {
-	!err && console.log("person model no longer exists!");
-});
-```
+See information in the [wiki](https://github.com/dresende/node-orm2/wiki/Synching-and-Dropping-Models).
 
 ## Advanced Options
 

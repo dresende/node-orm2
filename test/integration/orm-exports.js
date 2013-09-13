@@ -198,7 +198,7 @@ describe("ORM.use()", function () {
 		var db = new sqlite.Database(':memory:');
 
 		ORM.use(db, "sqlite", function (err) {
-			should.equal(err, null);
+			should.not.exist(err);
 
 			return done();
 		});

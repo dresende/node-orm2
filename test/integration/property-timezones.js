@@ -4,6 +4,12 @@ var common   = require('../common');
 var ORM      = require('../../');
 
 if (common.protocol() == "mongodb") return;
+if (common.protocol() == "sqlite" && !common.getConfig().pathname) {
+	// sqlite needs a pathname for this test (because of reconnecting)
+	// if using memory, when disconnecting everything is lost and this
+	// test needs it
+	return;
+}
 
 describe("Timezones", function() {
 	var db    = null;
@@ -58,7 +64,7 @@ describe("Timezones", function() {
 		}
 	});
 
-	describe.skip("different for each connection", function () {
+	describe("different for each connection", function () {
 		before(setup({
 			sync  : true,
 			query : { timezone: '+0200' }

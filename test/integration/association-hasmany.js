@@ -220,6 +220,32 @@ describe("hasMany", function () {
 	describe("delAccessor", function () {
 		before(setup());
 
+		it("should accept arguments in different orders", function (done) {
+			Pet.find({ name: "Mutt" }, function (err, pets) {
+				Person.find({ name: "John" }, function (err, people) {
+					should.equal(err, null);
+
+					people[0].removePets(function (err) {
+						should.equal(err, null);
+
+						people[0].getPets(function (err, pets) {
+							should.equal(err, null);
+
+							should(Array.isArray(pets));
+							pets.length.should.equal(1);
+							pets[0].name.should.equal("Deco");
+
+							return done();
+						});
+					}, pets[0]);
+				});
+			});
+		});
+	});
+
+	describe("delAccessor", function () {
+		before(setup());
+
 		it("should remove specific associations if passed", function (done) {
 			Pet.find({ name: "Mutt" }, function (err, pets) {
 				Person.find({ name: "John" }, function (err, people) {

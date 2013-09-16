@@ -50,6 +50,52 @@ describe("Model instance", function() {
 		return db.close();
 	});
 
+	describe("#save", function () {
+		var main_item, item;
+
+		before(function (done) {
+			main_item = db.define("main_item", {
+				name      : String
+			}, {
+				auteFetch : true
+			});
+			item = db.define("item", {
+				name      : String
+			}, {
+				cache     : false
+			});
+			item.hasOne("main_item", main_item, {
+				reverse   : "items",
+				autoFetch : true
+			});
+
+			return helper.dropSync([ main_item, item ], function () {
+				main_item.create({
+					name : "Main Item"
+				}, function (err, mainItem) {
+					item.create({
+						name : "Item"
+					}, function (err, Item) {
+						mainItem.setItems(Item, function (err) {
+							should.not.exist(err);
+
+							return done();
+						});
+					});
+				});
+			});
+		});
+
+		it("should have a saving state to avoid loops", function (done) {
+			main_item.find({ name : "Main Item" }).first(function (err, mainItem) {
+				mainItem.save({ name : "new name" }, function (err) {
+					should.not.exist(err);
+					return done();
+				});
+			});
+		});
+	});
+
 	describe("#isInstance", function () {
 		it("should always return true for instances", function (done) {
 			should.equal((new Person).isInstance, true);

@@ -1,6 +1,12 @@
 ### v2.2.0 - (to do, in future)
 - Fixes error code spelling: `PARAM_MISSMATCH` -> `PARAM_MISMATCH`
 
+### v2.1.2 - 16 Sep 2013
+
+- Fixes stack overflow on instance.save() with a reversed hasOne association (#338)
+- Reverts should dev dependency to 1.2.2 (newer version was causing problems)
+- When using postgres you can now use pg@2.6.2 (unless when connecting to Heroku - use 2.5.0)
+
 ### v2.1.1 - 13 Sep 2013
 
 - Add TypeScript interface

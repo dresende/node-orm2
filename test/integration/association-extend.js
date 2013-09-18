@@ -212,4 +212,37 @@ describe("Model.extendsTo()", function() {
 			});
 		});
 	});
+
+	describe("findBy()", function () {
+		before(setup());
+
+		it("should throw if no conditions passed", function (done) {
+			(function () {
+				Person.findByAddress(function () {});
+			}).should.throw();
+
+			return done();
+		});
+
+		it("should lookup in Model based on associated model properties", function (done) {
+			Person.findByAddress({
+				number: 123
+			}, function (err, people) {
+				should.equal(err, null);
+				should(Array.isArray(people));
+				should(people.length == 1);
+
+				return done();
+			});
+		});
+
+		it("should return a ChainFind if no callback passed", function (done) {
+			var ChainFind = Person.findByAddress({
+				number: 123
+			});
+			ChainFind.run.should.be.a("function");
+
+			return done();
+		});
+	});
 });

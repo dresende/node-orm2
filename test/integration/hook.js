@@ -547,6 +547,25 @@ describe("Hook", function() {
 					return done();
 				});
 			});
+
+			describe("if hook returns an error", function () {
+				before(setup({
+					afterAutoFetch : function (next) {
+						return next(new Error("AFTERAUTOFETCH_FAIL"));
+					}
+				}));
+
+				it("should return error", function (done) {
+					this.timeout(500);
+
+					Person.create([{ name: "John Doe" }], function (err, items) {
+						err.should.exist;
+						err.message.should.equal("AFTERAUTOFETCH_FAIL");
+
+						return done();
+					});
+				});
+			});
 		});
 	});
 

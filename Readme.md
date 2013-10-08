@@ -586,7 +586,10 @@ See information in the [wiki](https://github.com/dresende/node-orm2/wiki/Model-V
 
 ## Associations
 
-An association is a relation between one or more tables.
+An association is a relation between one or more tables. This version of node-orm2 creates foreign keys with MySQL for hasOne associations.
+
+### foreign keys with hasOne
+`Animal.hasOne('owner', Person, { onDelete: 'cascade' })` (or **set null**, or **restrict**)
 
 ### hasOne
 

@@ -1,6 +1,19 @@
 ### v2.2.0 - (to do, in future)
 - Fixes error code spelling: `PARAM_MISSMATCH` -> `PARAM_MISMATCH`
 
+### v2.1.3 - 14 Oct 2013
+
+- Fixes connection strings being parsed by url module to don't forget about port :) (#355)
+- Fixes tests common.getConnectionString to use common.getConfig
+- Converts indentation from spaces:2 to tabs
+- Removes unnecessary path requirement in ORM.js
+- Changes user methods to be writeable property instances (fixes #296)
+- Fixes afterAutoFetch next(err) bubling up just like afterLoad (#301)
+- Fixes cache for hasOne associations (#339)
+- Adds findByAssociation to extendsTo (#314)
+- Fixes Model.extendsTo autoFetch not working (throwing) (#323)
+- Adds hasMany hooks.beforeSave (#324)
+
 ### v2.1.2 - 16 Sep 2013
 
 - Fixes stack overflow on instance.save() with a reversed hasOne association (#338)

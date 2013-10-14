@@ -50,21 +50,32 @@ common.getConfig = function () {
 				throw new Error("Unknown protocol");
 		}
 	} else {
-		return require("./config")[this.protocol()];
+		var config = require("./config")[this.protocol()];
+		if (typeof config == "string") {
+			config = require("url").parse(config);
+		}
+		if (config.hasOwnProperty("auth")) {
+			if (config.auth.indexOf(":") >= 0) {
+				config.user = config.auth.substr(0, config.auth.indexOf(":"));
+				config.password = config.auth.substr(config.auth.indexOf(":") + 1);
+			} else {
+				config.user = config.auth;
+				config.password = "";
+			}
+		}
+		if (config.hostname) {
+			config.host = config.hostname;
+		}
+
+		return config;
 	}
 };
 
 common.getConnectionString = function (opts) {
-	var config, query;
+	var config   = this.getConfig();
 	var protocol = this.protocol();
+	var query;
 
-	if (common.isTravis()) {
-		config = {};
-	} else {
-		config = require("./config")[protocol];
-	}
-
-	opts = opts || {};
 	_.defaults(config, {
 		user     : { postgres: 'postgres', redshift: 'postgres', mongodb: '' }[protocol] || 'root',
 		database : { mongodb:  'test'     }[protocol] || 'orm_test',
@@ -73,7 +84,8 @@ common.getConnectionString = function (opts) {
 		pathname : '',
 		query    : {}
 	});
-	_.merge(config, opts);
+	_.merge(config, opts || {});
+
 	query = querystring.stringify(config.query);
 
 	switch (protocol) {

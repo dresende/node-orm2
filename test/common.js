@@ -56,101 +56,100 @@ common.getConfig = function () {
 
 common.getConnectionString = function (opts) {
 	var config, query;
-  var protocol = this.protocol();
+	var protocol = this.protocol();
 
-  if (common.isTravis()) {
-    config = {};
-  } else {
-    config = require("./config")[protocol];
-  }
+	if (common.isTravis()) {
+		config = {};
+	} else {
+		config = require("./config")[protocol];
+	}
 
-  opts = opts || {};
-  _.defaults(config, {
-    user     : { postgres: 'postgres', redshift: 'postgres', mongodb: '' }[protocol] || 'root',
-    database : { mongodb:  'test'     }[protocol] || 'orm_test',
-    password : '',
-    host     : 'localhost',
-    pathname : '',
-    query    : {}
-  });
-  _.merge(config, opts);
-  query = querystring.stringify(config.query);
+	opts = opts || {};
+	_.defaults(config, {
+		user     : { postgres: 'postgres', redshift: 'postgres', mongodb: '' }[protocol] || 'root',
+		database : { mongodb:  'test'     }[protocol] || 'orm_test',
+		password : '',
+		host     : 'localhost',
+		pathname : '',
+		query    : {}
+	});
+	_.merge(config, opts);
+	query = querystring.stringify(config.query);
 
 	switch (protocol) {
-    case 'mysql':
-    case 'postgres':
-    case 'redshift':
-    case 'mongodb':
-      if (common.isTravis()) {
-      	if (protocol == 'redshift') protocol = 'postgres';
-        return util.format("%s://%s@%s/%s?%s",
-          protocol, config.user, config.host, config.database, query
-        );
-      } else {
-        return util.format("%s://%s:%s@%s/%s?%s",
-          protocol, config.user, config.password,
-          config.host, config.database, query
-        ).replace(':@','@');
-      }
-    case 'sqlite':
-      return util.format("%s://%s?%s", protocol, config.pathname, query);
-    default:
-      throw new Error("Unknown protocol " + protocol);
-  }
+		case 'mysql':
+		case 'postgres':
+		case 'redshift':
+		case 'mongodb':
+			if (common.isTravis()) {
+				if (protocol == 'redshift') protocol = 'postgres';
+				return util.format("%s://%s@%s/%s?%s",
+					protocol, config.user, config.host, config.database, query
+				);
+			} else {
+				return util.format("%s://%s:%s@%s/%s?%s",
+					protocol, config.user, config.password,
+					config.host, config.database, query
+				).replace(':@','@');
+			}
+		case 'sqlite':
+			return util.format("%s://%s?%s", protocol, config.pathname, query);
+		default:
+			throw new Error("Unknown protocol " + protocol);
+	}
 };
 
 common.retry = function (before, run, until, done, args) {
-    if (typeof until === "number") {
-        var countDown = until;
-        until = function (err) {
-            if (err && --countDown > 0) return false;
-            return true;
-        };
-    }
+	if (typeof until === "number") {
+		var countDown = until;
+		until = function (err) {
+			if (err && --countDown > 0) return false;
+			return true;
+		};
+	}
 
-    if (typeof args === "undefined") args = [];
+	if (typeof args === "undefined") args = [];
 
-    var handler = function (err) {
-        if (until(err)) return done.apply(this, arguments);
-        return runNext();
-    };
+	var handler = function (err) {
+		if (until(err)) return done.apply(this, arguments);
+		return runNext();
+	};
 
-    args.push(handler);
+	args.push(handler);
 
-    var runCurrent = function () {
-        if (run.length == args.length) {
-            return run.apply(this, args);
-        } else {
-            run.apply(this, args);
-            handler();
-        }
-    };
+	var runCurrent = function () {
+		if (run.length == args.length) {
+			return run.apply(this, args);
+		} else {
+			run.apply(this, args);
+			handler();
+		}
+	};
 
-    var runNext = function () {
-        try {
-            if (before.length > 0) {
-                before(function (err) {
-                    if (until(err)) return done(err);
-                    return runCurrent();
-                });
-            } else {
-                before();
-                runCurrent();
-            }
-        }
-        catch (e) {
-            handler(e);
-        }
-    };
+	var runNext = function () {
+		try {
+			if (before.length > 0) {
+				before(function (err) {
+					if (until(err)) return done(err);
+					return runCurrent();
+				});
+			} else {
+				before();
+				runCurrent();
+			}
+		}
+		catch (e) {
+			handler(e);
+		}
+	};
 
-    if (before.length > 0) {
-        before(function (err) {
-            if (err) return done(err);
-            runNext();
-        });
-    }
-    else {
-        before();
-        runNext();
-    }
+	if (before.length > 0) {
+		before(function (err) {
+			if (err) return done(err);
+			runNext();
+		});
+	} else {
+		before();
+		runNext();
+	}
 };

@@ -603,6 +603,14 @@ animal.hasOwner(function..)         // Checks if owner exists
 animal.removeOwner()                // Sets owner_id to 0
 ```
 
+**Chain Find**
+
+The hasOne association is also chain find compatible. Using the example above, we can do this to access a new instance of a ChainFind object:
+
+```js
+Animal.findByOwner({ /* options */ })
+```
+
 **Reverse access**
 
 ```js
@@ -612,8 +620,12 @@ Animal.hasOne('owner', Person, {reverse: 'pets'})
 will add the following:
 
 ```js
+// Instance methods
 person.getPets(function..)
 person.setPets(cat, function..)
+
+// Model methods
+Person.findByPets({ /* options */ }) // returns ChainFind object
 ```
 
 ### hasMany

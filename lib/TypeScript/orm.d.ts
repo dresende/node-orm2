@@ -3,6 +3,7 @@
 declare module "orm" {
 
     import events = require('events');
+    import sqlquery = require('sqlquery');
 
     module orm {
 
@@ -234,6 +235,15 @@ declare module "orm" {
         }
 
         export function Text(type: string): sqlquery.TextQuery;
+        export function eq(value: any): sqlquery.Comparator;
+        export function ne(value: any): sqlquery.Comparator;
+        export function gt(value: any): sqlquery.Comparator;
+        export function gte(value: any): sqlquery.Comparator;
+        export function lt(value: any): sqlquery.Comparator;
+        export function lte(value: any): sqlquery.Comparator;
+        export function like(value: string): sqlquery.Comparator;
+        export function between(a: number, b: number): sqlquery.Comparator;
+        export function not_between(a: number, b: number): sqlquery.Comparator;
         export function express(uri: string, handlers: {
             define(db: ORM, models: { [key: string]: Model });
         }): (req, res, next) => void;

@@ -3,6 +3,7 @@
 declare module "orm" {
 
     import events = require('events');
+    import sqlquery = require('sqlquery');
 
     module orm {
 
@@ -26,6 +27,7 @@ declare module "orm" {
                 order?: any;
             }, callback: (err: Error, results: Instance[]) => void): Model;
             find(conditions: { [property: string]: any }, limit: number, order: string[], callback: (err: Error, results: Instance[]) => void): Model;
+            find(conditions: { [property: string]: any }): IChainFind;
 
             all(conditions: { [property: string]: any }, callback: (err: Error, results: Instance[]) => void): Model;
             all(conditions: { [property: string]: any }, options: {
@@ -121,6 +123,22 @@ declare module "orm" {
             as(alias: string): IAggregated;
             call(fun: string, args: any[]): IAggregated;
             get(callback: (err: Error, instance: Instance) => void);
+        }
+
+        export interface IChainFind {
+            find(conditions: { [property: string]: any }): IChainFind;
+            only(...args: string[]): IChainFind;
+            limit(limit: number): IChainFind;
+            offset(offset: number): IChainFind;
+            run(callback: (err: Error, results: Instance[]) => void): void;
+            count(callback: (err: Error, count: number) => void): void;
+            remove(callback: (err: Error) => void): void;
+            save(callback: (err: Error) => void): void;
+            each(callback: (result: Instance) => void): void;
+            each(): IChainFind;
+            filter(callback: (result: Instance) => boolean): IChainFind;
+            sort(callback: (a: Instance, b: Instance) => boolean): IChainFind;
+            get(callback: (results: Instance[]) => void): IChainFind;
         }
 
         /*
@@ -234,6 +252,15 @@ declare module "orm" {
         }
 
         export function Text(type: string): sqlquery.TextQuery;
+        export function eq(value: any): sqlquery.Comparator;
+        export function ne(value: any): sqlquery.Comparator;
+        export function gt(value: any): sqlquery.Comparator;
+        export function gte(value: any): sqlquery.Comparator;
+        export function lt(value: any): sqlquery.Comparator;
+        export function lte(value: any): sqlquery.Comparator;
+        export function like(value: string): sqlquery.Comparator;
+        export function between(a: number, b: number): sqlquery.Comparator;
+        export function not_between(a: number, b: number): sqlquery.Comparator;
         export function express(uri: string, handlers: {
             define(db: ORM, models: { [key: string]: Model });
         }): (req, res, next) => void;

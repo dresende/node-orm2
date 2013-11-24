@@ -22,9 +22,10 @@ Edit `anontxt/config/settings.js` to set your database, user & password.
 cd examples/anontxt
 npm install
 node tasks/reset
-nodemon server.js
+./script/start
 ```
 
 And then open up [localhost:3000](http://localhost:3000/)
 
-You can also just run it with `node server.js` however nodemon will automatically restart the server if you change any code.
+You can also just run it with `node server.js` however the script launches nodemon which
+automatically restarts the server if you change any code.

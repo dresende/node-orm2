@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+items="app config ../../node_modules/sql-query ../../lib server.js"
+
+watch=""
+for i in $items; do
+  watch="$watch --watch $i"
+done
+
+nodemon $watch server.js

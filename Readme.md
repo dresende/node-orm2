@@ -108,6 +108,10 @@ You can call `orm.express` more than once to have multiple database connections.
 will be joined together in `req.models`. **Don't forget to use it before `app.use(app.router)`, preferably right after your
 assets public folder(s).**
 
+## Examples
+
+See `examples/anontxt` for an example express based app.
+
 ## Documentation
 
 Documentation is moving to the [wiki](https://github.com/dresende/node-orm2/wiki/).

@@ -16,7 +16,7 @@ git checkout v2.1.3
 
 **Setup AnonTXT**
 
-Edit `anontxt/config/settings.js` and set your database, user & password.
+Edit `anontxt/config/settings.js` to set your database, user & password.
 
 ```bash
 cd examples/anontxt

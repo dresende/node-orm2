@@ -130,6 +130,16 @@ describe("Model instance", function() {
 		it("should return false for new instances", function () {
 			should.equal((new Person).isPersisted(), false);
 		});
+
+		it("should be writable for mocking", function() {
+			var person = new Person()
+			var triggered = false;
+			person.isPersisted = function() {
+				triggered = true;
+			};
+			person.isPersisted()
+			triggered.should.be.true;
+		});
 	});
 
 	describe("#isShell", function () {

@@ -79,5 +79,19 @@ describe("Event", function() {
 				return done();
 			});
 		});
+
+		it("should be writable for mocking", function (done) {
+			var triggered = false;
+			var John = new Person();
+
+			John.on = function(event, cb) {
+				triggered = true;
+			};
+			triggered.should.be.false;
+
+			John.on("mocked", function (err) {} );
+			triggered.should.be.true;
+			done();
+		});
 	});
 });

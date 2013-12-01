@@ -217,4 +217,38 @@ describe("Model.save()", function() {
 			});
 		});
 	});
+
+	describe("mockable", function() {
+		before(setup());
+
+		it("save should be writable", function(done) {
+			var John = new Person({
+				name: "John"
+			});
+			var saveCalled = false;
+			John.save = function(cb) {
+				saveCalled = true;
+				cb(null);
+			};
+			John.save(function(err) {
+				should.equal(saveCalled,true);
+				return done();
+			});
+		});
+
+		it("saved should be writable", function(done) {
+			var John = new Person({
+				name: "John"
+			});
+			var savedCalled = false;
+			John.saved = function() {
+				savedCalled = true;
+				return true;
+			};
+
+			John.saved()
+			savedCalled.should.be.true;
+			done();
+		})
+	});
 });

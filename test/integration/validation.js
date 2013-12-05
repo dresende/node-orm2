@@ -344,4 +344,23 @@ describe("Validations", function() {
 			});
 		});
 	});
+
+	describe("mockable", function() {
+		before(setup());
+
+		it("validate should be writable", function(done) {
+			var John = new Person({
+				name: "John"
+			});
+			var validateCalled = false;
+			John.validate = function(cb) {
+				validateCalled = true;
+				cb(null);
+			};
+			John.validate(function(err) {
+				should.equal(validateCalled,true);
+				return done();
+			});
+		});
+	});
 });

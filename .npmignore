@@ -1,0 +1,8 @@
+*.sublime-*
+*.njsproj
+*.nodevsdbg
+.DS_Store
+node_modules
+test*
+lib-cov/
+*~

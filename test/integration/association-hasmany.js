@@ -367,65 +367,46 @@ describe("hasMany", function () {
 				});
 			});
 		});
-	});
-
-	describe("addAccessor", function () {
-		before(setup());
 
 		it("should accept array as list of associations", function (done) {
 			Pet.find(function (err, pets) {
+				var petCount = pets.length;
+
 				Person.find({ name: "Justin" }).first(function (err, Justin) {
 					should.equal(err, null);
 
-					Justin.addPets(pets, function (err) {
+					Justin.getPets(function (err, justinsPets) {
 						should.equal(err, null);
 
-						Justin.getPets(function (err, all_pets) {
+						should.equal(justinsPets.length, 2);
+
+						Justin.addPets(pets, function (err) {
 							should.equal(err, null);
 
-							should(Array.isArray(all_pets));
-							all_pets.length.should.equal(pets.length);
-
-							return done();
-						});
-					});
-				});
-			});
-		});
-	});
-
-	describe("setAccessor", function () {
-		before(setup());
-
-		it("clears current associations", function (done) {
-			Pet.find({ name: "Deco" }, function (err, pets) {
-				var Deco = pets[0];
-
-				Person.find({ name: "Jane" }).first(function (err, Jane) {
-					should.equal(err, null);
-
-					Jane.getPets(function (err, pets) {
-						should.equal(err, null);
-
-						should(Array.isArray(pets));
-						pets.length.should.equal(1);
-						pets[0].name.should.equal("Mutt");
-
-						Jane.setPets(Deco, function (err) {
-							should.equal(err, null);
-
-							Jane.getPets(function (err, pets) {
+							Justin.getPets(function (err, justinsPets) {
 								should.equal(err, null);
 
-								should(Array.isArray(pets));
-								pets.length.should.equal(1);
-								pets[0].name.should.equal(Deco.name);
+								should(Array.isArray(justinsPets));
+								// We're not checking uniqueness.
+								should.equal(justinsPets.length, petCount + 2);
 
 								return done();
 							});
 						});
 					});
 				});
+			});
+		});
+
+		it("should throw if no items passed", function (done) {
+			Person.one(function (err, person) {
+				should.equal(err, null);
+
+				(function () {
+					person.addPets(function () {});
+				}).should.throw();
+
+				return done();
 			});
 		});
 	});
@@ -475,15 +456,47 @@ describe("hasMany", function () {
 			});
 		});
 
-		it("should throw if no items passed", function (done) {
-			Person.one(function (err, person) {
+		it("should remove all associations if an empty array is passed", function (done) {
+			Person.find({ name: "Justin" }).first(function (err, Justin) {
 				should.equal(err, null);
 
-				(function () {
-					person.addPets(function () {});
-				}).should.throw();
+				Justin.setPets([], function (err) {
+					should.equal(err, null);
 
-				return done();
+					return done();
+				});
+			});
+		});
+
+		it("clears current associations", function (done) {
+			Pet.find({ name: "Deco" }, function (err, pets) {
+				var Deco = pets[0];
+
+				Person.find({ name: "Jane" }).first(function (err, Jane) {
+					should.equal(err, null);
+
+					Jane.getPets(function (err, pets) {
+						should.equal(err, null);
+
+						should(Array.isArray(pets));
+						pets.length.should.equal(1);
+						pets[0].name.should.equal("Mutt");
+
+						Jane.setPets(Deco, function (err) {
+							should.equal(err, null);
+
+							Jane.getPets(function (err, pets) {
+								should.equal(err, null);
+
+								should(Array.isArray(pets));
+								pets.length.should.equal(1);
+								pets[0].name.should.equal(Deco.name);
+
+								return done();
+							});
+						});
+					});
+				});
 			});
 		});
 	});

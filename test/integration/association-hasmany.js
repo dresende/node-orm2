@@ -459,11 +459,20 @@ describe("hasMany", function () {
 		it("should remove all associations if an empty array is passed", function (done) {
 			Person.find({ name: "Justin" }).first(function (err, Justin) {
 				should.equal(err, null);
-
-				Justin.setPets([], function (err) {
+				Justin.getPets(function (err, pets) {
 					should.equal(err, null);
+					should.equal(pets.length, 2);
 
-					return done();
+					Justin.setPets([], function (err) {
+						should.equal(err, null);
+
+						Justin.getPets(function (err, pets) {
+							should.equal(err, null);
+							should.equal(pets.length, 0);
+
+							return done();
+						});
+					});
 				});
 			});
 		});

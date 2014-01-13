@@ -18,11 +18,11 @@ describe("hasMany", function () {
 				name    : String,
 				surname : String,
 				age     : Number
-			}, opts);
+			});
 			Pet = db.define('pet', {
 				name    : String
 			});
-			Person.hasMany('pets', Pet);
+			Person.hasMany('pets', Pet, {}, { autoFetch: opts.autoFetchPets });
 
 			return helper.dropSync([ Person, Pet ], function () {
 				/**
@@ -512,7 +512,7 @@ describe("hasMany", function () {
 
 	describe("with autoFetch turned on", function () {
 		before(setup({
-			autoFetch : true
+			autoFetchPets : true
 		}));
 
 		it("should fetch associations", function (done) {
@@ -524,6 +524,24 @@ describe("hasMany", function () {
 				John.pets.length.should.equal(2);
 
 				return done();
+			});
+		});
+
+		it("should save existing", function (done) {
+			Person.create({ name: 'Bishan' }, function (err) {
+				should.not.exist(err);
+
+				Person.one({ name: 'Bishan' }, function (err, person) {
+					should.not.exist(err);
+
+					person.surname = 'Dominar';
+
+					person.save(function (err) {
+						should.not.exist(err);
+
+						done();
+					});
+				});
 			});
 		});
 	});

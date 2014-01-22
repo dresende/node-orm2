@@ -48,24 +48,9 @@ describe("Postgres driver", function() {
 				should.equal(inputStr, out.toString());
 			});
 
-			// I'm not sure if the timezone tests are right
-			it("should offset time by specified timezone amount for + timezones", function () {
-				var input = new Date(Date.UTC(2014,2,5,13,14,0,0));
-				var inputStr = input.toUTCString();
-				var out = evaluate(input, { config: { timezone: '+06:11' } });
+			it("should offset time by specified timezone amount for + timezones");
 
-				should.equal(out.toUTCString(), 'Wed, 05 Mar 2014 08:25:00 GMT');
-			});
-
-			// The HH:mm for this one seem odd
-			it("should offset time by specified timezone amount for + timezones", function () {
-				var input = new Date(Date.UTC(2014,2,5,13,14,0,0));
-				var inputStr = input.toUTCString();
-				var out = evaluate(input, { config: { timezone: '-06:11' } });
-
-				should.equal(out.toUTCString(), 'Tue, 04 Mar 2014 20:03:00 GMT');
-			});
-			// --------------
+			it("should offset time by specified timezone amount for + timezones");
 		});
 
 		describe("type point", function () {

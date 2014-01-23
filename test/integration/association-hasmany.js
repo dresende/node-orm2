@@ -1,3 +1,4 @@
+var _      = require('lodash');
 var should = require('should');
 var helper = require('../support/spec_helper');
 var ORM    = require('../../');
@@ -291,61 +292,59 @@ describe("hasMany", function () {
 	describe("addAccessor", function () {
 		before(setup());
 
-		if (common.protocol() == "mongodb") return;
-
-		it("might add duplicates", function (done) {
-			Pet.find({ name: "Mutt" }, function (err, pets) {
-				Person.find({ name: "Jane" }, function (err, people) {
-					should.equal(err, null);
-
-					people[0].addPets(pets[0], function (err) {
+		if (common.protocol() != "mongodb") {
+			it("might add duplicates", function (done) {
+				Pet.find({ name: "Mutt" }, function (err, pets) {
+					Person.find({ name: "Jane" }, function (err, people) {
 						should.equal(err, null);
 
-						people[0].getPets("name", function (err, pets) {
+						people[0].addPets(pets[0], function (err) {
 							should.equal(err, null);
 
-							should(Array.isArray(pets));
-							pets.length.should.equal(2);
-							pets[0].name.should.equal("Mutt");
-							pets[1].name.should.equal("Mutt");
+							people[0].getPets("name", function (err, pets) {
+								should.equal(err, null);
 
-							return done();
+								should(Array.isArray(pets));
+								pets.length.should.equal(2);
+								pets[0].name.should.equal("Mutt");
+								pets[1].name.should.equal("Mutt");
+
+								return done();
+							});
 						});
 					});
 				});
 			});
-		});
-	});
-
-	describe("addAccessor", function () {
-		before(setup());
+		}
 
 		it("should keep associations and add new ones", function (done) {
 			Pet.find({ name: "Deco" }).first(function (err, Deco) {
 				Person.find({ name: "Jane" }).first(function (err, Jane) {
 					should.equal(err, null);
 
-					Jane.addPets(Deco, function (err) {
-						should.equal(err, null);
+					Jane.getPets(function (err, janesPets) {
+						should.not.exist(err);
 
-						Jane.getPets("name", function (err, pets) {
+						var petsAtStart = janesPets.length;
+
+						Jane.addPets(Deco, function (err) {
 							should.equal(err, null);
 
-							should(Array.isArray(pets));
-							pets.length.should.equal(2);
-							pets[0].name.should.equal("Deco");
-							pets[1].name.should.equal("Mutt");
+							Jane.getPets("name", function (err, pets) {
+								should.equal(err, null);
 
-							return done();
+								should(Array.isArray(pets));
+								pets.length.should.equal(petsAtStart + 1);
+								pets[0].name.should.equal("Deco");
+								pets[1].name.should.equal("Mutt");
+
+								return done();
+							});
 						});
 					});
 				});
 			});
 		});
-	});
-
-	describe("addAccessor", function () {
-		before(setup());
 
 		it("should accept several arguments as associations", function (done) {
 			Pet.find(function (err, pets) {
@@ -369,16 +368,14 @@ describe("hasMany", function () {
 		});
 
 		it("should accept array as list of associations", function (done) {
-			Pet.find(function (err, pets) {
-				var petCount = pets.length;
-
+			Pet.create([{ name: 'Ruff' }, { name: 'Spotty' }],function (err, pets) {
 				Person.find({ name: "Justin" }).first(function (err, Justin) {
 					should.equal(err, null);
 
 					Justin.getPets(function (err, justinsPets) {
 						should.equal(err, null);
 
-						should.equal(justinsPets.length, 2);
+						var petCount = justinsPets.length;
 
 						Justin.addPets(pets, function (err) {
 							should.equal(err, null);
@@ -387,7 +384,7 @@ describe("hasMany", function () {
 								should.equal(err, null);
 
 								should(Array.isArray(justinsPets));
-								// We're not checking uniqueness.
+								// Mongo doesn't like adding duplicates here, so we add new ones.
 								should.equal(justinsPets.length, petCount + 2);
 
 								return done();

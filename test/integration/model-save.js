@@ -8,12 +8,14 @@ describe("Model.save()", function() {
 	var Person = null;
 
 	var setup = function (nameDefinition, opts) {
+		opts = opts || {};
+
 		return function (done) {
 			Person = db.define("person", {
 				name   : nameDefinition || String
 			}, opts || {});
 
-			Person.hasOne("parent");
+			Person.hasOne("parent", Person, opts.hasOneOpts);
 
 			return helper.dropSync(Person, done);
 		};
@@ -194,6 +196,119 @@ describe("Model.save()", function() {
 				});
 
 				John.name = "John";
+			});
+		});
+	});
+
+	describe("with saveAssociations", function () {
+		var afterSaveCalled = false;
+
+		if (common.protocol() == 'mongodb') return;
+
+		beforeEach(function (done) {
+			function afterSave () {
+				afterSaveCalled = true;
+			}
+			var hooks = { afterSave: afterSave };
+
+			setup(null, { hooks: hooks, cache: false, hasOneOpts: { autoFetch: true } })(function (err) {
+				should.not.exist(err);
+
+				Person.create({ name: 'Olga' }, function (err, olga) {
+					should.not.exist(err);
+
+					should.exist(olga);
+					Person.create({ name: 'Hagar', parent_id: olga.id }, function (err, hagar) {
+						should.not.exist(err);
+						should.exist(hagar);
+						afterSaveCalled = false;
+						done();
+					});
+				});
+			});
+		});
+
+		it("off should not save associations but save itself", function (done) {
+			Person.one({ name: 'Hagar' }, function (err, hagar) {
+				should.not.exist(err);
+				should.exist(hagar.parent);
+
+				hagar.parent.name = 'Olga2';
+				hagar.save({name: 'Hagar2'}, { saveAssociations: false }, function (err) {
+					should.not.exist(err);
+					should.equal(afterSaveCalled, true);
+
+					Person.get(hagar.parent.id, function (err, olga) {
+						should.not.exist(err);
+						should.equal(olga.name, 'Olga');
+						done();
+					});
+				});
+			});
+		});
+
+		it("off should not save associations or itself if there are no changes", function (done) {
+			Person.one({ name: 'Hagar' }, function (err, hagar) {
+				should.not.exist(err);
+
+				hagar.save({}, { saveAssociations: false }, function (err) {
+					should.not.exist(err);
+					should.equal(afterSaveCalled, false);
+
+					Person.get(hagar.parent.id, function (err, olga) {
+						should.not.exist(err);
+						should.equal(olga.name, 'Olga');
+						done();
+					});
+				});
+			});
+		});
+
+		it("unspecified should save associations and itself", function (done) {
+			Person.one({ name: 'Hagar' }, function (err, hagar) {
+				should.not.exist(err);
+				should.exist(hagar.parent);
+
+				hagar.parent.name = 'Olga2';
+				hagar.save({name: 'Hagar2'}, function (err) {
+					should.not.exist(err);
+
+					Person.get(hagar.parent.id, function (err, olga) {
+						should.not.exist(err);
+						should.equal(olga.name, 'Olga2');
+
+						Person.get(hagar.id, function (err, person) {
+							should.not.exist(err);
+							should.equal(person.name, 'Hagar2');
+
+							done();
+						});
+					});
+				});
+			});
+		});
+
+		it("on should save associations and itself", function (done) {
+			Person.one({ name: 'Hagar' }, function (err, hagar) {
+				should.not.exist(err);
+				should.exist(hagar.parent);
+
+				hagar.parent.name = 'Olga2';
+				hagar.save({name: 'Hagar2'}, { saveAssociations: true }, function (err) {
+					should.not.exist(err);
+
+					Person.get(hagar.parent.id, function (err, olga) {
+						should.not.exist(err);
+						should.equal(olga.name, 'Olga2');
+
+						Person.get(hagar.id, function (err, person) {
+							should.not.exist(err);
+							should.equal(person.name, 'Hagar2');
+
+							done();
+						});
+					});
+				});
 			});
 		});
 	});

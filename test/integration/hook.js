@@ -354,7 +354,7 @@ describe("Hook", function() {
 	});
 
 	describe("afterSave", function () {
-		before(setup());
+		beforeEach(setup());
 
 		it("should trigger after saving an instance", function (done) {
 			Person.create([{ name: "John Doe" }], function () {
@@ -363,6 +363,19 @@ describe("Hook", function() {
 				triggeredHooks.afterSave.should.not.be.below(triggeredHooks.beforeSave);
 
 				return done();
+			});
+		});
+
+		it("should not trigger after saving an unchanged instance", function (done) {
+			Person.create({ name: "Edger" }, function (err, edger) {
+				should.not.exist(err);
+
+				triggeredHooks = {};
+				edger.save(function (err) {
+					should.not.exist(err);
+					should.not.exist(triggeredHooks.afterSave);
+					done();
+				});
 			});
 		});
 	});

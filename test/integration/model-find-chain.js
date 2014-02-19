@@ -219,6 +219,35 @@ describe("Model.find() chaining", function() {
 				return done();
 			});
 		});
+
+		// TODO: Make this code Mongo compatible?
+		// it("should account for associations", function (done) {
+		// 	var Bob = new Person({
+		// 		name: "Bob",
+		// 		surname: "Smith",
+		// 		age: 20
+		// 	});
+		// 	var Jill = new Person({
+		// 		name: "Jill",
+		// 		surname: "Smith",
+		// 		age: 20
+		// 	});
+
+		// 	Person.find({ name: "John" }, function (err, John) {
+		// 		should.equal(err, null);
+		// 		John = John[0];
+
+		// 		John.setParents([ Bob, Jill ], function (err) {
+		// 			should.equal(err, null);
+		// 			Person(John.id).getParents({ name: "Bob" }).count(function (err, count) {
+		// 				should.equal(err, null);
+		// 				count.should.equal(1);
+
+		// 				return done();
+		// 			});
+		// 		});
+		// 	});
+		// });
 	});
 
 	describe(".first()", function () {

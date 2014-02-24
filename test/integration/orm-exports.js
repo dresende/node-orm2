@@ -115,7 +115,11 @@ describe("ORM.connect()", function () {
 		var db = ORM.connect("unknown://db");
 
 		db.on("connect", function (err) {
-			err.message.should.equal("CONNECTION_PROTOCOL_NOT_SUPPORTED");
+			should.equal(err.literalCode, 'NO_SUPPORT');
+			should.equal(
+				err.message,
+				"Connection protocol not supported - have you installed the database driver for unknown?"
+			);
 
 			return done();
 		});
@@ -126,7 +130,7 @@ describe("ORM.connect()", function () {
 
 		db.on("connect", function (err) {
 			should.exist(err);
-			err.message.should.not.equal("CONNECTION_PROTOCOL_NOT_SUPPORTED");
+			should.equal(err.message.indexOf("Connection protocol not supported"), -1);
 			err.message.should.not.equal("CONNECTION_URL_NO_PROTOCOL");
 			err.message.should.not.equal("CONNECTION_URL_EMPTY");
 
@@ -185,7 +189,11 @@ describe("ORM.connect()", function () {
 
 		it("should return an error if unknown protocol is passed", function (done) {
 			ORM.connect("unknown://db", function (err) {
-				err.message.should.equal("CONNECTION_PROTOCOL_NOT_SUPPORTED");
+				should.equal(err.literalCode, 'NO_SUPPORT');
+				should.equal(
+					err.message,
+					"Connection protocol not supported - have you installed the database driver for unknown?"
+				);
 
 				return done();
 			});

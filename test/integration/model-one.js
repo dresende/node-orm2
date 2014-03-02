@@ -56,10 +56,15 @@ describe("Model.one()", function() {
 	describe("without callback", function () {
 		before(setup());
 
-		it("should throw", function (done) {
-			Person.one.should.throw();
+		it("should resolve promise with person", function (done) {
+			Person.one()
+				.then(function(person) {
+					person.should.be.a('object');
 
-			return done();
+					done();
+				})
+				.fail(done)
+				.done();
 		});
 	});
 

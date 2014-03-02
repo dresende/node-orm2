@@ -43,7 +43,7 @@ describe("Model.count()", function() {
 		before(setup());
 
 		it("should throw", function (done) {
-			Person.count.should.throw();
+			Person.count().should.throw();
 
 			return done();
 		});

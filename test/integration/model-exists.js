@@ -52,10 +52,14 @@ describe("Model.exists()", function() {
 	describe("without callback", function () {
 		before(setup());
 
-		it("should throw", function (done) {
-			Person.exists.should.throw();
-
-			return done();
+		it("should resolve promise true if found", function (done) {
+			Person.exists(good_id)
+				.then(function(exists) {
+					exists.should.be.true;
+					done();
+				})
+				.fail(done)
+				.done();
 		});
 	});
 

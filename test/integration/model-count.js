@@ -42,10 +42,14 @@ describe("Model.count()", function() {
 	describe("without callback", function () {
 		before(setup());
 
-		it("should throw", function (done) {
-			Person.count.should.throw();
-
-			return done();
+		it("should resolve promise with all items in model", function (done) {
+			Person.count()
+				.then(function(count) {
+					count.should.equal(3);
+					done();
+				})
+				.fail(done)
+				.done();
 		});
 	});
 

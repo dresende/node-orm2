@@ -198,12 +198,17 @@ describe("Model.get()", function() {
 	describe("without callback", function () {
 		before(setup(true));
 
-		it("should throw", function (done) {
-			(function () {
-				Person.get(John[Person.id]);
-			}).should.throw();
+		it("should resolve promise if found", function (done) {
+			Person.get(John[Person.id])
+				.then(function(person) {
+					person.should.be.a('object');
+					person.should.have.property(Person.id, John[Person.id]);
+					person.should.have.property('name', 'John Doe');
 
-			return done();
+					done();
+				})
+				.fail(done)
+				.done();
 		});
 	});
 

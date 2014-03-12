@@ -541,5 +541,67 @@ describe("hasMany", function () {
 				});
 			});
 		});
+
+		it("should not auto save associations which were autofetched", function (done) {
+			Pet.all(function (err, pets) {
+				should.not.exist(err);
+				should.equal(pets.length, 2);
+
+				Person.create({ name: 'Paul' }, function (err, paul) {
+					should.not.exist(err);
+
+					Person.one({ name: 'Paul' }, function (err, paul2) {
+						should.not.exist(err);
+						should.equal(paul2.pets.length, 0);
+
+						paul.setPets(pets, function (err) {
+							should.not.exist(err);
+
+							// reload paul to make sure we have 2 pets
+							Person.one({ name: 'Paul' }, function (err, paul) {
+								should.not.exist(err);
+								should.equal(paul.pets.length, 2);
+
+								// Saving paul2 should NOT auto save associations and hence delete
+								// the associations we just created.
+								paul2.save(function (err) {
+									should.not.exist(err);
+
+									// let's check paul - pets should still be associated
+									Person.one({ name: 'Paul' }, function (err, paul) {
+										should.not.exist(err);
+										should.equal(paul.pets.length, 2);
+
+										done();
+									});
+								});
+							});
+						});
+					});
+				});
+			});
+		});
+
+		it("should save associations set by the user", function (done) {
+			Person.one({ name: 'John' }, function (err, john) {
+				should.not.exist(err);
+				should.equal(john.pets.length, 2);
+
+				john.pets = [];
+
+				john.save(function (err) {
+					should.not.exist(err);
+
+					// reload john to make sure pets were deleted
+					Person.one({ name: 'John' }, function (err, john) {
+						should.not.exist(err);
+						should.equal(john.pets.length, 0);
+
+						done();
+					});
+				});
+			});
+		});
+
 	});
 });

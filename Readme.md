@@ -657,6 +657,10 @@ patient.removeDoctors(docs, function...) // Removes specified doctors from join 
 
 doctor.getPatients(function..)
 etc...
+
+// You can also do:
+patient.doctors = [doc1, doc2];
+patient.save(...)
 ```
 
 To associate a doctor to a patient:

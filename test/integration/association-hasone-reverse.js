@@ -112,8 +112,55 @@ describe("hasOne", function () {
 				});
 			});
 		});
-	});
 
+		// broken in mongo
+		if (common.protocol() != "mongodb") {
+			describe("findBy()", function () {
+				before(setup());
+
+				before(function (done) {
+					Person.one({ name: "Jane Doe" }, function (err, jane) {
+						Pet.one({ name: "Deco" }, function (err, deco) {
+							deco.setOwner(jane, function (err) {
+								should.not.exist(err);
+								done();
+							});
+						});
+					});
+				});
+
+				it("should throw if no conditions passed", function (done) {
+					(function () {
+						Pet.findByOwner(function () {});
+					}).should.throw();
+
+					return done();
+				});
+
+				it("should lookup reverse Model based on associated model properties", function (done) {
+					Pet.findByOwner({
+						name: "Jane Doe"
+					}, function (err, pets) {
+						should.not.exist(err);
+						should.equal(Array.isArray(pets), true);
+						should.equal(pets.length, 1);
+						should.equal(pets[0].name, 'Deco');
+
+						return done();
+					});
+				});
+
+				it("should return a ChainFind if no callback passed", function (done) {
+					var ChainFind = Pet.findByOwner({
+						name: "John Doe"
+					});
+					ChainFind.run.should.be.a("function");
+
+					return done();
+				});
+			});
+		}
+	});
 
 	describe("reverse find", function () {
 		it("should be able to find given an association id", function (done) {

@@ -1,6 +1,36 @@
 ### v2.2.0 - (to do, in future)
 - Fixes error code spelling: `PARAM_MISSMATCH` -> `PARAM_MISMATCH`
 
+### v2.1.4 - [DATE HERE]
+- Fix TypeScript module declaration (#362)
+- Fixes reversed hasOne.getAccessor when called without callback (#267)
+- Fixes default pool value (#366)
+- Fixes erroneous misformatting of top-level $and/$or clauses (#365)
+- Fix and improve TypeScript declaration (#369)
+- Use local as default timezone, pass timezone option to Query (#325)
+- Postgres: always save object as Buffer (#378)
+- Postgres: fix queries for prop create index, and for primary keys (#377)
+- Adds partial table sync (#383)
+- Typo in property definition (#382)
+- Implement eager loading - huge performance win (#393)
+- Make model methods defined by `defineProperty` writable so they can be mocked (#399)
+- Allow composite keys when calling remove. (#345, #358)
+- Fixed bug on like expression using MongoDB (#403)
+- Fixes pool and debug settings always true (#405)
+- Update express middleware for express.io (#413)
+- Allow HasMany.setAccessor to take an empty array
+- Fix DML if object value is null, JSON.stringify return string 'null' (#380)
+- Correct sqlite log statement (#452)
+- Make association methods writable so they can be mocked (#451)
+- Throw ORM errors rather than generic ones (#455)
+- Fix sqlite3 driver with config object on windows (#461)
+- Fix 'No associations defined' error (#398)
+- Don't modify connection object (#469)
+- Don't fire afterSave hooks when calling save with no changes (#457)
+- Fix reverse has one association findBy* (#450)
+- Auto cast hasMany extra properties with types like 'Object' (#466)
+- Add example full featured express app - AnonTXT
+
 ### v2.1.3 - 14 Oct 2013
 
 - Fixes connection strings being parsed by url module to don't forget about port :) (#355)

@@ -408,6 +408,7 @@ Person.find({ surname: "Doe" }).count(function (err, people) {
 ```
 
 Also available is the option to remove the selected items.
+Note that a chained remove will not run any hooks.
 
 ```js
 Person.find({ surname: "Doe" }).remove(function (err) {

@@ -356,13 +356,30 @@ describe("Hook", function() {
 	describe("afterSave", function () {
 		beforeEach(setup());
 
-		it("should trigger after saving an instance", function (done) {
-			Person.create([{ name: "John Doe" }], function () {
+		it("should trigger after creating an instance", function (done) {
+			Person.create({ name: "John Doe" }, function (err, john) {
+				should.not.exist(err);
+
 				triggeredHooks.afterSave.should.be.a("number");
 				triggeredHooks.beforeSave.should.be.a("number");
 				triggeredHooks.afterSave.should.not.be.below(triggeredHooks.beforeSave);
+				done();
+			});
+		});
 
-				return done();
+		it("should trigger after saving an instance", function (done) {
+			Person.create({ name: "John Doe" }, function (err, john) {
+				should.not.exist(err);
+
+				john.name = "John Doe 2";
+
+				triggeredHooks = {};
+				john.save(function (err) {
+					triggeredHooks.afterSave.should.be.a("number");
+					triggeredHooks.beforeSave.should.be.a("number");
+					triggeredHooks.afterSave.should.not.be.below(triggeredHooks.beforeSave);
+					done();
+				});
 			});
 		});
 

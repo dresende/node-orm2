@@ -1,3 +1,4 @@
+var _        = require('lodash');
 var sqlite   = require('sqlite3');
 var pg       = require('pg');
 var should   = require('should');
@@ -135,6 +136,25 @@ describe("ORM.connect()", function () {
 			err.message.should.not.equal("CONNECTION_URL_EMPTY");
 
 			return done();
+		});
+	});
+
+	it("should not modify connection opts", function (done) {
+		var opts = {
+			protocol : 'mysql',
+			user     : 'notauser',
+			password : "wrong password",
+			query    : { pool: true, debug: true }
+		};
+
+		var expected = JSON.stringify(opts);
+
+		ORM.connect(opts, function (err, db) {
+			should.equal(
+				JSON.stringify(opts),
+				expected
+			);
+			done();
 		});
 	});
 

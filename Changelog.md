@@ -10,7 +10,6 @@
 - Use local as default timezone, pass timezone option to Query (#325)
 - Postgres: always save object as Buffer (#378)
 - Postgres: fix queries for prop create index, and for primary keys (#377)
-- Adds partial table sync (#383)
 - Typo in property definition (#382)
 - Implement eager loading - huge performance win (#393)
 - Make model methods defined by `defineProperty` writable so they can be mocked (#399)

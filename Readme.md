@@ -81,6 +81,11 @@ orm.connect("mysql://username:password@host/database", function (err, db) {
 });
 ```
 
+## Promises
+
+You can use the [promise enabled wrapper library](https://github.com/rafaelkaufmann/q-orm).
+
+
 ## Express
 
 If you're using Express, you might want to use the simple middleware to integrate more easily.

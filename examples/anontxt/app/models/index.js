@@ -16,6 +16,7 @@ module.exports = function (cb) {
   orm.connect(settings.database, function (err, db) {
     if (err) return cb(err);
 
+    connection = db;
     db.settings.set('instance.returnAllErrors', true);
     setup(db, cb);
   });

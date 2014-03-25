@@ -79,6 +79,7 @@ describe("hasMany", function () {
 
 					should(Array.isArray(pets));
 					pets.length.should.equal(2);
+                    pets[0].model().should.equal(Pet);
 					pets[0].name.should.equal("Mutt");
 					pets[1].name.should.equal("Deco");
 
@@ -86,6 +87,15 @@ describe("hasMany", function () {
 				});
 			});
 		});
+
+        it ("should return proper instance model", function(done){
+            Person.find({ name: "John" }, function (err, people) {
+                people[0].getPets("-name", function (err, pets) {
+                    pets[0].model().should.equal(Pet);
+                    return done();
+                });
+            });
+        });
 
 		it("should allow to specify order as Array", function (done) {
 			Person.find({ name: "John" }, function (err, people) {

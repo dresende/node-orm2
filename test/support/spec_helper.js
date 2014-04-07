@@ -22,13 +22,13 @@ module.exports.dropSync = function (models, done) {
 
 	async.eachSeries(models, function (item, cb) {
 		item.drop(function (err) {
-			if (err) throw err
+			if (err) throw err;
 
 			item.sync(cb);
 		});
 	}, function (err) {
 		if (common.protocol() != 'sqlite') {
-			should.not.exist(err);
+			if (err) throw err;
 		}
 		done(err);
 	});

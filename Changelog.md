@@ -1,6 +1,9 @@
 ### v2.2.0 - (to do, in future)
 - Fixes error code spelling: `PARAM_MISSMATCH` -> `PARAM_MISMATCH`
 
+### v2.1.5 - 08 Apr 2013
+- Don't create indexes for primary/composite keys; they are created automatically (#484)
+
 ### v2.1.4 - 19 Mar 2014
 - Fix TypeScript module declaration (#362)
 - Fixes reversed hasOne.getAccessor when called without callback (#267)

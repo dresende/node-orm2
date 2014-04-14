@@ -22,7 +22,7 @@ npm test
 
 ## DBMS Support
 
-- MySQL
+- MySQL & MariaDB
 - PostgreSQL
 - Amazon Redshift
 - SQLite

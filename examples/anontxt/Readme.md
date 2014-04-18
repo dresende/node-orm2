@@ -11,7 +11,7 @@ npm install
 
 # You may work off master, or checkout a different version if master is broken:
 git tag
-git checkout v2.1.3
+git checkout v2.1.4
 ```
 
 **Setup AnonTXT**

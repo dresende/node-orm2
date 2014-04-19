@@ -6,6 +6,7 @@ describe("Model.create()", function() {
 	var db = null;
 	var Pet = null;
 	var Person = null;
+	var Pen = null;
 
 	var setup = function () {
 		return function (done) {
@@ -18,7 +19,11 @@ describe("Model.create()", function() {
 			});
 			Person.hasMany("pets", Pet);
 
-			return helper.dropSync([ Person, Pet ], done);
+			Pen = db.define("pen", {
+				colour : { type: "text" }
+			});
+
+			return helper.dropSync([ Person, Pet, Pen ], done);
 		};
 	};
 
@@ -147,6 +152,23 @@ describe("Model.create()", function() {
 					})
 				});
 			})
+		});
+
+		it("should return the default value set in the databse", function (done) {
+			db.driver.execQuery(
+				"ALTER TABLE ?? ALTER COLUMN ?? SET DEFAULT ?", [Pen.table, 'colour', 'blue'],
+				function (err) {
+					should.not.exist(err);
+
+					Pen.create({colour: undefined}, function (err, pen) {
+						should.not.exist(err);
+
+						should.equal(pen.colour, 'blue');
+
+						done();
+					});
+				}
+			);
 		});
 	});
 });

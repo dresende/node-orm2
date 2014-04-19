@@ -13,7 +13,8 @@ describe("Model.create()", function() {
 				name   : String
 			});
 			Pet = db.define("pet", {
-				name   : { type: "text", defaultValue: "Mutt" }
+				name   : { type: "text", defaultValue: "Mutt" },
+				age    : { type: 'number' }
 			});
 			Person.hasMany("pets", Pet);
 
@@ -122,6 +123,30 @@ describe("Model.create()", function() {
 
 				return done();
 			});
+		});
+
+		it("should not use defaultValue when updating", function (done) {
+			Pet.create({name: "Ruffy"}, function (err, pet) {
+				should.equal(err, null);
+				should.equal(pet.name, "Ruffy");
+
+				// simulated data from a user
+				var params = { age: 4 };
+
+				pet.age  = params.age;
+				pet.name = params.name; // we expected a name, but it's undefined
+
+				pet.save(function (err) {
+					should.not.exist(err);
+
+					Pet.get(pet.id, function (err, pet) {
+						should.not.exist(err);
+						should.strictEqual(pet.name, null);
+
+						done();
+					})
+				});
+			})
 		});
 	});
 });

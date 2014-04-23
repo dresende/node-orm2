@@ -388,6 +388,7 @@ Person.find({ surname: "Doe" }).limit(3).offset(2).only("name", "surname").run(f
     // returning only 'name' and 'surname' properties
 });
 ```
+If you want to skip just one or two properties, you can call `.omit()` instead of `.only`.
 
 Chaining allows for more complicated queries. For example, we can search by specifying custom SQL:
 ```js

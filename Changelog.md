@@ -1,7 +1,10 @@
 ### v2.2.0 - (to do, in future)
 - Fixes error code spelling: `PARAM_MISSMATCH` -> `PARAM_MISMATCH`
 
-### v2.1.5 - 08 Apr 2013
+### v2.1.6 - 23 Apr 2014
+- Add '.omit' to chain find - opposite of '.only'
+
+### v2.1.5 - 08 Apr 2014
 - Don't create indexes for primary/composite keys; they are created automatically (#484)
 
 ### v2.1.4 - 19 Mar 2014

@@ -208,6 +208,34 @@ describe("Model.find() chaining", function() {
 		});
 	});
 
+	describe("omit", function () {
+		before(setup());
+
+		it("('property', ...) should not get these properties", function (done) {
+			Person.find().omit("age", "surname").order("-age").run(function (err, instances) {
+				should.equal(err, null);
+				instances.should.have.property("length", 3);
+				instances[0].should.have.property("age", null);
+				instances[0].should.have.property("surname", null);
+				instances[0].should.have.property("name", "Jane");
+
+				return done();
+			});
+		});
+
+		it("(['property', ...]) should not get these properties", function (done) {
+			Person.find().omit(["age", "surname"]).order("-age").run(function (err, instances) {
+				should.equal(err, null);
+				instances.should.have.property("length", 3);
+				instances[0].should.have.property("age", null);
+				instances[0].should.have.property("surname", null);
+				instances[0].should.have.property("name", "Jane");
+
+				return done();
+			});
+		});
+	});
+
 	describe(".count()", function () {
 		before(setup());
 

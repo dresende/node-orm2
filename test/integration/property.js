@@ -17,6 +17,16 @@ describe("Property", function () {
 			return done();
 		});
 	});
+	describe("passing deprecated rational: false number", function() {
+		it("should return type: 'integer'", function (done) {
+			Property.normalize(
+				{type: 'number', rational: false},
+				{}, ORM.settings
+			).type.should.equal("integer");
+
+			return done();
+		});
+	});
 	describe("passing Boolean", function() {
 		it("should return type: 'boolean'", function (done) {
 			Property.normalize(Boolean, {}, ORM.settings).type.should.equal("boolean");

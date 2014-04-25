@@ -14,9 +14,9 @@ describe("Model instance", function() {
 
 			Person = db.define("person", {
 				name   : String,
-				age    : { type: 'number', rational: false, required: false },
-				height : { type: 'number', rational: false, required: false },
-				weight : { type: 'number',                  required: false }
+				age    : { type: 'integer', required: false },
+				height : { type: 'integer', required: false },
+				weight : { type: 'number',  required: false }
 			}, {
 				cache: false,
 				validations: {

@@ -12,7 +12,7 @@
 		"sqlite",
 		"mongodb"
 	],
-	"version"     : "2.1.6",
+	"version"     : "2.1.7",
 	"license"     : "MIT",
 	"homepage"    : "http://dresende.github.io/node-orm2",
 	"repository"  : "http://github.com/dresende/node-orm2.git",
@@ -38,7 +38,7 @@
 	"dependencies": {
 		"enforce"      : "0.1.2",
 		"sql-query"    : "0.1.16",
-		"sql-ddl-sync" : "git://github.com/dresende/node-sql-ddl-sync.git#v0.2.4",
+		"sql-ddl-sync" : "git://github.com/dresende/node-sql-ddl-sync.git#v0.3.0",
 		"hat"          : "0.0.3",
 		"lodash"       : "2.4.1"
 	},

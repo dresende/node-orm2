@@ -51,7 +51,7 @@ orm.connect("mysql://username:password@host/database", function (err, db) {
 	var Person = db.define("person", {
 		name      : String,
 		surname   : String,
-		age       : Number,
+		age       : Number, // FLOAT
 		male      : Boolean,
 		continent : [ "Europe", "America", "Asia", "Africa", "Australia", "Antartica" ], // ENUM type
 		photo     : Buffer, // BLOB/BINARY

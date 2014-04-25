@@ -53,9 +53,9 @@ describe("Model keys option", function() {
 
 		before(function (done) {
 			DoorAccessHistory = db.define("door_access_history", {
-				year   : { type: 'number', rational: false },
-				month  : { type: 'number', rational: false },
-				day    : { type: 'number', rational: false },
+				year   : { type: 'integer' },
+				month  : { type: 'integer' },
+				day    : { type: 'integer' },
 				user   : String,
 				action : [ "in", "out" ]
 			}, {

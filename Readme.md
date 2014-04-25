@@ -171,7 +171,7 @@ Are defined directly on the model.
 ```js
 var Person = db.define('person', {
     name    : String,
-    height  : { type: 'number', rational: false }
+    height  : { type: 'integer' }
 });
 Person.tallerThan = function(height, callback) {
     this.find({ height: orm.gt(height) }, callback);

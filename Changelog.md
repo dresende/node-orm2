@@ -1,6 +1,10 @@
 ### v2.2.0 - (to do, in future)
 - Fixes error code spelling: `PARAM_MISSMATCH` -> `PARAM_MISMATCH`
 
+### v2.1.7 - 25 Apr 2014
+- Add explicit 'integer' type to avoid confusion.
+  `type: 'number', rational: false` will auto convert to `type: 'integer'`.
+
 ### v2.1.6 - 23 Apr 2014
 - Add '.omit' to chain find - opposite of '.only'
 

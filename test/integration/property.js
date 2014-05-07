@@ -24,8 +24,7 @@ describe("Property", function () {
 	describe("passing deprecated rational: false number", function() {
 		it("should return type: 'integer'", function (done) {
 			Property.normalize(
-				{type: 'number', rational: false},
-				{}, ORM.settings
+				{ prop: {type: 'number', rational: false}, customTypes: {}, settings: ORM.settings, name: 'abc'}
 			).type.should.equal("integer");
 
 			return done();

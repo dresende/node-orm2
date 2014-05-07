@@ -219,7 +219,9 @@ describe("Model.find() chaining", function() {
 			Person.find().omit("age", "surname").order("-age").run(function (err, instances) {
 				should.equal(err, null);
 				instances.should.have.property("length", 3);
-				should.exist(instances[0].id);
+				if (common.protocol() != "mongodb") {
+					should.exist(instances[0].id);
+				}
 				should.exist(instances[0].friend_id);
 				instances[0].should.have.property("age", null);
 				instances[0].should.have.property("surname", null);

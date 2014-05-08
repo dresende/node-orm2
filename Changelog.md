@@ -1,5 +1,6 @@
-### v2.2.0 - (to do, in future)
-- Fixes error code spelling: `PARAM_MISSMATCH` -> `PARAM_MISMATCH`
+### v2.1.9 - 06 May 2014
+- Add basic PostGIS support - (#456, #375)
+- Allow mapping model properties to differently named columns (#273, #495)
 
 ### v2.1.8 - 28 Apr 2014
 - Fix '.omit' (#491)

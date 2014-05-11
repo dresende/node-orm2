@@ -1,7 +1,7 @@
 ## Object Relational Mapping
 
-[![Build Status](https://secure.travis-ci.org/dresende/node-orm2.png?branch=master)](http://travis-ci.org/dresende/node-orm2)
-[![](https://badge.fury.io/js/orm.png)](https://npmjs.org/package/orm)
+[![Build Status](https://api.travis-ci.org/dresende/node-orm2.svg?branch=master)](http://travis-ci.org/dresende/node-orm2)
+[![](https://badge.fury.io/js/orm.svg)](https://npmjs.org/package/orm)
 [![](https://gemnasium.com/dresende/node-orm2.png)](https://gemnasium.com/dresende/node-orm2)
 [![Flattr this git repo](http://api.flattr.com/button/flattr-badge-large.png)](https://flattr.com/submit/auto?user_id=dresende&url=https://github.com/dresende/node-orm2&title=ORM&language=&tags=github&category=software)
 

@@ -4,7 +4,7 @@ var Driver = require('../../../lib/Drivers/DML/postgres').Driver;
 var helper = require('../../support/spec_helper');
 var common = require('../../common');
 
-if (common.protocol() == "mongodb") return;
+if (common.protocol() != "postgres") return;
 
 describe("Postgres driver", function() {
 	describe("#propertyToValue", function () {

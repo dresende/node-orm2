@@ -6,6 +6,7 @@ var common   = require('../common');
 describe("Model.find() chaining", function() {
 	var db = null;
 	var Person = null;
+	var Dog = null;
 
 	var setup = function () {
 		return function (done) {
@@ -15,22 +16,50 @@ describe("Model.find() chaining", function() {
 				age     : Number
 			});
 			Person.hasMany("parents");
+			Person.hasOne("friend");
 
 			ORM.singleton.clear(); // clear cache
 
 			return helper.dropSync(Person, function () {
 				Person.create([{
-					name    : "John",
-					surname : "Doe",
-					age     : 18
+					name      : "John",
+					surname   : "Doe",
+					age       : 18,
+					friend_id : 1
 				}, {
-					name    : "Jane",
-					surname : "Doe",
-					age     : 20
+					name      : "Jane",
+					surname   : "Doe",
+					age       : 20,
+					friend_id : 1
 				}, {
-					name    : "Jane",
-					surname : "Dean",
-					age     : 18
+					name      : "Jane",
+					surname   : "Dean",
+					age       : 18,
+					friend_id : 1
+				}], done);
+			});
+		};
+	};
+
+	var setup2 = function () {
+		return function (done) {
+			Dog = db.define("dog", {
+				name: String,
+			});
+			Dog.hasMany("friends");
+			Dog.hasMany("family");
+
+			ORM.singleton.clear(); // clear cache
+
+			return helper.dropSync(Dog, function () {
+				Dog.create([{
+					name    : "Fido",
+					friends : [{ name: "Gunner" }, { name: "Chainsaw" }],
+					family  : [{ name: "Chester" }]
+				}, {
+					name    : "Thumper",
+					friends : [{ name: "Bambi" }],
+					family  : [{ name: "Princess" }, { name: "Butch" }]
 				}], done);
 			});
 		};
@@ -177,6 +206,38 @@ describe("Model.find() chaining", function() {
 				instances[0].should.have.property("age");
 				instances[0].should.have.property("surname", "Doe");
 				instances[0].should.have.property("name", null);
+
+				return done();
+			});
+		});
+	});
+
+	describe("omit", function () {
+		before(setup());
+
+		it("('property', ...) should not get these properties", function (done) {
+			Person.find().omit("age", "surname").order("-age").run(function (err, instances) {
+				should.equal(err, null);
+				instances.should.have.property("length", 3);
+				if (common.protocol() != "mongodb") {
+					should.exist(instances[0].id);
+				}
+				should.exist(instances[0].friend_id);
+				instances[0].should.have.property("age", null);
+				instances[0].should.have.property("surname", null);
+				instances[0].should.have.property("name", "Jane");
+
+				return done();
+			});
+		});
+
+		it("(['property', ...]) should not get these properties", function (done) {
+			Person.find().omit(["age", "surname"]).order("-age").run(function (err, instances) {
+				should.equal(err, null);
+				instances.should.have.property("length", 3);
+				instances[0].should.have.property("age", null);
+				instances[0].should.have.property("surname", null);
+				instances[0].should.have.property("name", "Jane");
 
 				return done();
 			});
@@ -475,6 +536,76 @@ describe("Model.find() chaining", function() {
 						});
 					});
 				});
+			});
+		});
+	});
+
+	describe(".eager()", function () {
+		before(setup2());
+
+		// TODO: Remove this code once the Mongo eager loading is implemented
+		var isMongo = function () {
+			if (db.driver.config.protocol == "mongodb:") {
+				(function () {
+					Dog.find().eager("friends").all(function () {
+						// Should not ever run.
+					});
+				}).should.throw();
+
+				return true;
+			}
+			return false;
+		};
+
+		it("should fetch all listed associations in a single query", function (done) {
+			if (isMongo()) { return done(); };
+
+			Dog.find({ name: ["Fido", "Thumper"] }).eager("friends").all(function (err, dogs) {
+				should.equal(err, null);
+
+				should(Array.isArray(dogs));
+
+				dogs.length.should.equal(2);
+
+				dogs[0].friends.length.should.equal(2);
+				dogs[1].friends.length.should.equal(1);
+				done();
+			});
+		});
+
+		it("should be able to handle multiple associations", function (done) {
+			if (isMongo()) { return done(); };
+
+			Dog.find({ name: ["Fido", "Thumper"] }).eager("friends", "family").all(function (err, dogs) {
+				should.equal(err, null);
+
+				should(Array.isArray(dogs));
+
+				dogs.length.should.equal(2);
+
+				dogs[0].friends.length.should.equal(2);
+				dogs[0].family.length.should.equal(1);
+				dogs[1].friends.length.should.equal(1);
+				dogs[1].family.length.should.equal(2);
+				done();
+			});
+		});
+
+		it("should work with array parameters too", function (done) {
+			if (isMongo()) { return done(); };
+
+			Dog.find({ name: ["Fido", "Thumper"] }).eager(["friends", "family"]).all(function (err, dogs) {
+				should.equal(err, null);
+
+				should(Array.isArray(dogs));
+
+				dogs.length.should.equal(2);
+
+				dogs[0].friends.length.should.equal(2);
+				dogs[0].family.length.should.equal(1);
+				dogs[1].friends.length.should.equal(1);
+				dogs[1].family.length.should.equal(2);
+				done();
 			});
 		});
 	});

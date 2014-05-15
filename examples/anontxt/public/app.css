@@ -1,0 +1,128 @@
+
+*, *:before, *:after {
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+body {
+  background: #eee;
+  font-family: "Segoe UI", Frutiger, "Frutiger Linotype", "Dejavu Sans", "Helvetica Neue", Arial, sans-serif;
+  font-height: 17px;
+}
+
+#container {
+  width: 980px;
+  margin: 0 auto;
+  background: #fff;
+  border-radius: 4px;
+}
+
+#header {
+  padding: 2em;
+}
+#header h1 {
+  margin: 0;
+  font-size: 5em;
+}
+#header h1 em {
+  color: #ed5;
+}
+
+#main {
+  padding: 0 2em 2em 2em;
+}
+#main section {
+  margin-bottom: 2em;
+}
+#main h3 {
+  margin-top: 0;
+}
+#main form .entry {
+  margin-bottom: 1em;
+  line-height: 1.5em;
+}
+#main form .entry input,
+#main form .entry textarea {
+  padding: 0.3em;
+}
+#main form .entry label {
+  display: block;
+}
+#main form .entry label .title {
+  display: block;
+}
+
+#main .new form .entry.title input {
+  width: 50em;
+}
+#main .new form .entry.body textarea {
+  width: 50em;
+  height: 10em;
+}
+#main .new form button {
+  font-size: 1.5em;
+  padding: 0.3em 1em;
+  border-radius: 0.4em;
+}
+#main .alerts {
+  display: none;
+}
+#main .alerts > div {
+  padding: 0 0 1em 0;
+}
+#main .alerts .error {
+  color: red;
+}
+#main .alerts .info {
+  color: #6d6;
+}
+#main .latest .texts .message {
+  margin: 1em 0;
+  padding-bottom: 0.7em;
+  border: 1px solid #ddd;
+}
+#main .latest .texts .message:nth-child(n+5) {
+  display: none;
+}
+#main .latest .texts .message > h4 {
+  margin: 0;
+  padding: 0.4em;
+  background: #eee;
+  border-bottom: 1px solid #ddd;
+}
+#main .latest .texts .message .meta {
+  float: right;
+  padding: 0.4em 0.4em 0 0;
+  color: #777;
+}
+#main .latest .texts .message p {
+  margin: 0.5em;
+}
+#main .latest .texts .message .comments {
+  width: 500px;
+  margin-left: 2em;
+  font-size: 85%;
+}
+#main .latest .texts .message .comments h4 {
+  margin: 0;
+  padding: 0.4em;
+}
+#main .latest .texts .message .comments .comment {
+  border-top: 1px dotted #aaa;
+}
+#main .latest .texts .message .comments .new-comment .entry {
+  margin-bottom: 0;
+}
+#main .latest .texts .message .comments .new-comment textarea {
+  width: 20em;
+  height: 4em;
+}
+
+#footer {
+  margin-top: 2em;
+  padding: 0.5em;
+  background: #9b9;
+  color: #fff;
+  text-align: center;
+}

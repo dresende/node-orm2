@@ -14,9 +14,9 @@ describe("Model instance", function() {
 
 			Person = db.define("person", {
 				name   : String,
-				age    : { type: 'number', rational: false, required: false },
-				height : { type: 'number', rational: false, required: false },
-				weight : { type: 'number',                  required: false }
+				age    : { type: 'integer', required: false },
+				height : { type: 'integer', required: false },
+				weight : { type: 'number',  required: false }
 			}, {
 				cache: false,
 				validations: {
@@ -129,6 +129,16 @@ describe("Model instance", function() {
 
 		it("should return false for new instances", function () {
 			should.equal((new Person).isPersisted(), false);
+		});
+
+		it("should be writable for mocking", function() {
+			var person = new Person()
+			var triggered = false;
+			person.isPersisted = function() {
+				triggered = true;
+			};
+			person.isPersisted()
+			triggered.should.be.true;
 		});
 	});
 

@@ -19,7 +19,8 @@ describe("hasMany extra properties", function() {
 				name    : String
 			});
 			Person.hasMany('pets', Pet, {
-				since   : Date
+				since   : Date,
+				data    : Object
 			});
 
 			return helper.dropSync([ Person, Pet ], done);
@@ -45,7 +46,9 @@ describe("hasMany extra properties", function() {
 				}, {
 					name : "Mutt"
 				}], function (err, pets) {
-					people[0].addPets(pets, { since : new Date() }, function (err) {
+					var data = { adopted: true };
+
+					people[0].addPets(pets, { since : new Date(), data: data }, function (err) {
 						should.equal(err, null);
 
 						Person.find({ name: "John" }, { autoFetch : true }).first(function (err, John) {
@@ -61,6 +64,9 @@ describe("hasMany extra properties", function() {
 							John.pets[0].extra.should.be.a("object");
 							John.pets[0].extra.should.have.property("since");
 							should(John.pets[0].extra.since instanceof Date);
+
+							should.equal(typeof John.pets[0].extra.data, 'object');
+							should.equal(JSON.stringify(data), JSON.stringify(John.pets[0].extra.data));
 
 							return done();
 						});

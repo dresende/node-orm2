@@ -1,3 +1,4 @@
+var _      = require('lodash');
 var should = require('should');
 var helper = require('../support/spec_helper');
 var ORM    = require('../../');
@@ -18,11 +19,11 @@ describe("hasMany", function () {
 				name    : String,
 				surname : String,
 				age     : Number
-			}, opts);
+			});
 			Pet = db.define('pet', {
 				name    : String
 			});
-			Person.hasMany('pets', Pet);
+			Person.hasMany('pets', Pet, {}, { autoFetch: opts.autoFetchPets });
 
 			return helper.dropSync([ Person, Pet ], function () {
 				/**
@@ -291,61 +292,59 @@ describe("hasMany", function () {
 	describe("addAccessor", function () {
 		before(setup());
 
-		if (common.protocol() == "mongodb") return;
-
-		it("might add duplicates", function (done) {
-			Pet.find({ name: "Mutt" }, function (err, pets) {
-				Person.find({ name: "Jane" }, function (err, people) {
-					should.equal(err, null);
-
-					people[0].addPets(pets[0], function (err) {
+		if (common.protocol() != "mongodb") {
+			it("might add duplicates", function (done) {
+				Pet.find({ name: "Mutt" }, function (err, pets) {
+					Person.find({ name: "Jane" }, function (err, people) {
 						should.equal(err, null);
 
-						people[0].getPets("name", function (err, pets) {
+						people[0].addPets(pets[0], function (err) {
 							should.equal(err, null);
 
-							should(Array.isArray(pets));
-							pets.length.should.equal(2);
-							pets[0].name.should.equal("Mutt");
-							pets[1].name.should.equal("Mutt");
+							people[0].getPets("name", function (err, pets) {
+								should.equal(err, null);
 
-							return done();
+								should(Array.isArray(pets));
+								pets.length.should.equal(2);
+								pets[0].name.should.equal("Mutt");
+								pets[1].name.should.equal("Mutt");
+
+								return done();
+							});
 						});
 					});
 				});
 			});
-		});
-	});
-
-	describe("addAccessor", function () {
-		before(setup());
+		}
 
 		it("should keep associations and add new ones", function (done) {
 			Pet.find({ name: "Deco" }).first(function (err, Deco) {
 				Person.find({ name: "Jane" }).first(function (err, Jane) {
 					should.equal(err, null);
 
-					Jane.addPets(Deco, function (err) {
-						should.equal(err, null);
+					Jane.getPets(function (err, janesPets) {
+						should.not.exist(err);
 
-						Jane.getPets("name", function (err, pets) {
+						var petsAtStart = janesPets.length;
+
+						Jane.addPets(Deco, function (err) {
 							should.equal(err, null);
 
-							should(Array.isArray(pets));
-							pets.length.should.equal(2);
-							pets[0].name.should.equal("Deco");
-							pets[1].name.should.equal("Mutt");
+							Jane.getPets("name", function (err, pets) {
+								should.equal(err, null);
 
-							return done();
+								should(Array.isArray(pets));
+								pets.length.should.equal(petsAtStart + 1);
+								pets[0].name.should.equal("Deco");
+								pets[1].name.should.equal("Mutt");
+
+								return done();
+							});
 						});
 					});
 				});
 			});
 		});
-	});
-
-	describe("addAccessor", function () {
-		before(setup());
 
 		it("should accept several arguments as associations", function (done) {
 			Pet.find(function (err, pets) {
@@ -367,65 +366,44 @@ describe("hasMany", function () {
 				});
 			});
 		});
-	});
-
-	describe("addAccessor", function () {
-		before(setup());
 
 		it("should accept array as list of associations", function (done) {
-			Pet.find(function (err, pets) {
+			Pet.create([{ name: 'Ruff' }, { name: 'Spotty' }],function (err, pets) {
 				Person.find({ name: "Justin" }).first(function (err, Justin) {
 					should.equal(err, null);
 
-					Justin.addPets(pets, function (err) {
+					Justin.getPets(function (err, justinsPets) {
 						should.equal(err, null);
 
-						Justin.getPets(function (err, all_pets) {
+						var petCount = justinsPets.length;
+
+						Justin.addPets(pets, function (err) {
 							should.equal(err, null);
 
-							should(Array.isArray(all_pets));
-							all_pets.length.should.equal(pets.length);
-
-							return done();
-						});
-					});
-				});
-			});
-		});
-	});
-
-	describe("setAccessor", function () {
-		before(setup());
-
-		it("clears current associations", function (done) {
-			Pet.find({ name: "Deco" }, function (err, pets) {
-				var Deco = pets[0];
-
-				Person.find({ name: "Jane" }).first(function (err, Jane) {
-					should.equal(err, null);
-
-					Jane.getPets(function (err, pets) {
-						should.equal(err, null);
-
-						should(Array.isArray(pets));
-						pets.length.should.equal(1);
-						pets[0].name.should.equal("Mutt");
-
-						Jane.setPets(Deco, function (err) {
-							should.equal(err, null);
-
-							Jane.getPets(function (err, pets) {
+							Justin.getPets(function (err, justinsPets) {
 								should.equal(err, null);
 
-								should(Array.isArray(pets));
-								pets.length.should.equal(1);
-								pets[0].name.should.equal(Deco.name);
+								should(Array.isArray(justinsPets));
+								// Mongo doesn't like adding duplicates here, so we add new ones.
+								should.equal(justinsPets.length, petCount + 2);
 
 								return done();
 							});
 						});
 					});
 				});
+			});
+		});
+
+		it("should throw if no items passed", function (done) {
+			Person.one(function (err, person) {
+				should.equal(err, null);
+
+				(function () {
+					person.addPets(function () {});
+				}).should.throw();
+
+				return done();
 			});
 		});
 	});
@@ -475,22 +453,63 @@ describe("hasMany", function () {
 			});
 		});
 
-		it("should throw if no items passed", function (done) {
-			Person.one(function (err, person) {
+		it("should remove all associations if an empty array is passed", function (done) {
+			Person.find({ name: "Justin" }).first(function (err, Justin) {
 				should.equal(err, null);
+				Justin.getPets(function (err, pets) {
+					should.equal(err, null);
+					should.equal(pets.length, 2);
 
-				(function () {
-					person.addPets(function () {});
-				}).should.throw();
+					Justin.setPets([], function (err) {
+						should.equal(err, null);
 
-				return done();
+						Justin.getPets(function (err, pets) {
+							should.equal(err, null);
+							should.equal(pets.length, 0);
+
+							return done();
+						});
+					});
+				});
+			});
+		});
+
+		it("clears current associations", function (done) {
+			Pet.find({ name: "Deco" }, function (err, pets) {
+				var Deco = pets[0];
+
+				Person.find({ name: "Jane" }).first(function (err, Jane) {
+					should.equal(err, null);
+
+					Jane.getPets(function (err, pets) {
+						should.equal(err, null);
+
+						should(Array.isArray(pets));
+						pets.length.should.equal(1);
+						pets[0].name.should.equal("Mutt");
+
+						Jane.setPets(Deco, function (err) {
+							should.equal(err, null);
+
+							Jane.getPets(function (err, pets) {
+								should.equal(err, null);
+
+								should(Array.isArray(pets));
+								pets.length.should.equal(1);
+								pets[0].name.should.equal(Deco.name);
+
+								return done();
+							});
+						});
+					});
+				});
 			});
 		});
 	});
 
 	describe("with autoFetch turned on", function () {
 		before(setup({
-			autoFetch : true
+			autoFetchPets : true
 		}));
 
 		it("should fetch associations", function (done) {
@@ -504,5 +523,85 @@ describe("hasMany", function () {
 				return done();
 			});
 		});
+
+		it("should save existing", function (done) {
+			Person.create({ name: 'Bishan' }, function (err) {
+				should.not.exist(err);
+
+				Person.one({ name: 'Bishan' }, function (err, person) {
+					should.not.exist(err);
+
+					person.surname = 'Dominar';
+
+					person.save(function (err) {
+						should.not.exist(err);
+
+						done();
+					});
+				});
+			});
+		});
+
+		it("should not auto save associations which were autofetched", function (done) {
+			Pet.all(function (err, pets) {
+				should.not.exist(err);
+				should.equal(pets.length, 2);
+
+				Person.create({ name: 'Paul' }, function (err, paul) {
+					should.not.exist(err);
+
+					Person.one({ name: 'Paul' }, function (err, paul2) {
+						should.not.exist(err);
+						should.equal(paul2.pets.length, 0);
+
+						paul.setPets(pets, function (err) {
+							should.not.exist(err);
+
+							// reload paul to make sure we have 2 pets
+							Person.one({ name: 'Paul' }, function (err, paul) {
+								should.not.exist(err);
+								should.equal(paul.pets.length, 2);
+
+								// Saving paul2 should NOT auto save associations and hence delete
+								// the associations we just created.
+								paul2.save(function (err) {
+									should.not.exist(err);
+
+									// let's check paul - pets should still be associated
+									Person.one({ name: 'Paul' }, function (err, paul) {
+										should.not.exist(err);
+										should.equal(paul.pets.length, 2);
+
+										done();
+									});
+								});
+							});
+						});
+					});
+				});
+			});
+		});
+
+		it("should save associations set by the user", function (done) {
+			Person.one({ name: 'John' }, function (err, john) {
+				should.not.exist(err);
+				should.equal(john.pets.length, 2);
+
+				john.pets = [];
+
+				john.save(function (err) {
+					should.not.exist(err);
+
+					// reload john to make sure pets were deleted
+					Person.one({ name: 'John' }, function (err, john) {
+						should.not.exist(err);
+						should.equal(john.pets.length, 0);
+
+						done();
+					});
+				});
+			});
+		});
+
 	});
 });

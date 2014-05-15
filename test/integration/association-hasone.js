@@ -19,9 +19,9 @@ describe("hasOne", function() {
 			db.settings.set('instance.cache', false);
 			db.settings.set('instance.returnAllErrors', true);
 			Tree  = db.define("tree",   { type:   { type: 'text' } });
-			Stalk = db.define("stalk",  { length: { type: 'number', rational: false } });
+			Stalk = db.define("stalk",  { length: { type: 'integer' } });
 			Leaf  = db.define("leaf", {
-				size: { type: 'number', rational: false }
+				size: { type: 'integer' }
 			}, {
 				validations: opts.validations
 			});

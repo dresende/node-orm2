@@ -1,0 +1,47 @@
+<!doctype html >
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>AnonTXT</title>
+    <link rel="stylesheet" href="app.css">
+    <script type="text/javascript" src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script type="text/javascript" src="app.js"></script>
+  </head>
+  <body>
+    <div id="container">
+      <div id="header">
+        <h1>AnonTXT! <em>&gt;</em></h1>
+      </div>
+      <div id="main">
+        <div class="alerts"></div>
+        <section class="latest">
+          <h3>Latest txts:</h3>
+          <div class="texts">Loading..</div>
+        </section>
+        <section class="new">
+          <h3>New text:</h3>
+          <div class="new">
+            <form action="/messages" method="post">
+              <div class="errors"></div>
+              <div class="entry title">
+                <label>
+                  <span class="title">Text title</span>
+                  <input type="text" name="title" />
+                </label>
+              </div>
+              <div class="entry body">
+                <label>
+                  <span class="title">Main TeXT</span>
+                  <textarea name="body"></textarea>
+              </div>
+              <button type="submit">Create!</button>
+            </form>
+          </div>
+        </section>
+      </div>
+      <div id="footer">
+        Anon text is 100% fat free!
+      </div>
+    </div>
+  </body>
+</html>

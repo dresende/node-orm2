@@ -128,6 +128,6 @@ describe("Smart types", function () {
 		        });
 		    });
 		});
-		
+
 	});
 });

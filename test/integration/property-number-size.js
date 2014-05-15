@@ -31,11 +31,11 @@ if (protocol != "sqlite") {
 		var setup = function () {
 			return function (done) {
 				NumberSize = db.define("number_size", {
-					int2   : { type: 'number', size: 2, rational: false },
-					int4   : { type: 'number', size: 4, rational: false },
-					int8   : { type: 'number', size: 8, rational: false },
-					float4 : { type: 'number', size: 4 },
-					float8 : { type: 'number', size: 8 }
+					int2   : { type: 'integer', size: 2 },
+					int4   : { type: 'integer', size: 4 },
+					int8   : { type: 'integer', size: 8 },
+					float4 : { type: 'number',  size: 4 },
+					float8 : { type: 'number',  size: 8 }
 				});
 
 				return helper.dropSync(NumberSize, function () {

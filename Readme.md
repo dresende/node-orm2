@@ -22,7 +22,7 @@ npm test
 
 ## DBMS Support
 
-- MySQL
+- MySQL & MariaDB
 - PostgreSQL
 - Amazon Redshift
 - SQLite
@@ -34,7 +34,7 @@ npm test
 - Create Model associations, find, check, create and remove
 - Define custom validations (several builtin validations, check instance properties before saving - see [enforce](http://github.com/dresende/node-enforce) for details)
 - Model instance caching and integrity (table rows fetched twice are the same object, changes to one change all)
-- Plugins: [MySQL FTS](http://dresende.github.io/node-orm-mysql-fts) , [Pagination](http://dresende.github.io/node-orm-paging) , [Transaction](http://dresende.github.io/node-orm-transaction), [Timestamps](http://github.com/SPARTAN563/node-orm-timestamps)
+- Plugins: [MySQL FTS](http://dresende.github.io/node-orm-mysql-fts) , [Pagination](http://dresende.github.io/node-orm-paging) , [Transaction](http://dresende.github.io/node-orm-transaction), [Timestamps](http://github.com/SPARTAN563/node-orm-timestamps), [Migrations](https://github.com/locomote/node-migrate-orm2)
 
 ## Introduction
 
@@ -51,7 +51,7 @@ orm.connect("mysql://username:password@host/database", function (err, db) {
 	var Person = db.define("person", {
 		name      : String,
 		surname   : String,
-		age       : Number,
+		age       : Number, // FLOAT
 		male      : Boolean,
 		continent : [ "Europe", "America", "Asia", "Africa", "Australia", "Antartica" ], // ENUM type
 		photo     : Buffer, // BLOB/BINARY
@@ -81,6 +81,11 @@ orm.connect("mysql://username:password@host/database", function (err, db) {
 });
 ```
 
+## Promises
+
+You can use the [promise enabled wrapper library](https://github.com/rafaelkaufmann/q-orm).
+
+
 ## Express
 
 If you're using Express, you might want to use the simple middleware to integrate more easily.
@@ -107,6 +112,10 @@ app.get("/", function (req, res) {
 You can call `orm.express` more than once to have multiple database connections. Models defined across connections
 will be joined together in `req.models`. **Don't forget to use it before `app.use(app.router)`, preferably right after your
 assets public folder(s).**
+
+## Examples
+
+See `examples/anontxt` for an example express based app.
 
 ## Documentation
 
@@ -162,7 +171,7 @@ Are defined directly on the model.
 ```js
 var Person = db.define('person', {
     name    : String,
-    height  : { type: 'number', rational: false }
+    height  : { type: 'integer' }
 });
 Person.tallerThan = function(height, callback) {
     this.find({ height: orm.gt(height) }, callback);
@@ -379,6 +388,7 @@ Person.find({ surname: "Doe" }).limit(3).offset(2).only("name", "surname").run(f
     // returning only 'name' and 'surname' properties
 });
 ```
+If you want to skip just one or two properties, you can call `.omit()` instead of `.only`.
 
 Chaining allows for more complicated queries. For example, we can search by specifying custom SQL:
 ```js
@@ -404,6 +414,7 @@ Person.find({ surname: "Doe" }).count(function (err, people) {
 ```
 
 Also available is the option to remove the selected items.
+Note that a chained remove will not run any hooks.
 
 ```js
 Person.find({ surname: "Doe" }).remove(function (err) {
@@ -653,6 +664,10 @@ patient.removeDoctors(docs, function...) // Removes specified doctors from join 
 
 doctor.getPatients(function..)
 etc...
+
+// You can also do:
+patient.doctors = [doc1, doc2];
+patient.save(...)
 ```
 
 To associate a doctor to a patient:

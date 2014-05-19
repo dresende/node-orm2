@@ -152,6 +152,32 @@ describe("hasMany", function () {
 				return done();
 			});
 		});
+
+		it("should allow chaining count()", function (done) {
+			Person.find({}, function (err, people) {
+				should.equal(err, null);
+
+				people[0].getPets().count(function (err, count) {
+					should.not.exist(err);
+
+					should.strictEqual(count, 2);
+
+					people[1].getPets().count(function (err, count) {
+						should.not.exist(err);
+
+						should.strictEqual(count, 1);
+
+						people[2].getPets().count(function (err, count) {
+							should.not.exist(err);
+
+							should.strictEqual(count, 0);
+
+							return done();
+						});
+					});
+				});
+			});
+		});
 	});
 
 	describe("hasAccessor", function () {

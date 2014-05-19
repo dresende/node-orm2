@@ -1,3 +1,9 @@
+### v2.1.11 - 19 May 2014
+- Fix hasMany.getAccessor().count()
+
+### v2.1.10 - 09 May 2014
+- Fix sqlite Dialect.clear - resets incremental counters (#497)
+
 ### v2.1.9 - 06 May 2014
 - Add basic PostGIS support - (#456, #375)
 - Allow mapping model properties to differently named columns (#273, #495)

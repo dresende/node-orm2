@@ -72,7 +72,7 @@ describe("ORM.connect()", function () {
 	});
 
 	it("should allow protocol alias", function (done) {
-		var db = ORM.connect("pg://unknowndb");
+		var db = ORM.connect("pg://127.0.0.2");
 
 		db.on("connect", function (err) {
 			should.exist(err);

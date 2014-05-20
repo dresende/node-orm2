@@ -70,6 +70,52 @@ describe("custom types", function() {
 				});
 			});
 		});
+
+		describe("hasMany extra properties", function () {
+			it("should work", function (done) {
+				db.defineType('customDate', {
+			    datastoreType: function (prop) {
+			      return 'TEXT';
+			    }
+			  });
+				var Person = db.define('person', {
+					name    : String,
+					surname : String,
+					age     : Number
+				});
+				var Pet = db.define('pet', {
+					name    : String
+				});
+				Person.hasMany('pets', Pet, { date: { type: 'customDate' } }, { autoFetch: true });
+
+				return helper.dropSync([ Person, Pet ], function (err) {
+					should.not.exist(err);
+
+					Person.create({
+						name    : "John",
+						surname : "Doe",
+						age     : 20
+					}, function (err, person) {
+						should.not.exist(err);
+
+						Pet.create({ name: 'Fido' }, function (err, pet) {
+							should.not.exist(err);
+
+							person.addPets(pet, { date: '2014-05-20' }, function (err) {
+								should.not.exist(err);
+
+								Person.get(person.id, function (err, freshPerson) {
+									should.not.exist(err);
+									should.equal(freshPerson.pets.length, 1);
+									should.equal(freshPerson.pets[0].extra.date, '2014-05-20');
+									done();
+								});
+							});
+						});
+					});
+				});
+			});
+		});
 	});
 
 	describe("complex", function () {

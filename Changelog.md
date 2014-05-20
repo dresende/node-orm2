@@ -1,3 +1,6 @@
+### v2.1.next
+- Add custom-type support to hasMany extra properties.
+
 ### v2.1.11 - 19 May 2014
 - Fix hasMany.getAccessor().count()
 

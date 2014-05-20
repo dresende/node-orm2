@@ -1,5 +1,6 @@
-### v2.1.next
+### v2.1.12
 - Add custom-type support to hasMany extra properties.
+- Fix SQLite index name collisions (#499)
 
 ### v2.1.11 - 19 May 2014
 - Fix hasMany.getAccessor().count()

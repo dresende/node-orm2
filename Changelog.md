@@ -1,4 +1,7 @@
-### v2.1.12
+### v2.1.13 - 21 May 2014
+- Dont modify array passed to execQuery
+
+### v2.1.12 - 20 May 2014
 - Add custom-type support to hasMany extra properties.
 - Fix SQLite index name collisions (#499)
 

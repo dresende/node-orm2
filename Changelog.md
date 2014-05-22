@@ -1,5 +1,6 @@
-### v2.1.14 - ***
+### v2.1.14 - 22 May 2014
 - Allow explicitly specifying `key: true` on properties rather than passing in an array of ids.
+- Fix Property.mapsTo (#506)
 
 ### v2.1.13 - 21 May 2014
 - Dont modify array passed to execQuery

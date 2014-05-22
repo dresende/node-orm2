@@ -72,6 +72,15 @@ describe("hasOne", function() {
 			});
 		});
 
+        it("should return proper instance model", function (done) {
+            Leaf.one({ size: 14 }, function (err, leaf) {
+                leaf.getTree(function (err, tree) {
+                    tree.model().should.equal(Tree);
+                    return done();
+                });
+            });
+        });
+
 		it("get should get the association with a shell model", function (done) {
 			Leaf(leafId).getTree(function (err, tree) {
 				should.not.exist(err);

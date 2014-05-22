@@ -232,17 +232,16 @@ See information in the [wiki](https://github.com/dresende/node-orm2/wiki/Synchin
 
 ORM2 allows you some advanced tweaks on your Model definitions. You can configure these via settings or in the call to `define` when you setup the Model.
 
-For example, each Model instance has a unique ID in the database. This table column is
-by default "id" but you can change it.
+For example, each Model instance has a unique ID in the database. This table column is added automatically, and called "id" by default.<br/>
+If you define your own `key: true` column, "id" will not be added:
 
 ```js
 var Person = db.define("person", {
-	name : String
-}, {
-	id   : "person_id"
+	personId : { type: 'serial', key: true },
+	name     : String
 });
 
-// or just do it globally..
+// You can also change the default "id" property name globally:
 db.settings.set("properties.primary_key", "UID");
 
 // ..and then define your Models
@@ -253,14 +252,12 @@ var Pet = db.define("pet", {
 
 **Pet** model will have 2 columns, an `UID` and a `name`.
 
-It is also possible to have multiple IDs for a model in the database, this is done by specifying an array of IDs to use.
+It's also possible to have composite keys:
 
 ```js
 var Person = db.define("person", {
-	firstname: String,
-	lastname: String
-}, {
-	id: ['firstname', 'lastname']
+	firstname : { type: 'string', key: true },
+	lastname  : { type: 'string', key: true }
 });
 ```
 

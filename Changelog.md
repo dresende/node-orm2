@@ -1,3 +1,6 @@
+### v2.1.14 - ***
+- Allow explicitly specifying `key: true` on properties rather than passing in an array of ids.
+
 ### v2.1.13 - 21 May 2014
 - Dont modify array passed to execQuery
 

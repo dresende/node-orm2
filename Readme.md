@@ -639,15 +639,15 @@ Person.findByPets({ /* options */ }) // returns ChainFind object
 ### hasMany
 
 Is a **many to many** relationship (includes join table).<br/>
-Eg: `Patient.hasMany('doctors', Doctor, { why: String }, { reverse: 'patients' })`.<br/>
+Eg: `Patient.hasMany('doctors', Doctor, { why: String }, { reverse: 'patients', key: true })`.<br/>
 Patient can have many different doctors. Each doctor can have many different patients.
 
 This will create a join table `patient_doctors` when you call `Patient.sync()`:
 
  column name | type
  :-----------|:--------
- patient_id  | Integer
- doctor_id   | Integer
+ patient_id  | Integer (composite key)
+ doctor_id   | Integer (composite key)
  why         | varchar(255)
 
 The following functions will be available:
@@ -752,7 +752,7 @@ var Person = db.define('person', {
 });
 Person.hasMany("friends", {
     rate : Number
-});
+}, {}, { key: true });
 
 Person.get(123, function (err, John) {
     John.getFriends(function (err, friends) {
@@ -772,6 +772,7 @@ var Person = db.define('person', {
 Person.hasMany("friends", {
     rate : Number
 }, {
+    key       : true, // Turns the foreign keys in the join table into a composite key
     autoFetch : true
 });
 
@@ -790,6 +791,8 @@ var Person = db.define('person', {
 });
 Person.hasMany("friends", {
     rate : Number
+}, {
+  key: true
 });
 ```
 
@@ -830,6 +833,7 @@ var Person = db.define('person', {
 Person.hasMany("pets", Pet, {
     bought  : Date
 }, {
+    key     : true,
     reverse : "owners"
 });
 

@@ -1,3 +1,6 @@
+### v2.1.?? - ???
+- Fix hasMany join tables with custom id columns (#510)
+
 ### v2.1.14 - 22 May 2014
 - Allow explicitly specifying `key: true` on properties rather than passing in an array of ids.
 - Fix Property.mapsTo (#506)

@@ -8,6 +8,7 @@ var _ = require('lodash');
 describe("hasOne", function () {
 	var db = null;
 	var Person = null;
+	var Pet = null;
 
 	var setup = function () {
 		return function (done) {
@@ -23,7 +24,8 @@ describe("hasOne", function () {
 			});
 
 			return helper.dropSync([Person, Pet], function () {
-				async.parallel([
+				// Running in series because in-memory sqlite encounters problems
+				async.series([
 					Person.create.bind(Person, { name: "John Doe" }),
 					Person.create.bind(Person, { name: "Jane Doe" }),
 					Pet.create.bind(Pet, { name: "Deco" }),

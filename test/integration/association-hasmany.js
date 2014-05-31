@@ -697,7 +697,7 @@ describe("hasMany", function () {
 				if (protocol == 'sqlite') {
 					sql = "PRAGMA table_info(?)";
 				} else {
-					sql = "SELECT column_name, data_type FROM information_schema.columns WHERE table_name = ?";
+					sql = "SELECT column_name, data_type FROM information_schema.columns WHERE table_name = ? ORDER BY data_type";
 				}
 
 				db.driver.execQuery(sql, ['account_emails'], function (err, cols) {
@@ -730,13 +730,14 @@ describe("hasMany", function () {
 				should.not.exist(err);
 				var sql;
 
-				if (protocol == 'postgres') {
+				if (protocol == 'postgres' || protocol === 'redshift') {
 					sql = "" +
 						"SELECT c.column_name, c.data_type " +
 						"FROM  information_schema.table_constraints tc " +
 						"JOIN information_schema.constraint_column_usage AS ccu USING (constraint_schema, constraint_name) " +
 						"JOIN information_schema.columns AS c ON c.table_schema = tc.constraint_schema AND tc.table_name = c.table_name AND ccu.column_name = c.column_name " +
-						"where constraint_type = ? and tc.table_name = ?";
+						"WHERE constraint_type = ? AND tc.table_name = ? " +
+						"ORDER BY column_name";
 
 					db.driver.execQuery(sql, ['PRIMARY KEY', 'account_emails'], function (err, data) {
 						should.not.exist(err);

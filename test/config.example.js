@@ -17,7 +17,13 @@ exports.postgres = {
 	password : "",
 	database : "test"
 };
+exports.redshift = {
+	user      : "root",
+	password  : "",
+	database  : "test"
+};
 exports.mongodb = {
     host: "localhost",
     database: "test"
 };
+exports.sqlite = { }; // uses in-memory database

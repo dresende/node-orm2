@@ -74,7 +74,7 @@ describe("ORM.connect()", function () {
 	it("should allow protocol alias", function (done) {
 		var db = ORM.connect("pg://127.0.0.2");
 
-		db.on("connect", function (err) {
+		db.once("connect", function (err) {
 			should.exist(err);
 			err.message.should.not.equal("CONNECTION_PROTOCOL_NOT_SUPPORTED");
 

@@ -28,6 +28,8 @@ describe("hasMany extra properties", function() {
 	};
 
 	before(function(done) {
+		this.timeout(4000);
+
 		helper.connect(function (connection) {
 			db = connection;
 			done();

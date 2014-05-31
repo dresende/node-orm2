@@ -840,3 +840,14 @@ Person.hasMany("pets", Pet, {
 Person(1).getPets(...);
 Pet(2).getOwners(...);
 ```
+
+## Adding external drivers
+
+To add an external driver to `orm2`, call the `addDriver` method, passing in the alias to use for connecting with this
+driver, along with the constructor for the driver object:
+
+```js
+require('orm2').addDriver('cassandra', CassandraDriver);
+```
+
+See [the documentation for creating drivers](./Drivers.md) for more details.

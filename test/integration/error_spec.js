@@ -1,5 +1,6 @@
 var should   = require('should');
 var ORMError = require('../../lib/Error');
+var path     = require('path');
 
 describe("Error", function () {
 	describe("constructor", function () {
@@ -9,10 +10,13 @@ describe("Error", function () {
 		});
 
 		it("should have a valid stack", function () {
-			var e = new ORMError("Test message", 'PARAM_MISMATCH');
-			var stackArr = e.stack.split('\n');
-			// [0] is ''
-			should(stackArr[1].indexOf('test/integration/error_spec.js') > 0);
+			try {
+				throw new ORMError("Test message", 'PARAM_MISMATCH');
+			} catch (e) {
+				var stackArr = e.stack.split('\n');
+				// [0] is ''
+				should(stackArr[1].indexOf(path.join('test', 'integration', 'error_spec.js')) > 0);
+			}
 		});
 
 		it("should have the right name", function () {

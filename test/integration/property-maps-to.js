@@ -148,6 +148,16 @@ describe("Property.mapsTo", function() {
 			return helper.dropSync(Person, done);
 		});
 
+		it("should throw an error if invalid keys are specified", function () {
+			(function () {
+				db.define("blah", {
+					name: { type: 'text' }
+				}, {
+					id: ['banana']
+				});
+			}).should.throw("Model defined without any keys");
+		});
+
 		it("should create", function (done) {
 			Person.create({ firstName: 'John', lastName: 'Smith', age: 48 }, function (err, person) {
 				should.not.exist(err);

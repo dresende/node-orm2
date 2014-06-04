@@ -840,3 +840,14 @@ Person.hasMany("pets", Pet, {
 Person(1).getPets(...);
 Pet(2).getOwners(...);
 ```
+
+## Adding external database adapters
+
+To add an external database adapter to `orm`, call the `addAdapter` method, passing in the alias to use for connecting 
+with this adapter, along with the constructor for the adapter:
+
+```js
+require('orm').addAdapter('cassandra', CassandraAdapter);
+```
+
+See [the documentation for creating adapters](./Adapters.md) for more details.

@@ -841,13 +841,13 @@ Person(1).getPets(...);
 Pet(2).getOwners(...);
 ```
 
-## Adding external drivers
+## Adding external database adapters
 
-To add an external driver to `orm2`, call the `addDriver` method, passing in the alias to use for connecting with this
-driver, along with the constructor for the driver object:
+To add an external database adapter to `orm`, call the `addAdapter` method, passing in the alias to use for connecting 
+with this adapter, along with the constructor for the adapter:
 
 ```js
-require('orm2').addDriver('cassandra', CassandraDriver);
+require('orm').addAdapter('cassandra', CassandraAdapter);
 ```
 
-See [the documentation for creating drivers](./Drivers.md) for more details.
+See [the documentation for creating adapters](./Adapters.md) for more details.

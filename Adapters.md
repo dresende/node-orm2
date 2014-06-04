@@ -1,9 +1,9 @@
-# Creating drivers for orm2
+# Creating database adapters for orm2
 
-To add a driver to `orm2`, call its `addDriver` method:
+To add a database adapter to `orm`, call its `addAdapter` method:
  
 ```js
-require('orm2').addDriver('cassandra', CassandraDriver);
+require('orm2').addAdapter('cassandra', CassandraAdapter);
 ```
 
 The first argument is the alias to register for connection URLs. For example, the above will allow you to do this:
@@ -13,29 +13,29 @@ var orm = require('orm2');
 orm.connect('cassandra://username:password@localhost/test', function (err, db) { });
 ```
 
-The second argument is the constructor for your driver object.
+The second argument is the constructor for your adapter object.
 
-## Defining driver objects
+## Defining adapters
 
-Your driver should provide the following members. 
+Your adapter should provide the following members. 
 
 ### Constructor(config, connection, opts)
 
-The driver object constructor should have three parameters:
+The adapter object constructor should have three parameters:
  
 * config - optional configuration for the database connection. It contains the following properties:
     * timezone - optional timezone
     * href - URL to use for connecting to the database if the connection argument is null
     * host - The hostname of `href`
     * pathname - The `path` of `href`
-    * ssl - Boolean indicating whether the driver should use SSL when connecting to the database
-    * query - Optional configuration for how the driver should perform queries
+    * ssl - Boolean indicating whether the adapter should use SSL when connecting to the database
+    * query - Optional configuration for how the adapter should perform queries
         * ssl - Boolean indicating whether queries should be sent using SSL
         * strdates - Boolean indicating whether strings should be used for dates 
 * connection - optionally passed if reusing an existing connection
-* opts - optional options configuring the driver's behavior. It contains the following properties:
-    * pool - A boolean indicating whether the driver should use connection pooling
-    * debug - If true, whether the driver should operate in debug mode
+* opts - optional options configuring the adapter's behavior. It contains the following properties:
+    * pool - A boolean indicating whether the adapter should use connection pooling
+    * debug - If true, whether the adapter should operate in debug mode
     * settings - A key/value object store. Use `get(key)` and `set(key, value)` methods to manipulate the settings. The
       following settings are defined:
         * properties.primary_key - The column/field name to use for object primary keys
@@ -48,7 +48,7 @@ This should be set to `true` if your database is a SQL database.
 
 ### customTypes property
 
-Your driver should have a `customTypes` object, with the property names being the names of the custom types, and each 
+Your adapter should have a `customTypes` object, with the property names being the names of the custom types, and each 
 value being the options relating to the type.
 
 ### connect(cb) method (required)
@@ -118,11 +118,11 @@ For SQL databases, this executes a `Query` object from the `sql-query` package.
 
 ### aggregate_functions[] property (optional)
 
-If your driver supports SQL aggregate functions, this should be an array of supported function names.
+If your adapter supports SQL aggregate functions, this should be an array of supported function names.
 
 ### hasMany(Model, association) method (optional)
 
-If your driver maintains associations in a unique (non-SQL-like) manner, return an object from this method to implement
+If your adapter maintains associations in a unique (non-SQL-like) manner, return an object from this method to implement
 a one-to-many association. The return value should have the following methods:
  
 * has(Instance, Associations, conditions, cb) - tests if the associations have any objects matching the conditions
@@ -132,7 +132,7 @@ a one-to-many association. The return value should have the following methods:
 
 ### sync(opts, cb) method (optional)
 
-If your driver supports creating a table from a model, implement this method. The following options are passed:
+If your adapter supports creating a table from a model, implement this method. The following options are passed:
 
 * extension
 * id
@@ -147,7 +147,7 @@ If your driver supports creating a table from a model, implement this method. Th
  
 ### drop(opts, cb) method (optional)
 
-If your driver supports dropping a table, implement this method. The following options are passed to this method:
+If your adapter supports dropping a table, implement this method. The following options are passed to this method:
 
 * table - The name of the table
 * properties
@@ -156,6 +156,4 @@ If your driver supports dropping a table, implement this method. The following o
 
 ### on(event, cb) method (required)
 
-Your driver should be an `EventEmitter`, and should emit the following types of events, when applicable:
-
-* error
+Your adapter should be an `EventEmitter`, and should emit the `error` event when applicable.

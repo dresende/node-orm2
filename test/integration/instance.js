@@ -254,6 +254,28 @@ describe("Model instance", function() {
 		});
 	});
 
+	describe("#markAsDirty", function () {
+		var person = null;
+
+		beforeEach(function (done) {
+			Person.create({ name: 'John', age: 44, data: { a: 1 } }, function (err, p) {
+				if (err) return cb(err);
+
+				person = p;
+				done();
+			});
+		});
+
+		it("should mark individual properties as dirty", function () {
+			should.equal(person.saved(), true);
+			person.markAsDirty('name');
+			should.equal(person.saved(), false);
+			should.equal(person.__opts.changes.join(','), 'name');
+			person.markAsDirty('data');
+			should.equal(person.__opts.changes.join(','), 'name,data');
+		});
+	});
+
 	describe("#isShell", function () {
 		it("should return true for shell models", function () {
 			should.equal(Person(4).isShell(), true);

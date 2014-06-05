@@ -16,7 +16,8 @@ describe("Model instance", function() {
 				name   : String,
 				age    : { type: 'integer', required: false },
 				height : { type: 'integer', required: false },
-				weight : { type: 'number',  required: false }
+				weight : { type: 'number',  required: false },
+				data   : { type: 'object',  required: false }
 			}, {
 				cache: false,
 				validations: {
@@ -141,6 +142,115 @@ describe("Model instance", function() {
 			};
 			person.isPersisted()
 			triggered.should.be.true;
+		});
+	});
+
+	describe("#set", function () {
+		var person = null;
+		var data = null;
+
+		function clone(obj) { return JSON.parse(JSON.stringify(obj)) };
+
+		beforeEach(function (done) {
+			data = {
+				a: {
+					b: {
+						c: 3,
+						d: 4
+					}
+				},
+				e: 5
+			};
+			Person.create({ name: 'Dilbert', data: data }, function (err, p) {
+				if (err) return done(err);
+
+				person = p;
+				done();
+			});
+		});
+
+		it("should do nothing with flat paths when setting to same value", function () {
+			should.equal(person.saved(), true);
+			person.set('name', 'Dilbert');
+			should.equal(person.name, 'Dilbert');
+			should.equal(person.saved(), true);
+		});
+
+		it("should mark as dirty with flat paths when setting to different value", function () {
+			should.equal(person.saved(), true);
+			person.set('name', 'Dogbert');
+			should.equal(person.name, 'Dogbert');
+			should.equal(person.saved(), false);
+			should.equal(person.__opts.changes.join(','), 'name');
+		});
+
+		it("should do nothin with deep paths when setting to same value", function () {
+			should.equal(person.saved(), true);
+			person.set('data.e', 5);
+
+			var expected = clone(data);
+			expected.e = 5;
+
+			should.equal(JSON.stringify(person.data), JSON.stringify(expected));
+			should.equal(person.saved(), true);
+		});
+
+		it("should mark as dirty with deep paths when setting to different value", function () {
+			should.equal(person.saved(), true);
+			person.set('data.e', 6);
+
+			var expected = clone(data);
+			expected.e = 6;
+
+			should.equal(JSON.stringify(person.data), JSON.stringify(expected));
+			should.equal(person.saved(), false);
+			should.equal(person.__opts.changes.join(','), 'data');
+		});
+
+		it("should do nothing with deeper paths when setting to same value", function () {
+			should.equal(person.saved(), true);
+			person.set('data.a.b.d', 4);
+
+			var expected = clone(data);
+			expected.a.b.d = 4;
+
+			should.equal(JSON.stringify(person.data), JSON.stringify(expected));
+			should.equal(person.saved(), true);
+		});
+
+		it("should mark as dirty with deeper paths when setting to different value", function () {
+			should.equal(person.saved(), true);
+			person.set('data.a.b.d', 6);
+
+			var expected = clone(data);
+			expected.a.b.d = 6;
+
+			should.equal(JSON.stringify(person.data), JSON.stringify(expected));
+			should.equal(person.saved(), false);
+			should.equal(person.__opts.changes.join(','), 'data');
+		});
+
+		it("should mark as dirty with array path when setting to different value", function () {
+			should.equal(person.saved(), true);
+			person.set(['data', 'a', 'b', 'd'], 6);
+
+			var expected = clone(data);
+			expected.a.b.d = 6;
+
+			should.equal(JSON.stringify(person.data), JSON.stringify(expected));
+			should.equal(person.saved(), false);
+			should.equal(person.__opts.changes.join(','), 'data');
+		});
+
+		it("should do nothing with invalid paths", function () {
+			should.equal(person.saved(), true);
+			person.set('data.a.b.d.y.z', 1);
+			person.set('data.y.z', 1);
+			person.set('z', 1);
+			person.set(4, 1);
+			person.set(null, 1);
+			person.set(undefined, 1);
+			should.equal(person.saved(), true);
 		});
 	});
 

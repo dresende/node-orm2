@@ -1,5 +1,9 @@
-### v2.1.?? - ???
-- Fix hasMany join tables with custom id columns (#510)
+### v2.1.15 - 05 Jun 2014
+- Feature: Enable plugging in custom third-party drivers (now known as adapters) (#512)
+- Add Instance.set() so that properties of type object can have their properties set and mark model as dirty (#517)
+- Add Instance.markAsDirty(propName) to force a properties state to dirty/changed.
+- Enable Property.mapsTo for keys (#509)
+- Fix hasMany join tables with custom key columns (#510)
 
 ### v2.1.14 - 22 May 2014
 - Allow explicitly specifying `key: true` on properties rather than passing in an array of ids.

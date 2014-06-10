@@ -37,8 +37,8 @@
 	"analyse"     : false,
 	"dependencies": {
 		"enforce"      : "0.1.2",
-		"sql-query"    : "git+https://github.com/dresende/node-sql-query.git#v0.1.21",
-		"sql-ddl-sync" : "git+https://github.com/dresende/node-sql-ddl-sync.git#v0.3.7",
+		"sql-query"    : "0.1.16",
+		"sql-ddl-sync" : "0.1.4",
 		"hat"          : "0.0.3",
 		"lodash"       : "2.4.1"
 	},

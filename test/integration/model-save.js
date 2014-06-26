@@ -175,6 +175,7 @@ describe("Model.save()", function() {
 
 				should.exist(John[Person.id]);
 				should.exist(John.parent[Person.id]);
+				should.equal(John.parent.name, "Jane");
 
 				return done();
 			});

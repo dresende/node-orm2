@@ -1,3 +1,4 @@
+var async    = require('async');
 var should   = require('should');
 var helper   = require('../support/spec_helper');
 var ORM      = require('../../');
@@ -8,13 +9,15 @@ describe("Model.find() chaining", function() {
 	var Person = null;
 	var Dog = null;
 
-	var setup = function () {
+	var setup = function (extraOpts) {
+		if (!extraOpts) extraOpts = {};
+
 		return function (done) {
 			Person = db.define("person", {
 				name    : String,
 				surname : String,
 				age     : Number
-			});
+			}, extraOpts);
 			Person.hasMany("parents");
 			Person.hasOne("friend");
 
@@ -401,7 +404,15 @@ describe("Model.find() chaining", function() {
 	});
 
 	describe(".remove()", function () {
-		before(setup());
+		var hookFired = false;
+
+		before(setup({
+			hooks: {
+				beforeRemove: function () {
+					hookFired = true;
+				}
+			}
+		}));
 
 		it("should have no problems if no results found", function (done) {
 			Person.find({ age: 22 }).remove(function (err) {
@@ -417,9 +428,10 @@ describe("Model.find() chaining", function() {
 			});
 		});
 
-		it("should remove results and give feedback", function (done) {
+		it("should remove results without calling hooks", function (done) {
 			Person.find({ age: 20 }).remove(function (err) {
 				should.equal(err, null);
+				should.equal(hookFired, false);
 
 				Person.find().count(function (err, count) {
 					should.equal(err, null);
@@ -430,10 +442,19 @@ describe("Model.find() chaining", function() {
 				});
 			});
 		});
+
 	});
 
 	describe(".each()", function () {
-		before(setup());
+		var hookFired = false;
+
+		before(setup({
+			hooks: {
+				beforeRemove: function () {
+					hookFired = true;
+				}
+			}
+		}));
 
 		it("should return a ChainFind", function (done) {
 			var chain = Person.find({ age: 22 }).each();
@@ -506,6 +527,14 @@ describe("Model.find() chaining", function() {
 
 					return done();
 				});
+			});
+		});
+
+		// TODO: Implement
+		xit(".remove() should call hooks", function () {
+			Person.find().each().remove(function (err) {
+				should.not.exist(err);
+				should.equal(hookFired, true);
 			});
 		});
 

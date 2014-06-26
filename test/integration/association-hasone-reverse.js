@@ -19,7 +19,7 @@ describe("hasOne", function () {
 				name: String
 			});
 			Person.hasOne('pet', Pet, {
-				reverse: 'owner',
+				reverse: 'owners',
 				field: 'pet_id'
 			});
 
@@ -28,8 +28,8 @@ describe("hasOne", function () {
 				async.series([
 					Person.create.bind(Person, { name: "John Doe" }),
 					Person.create.bind(Person, { name: "Jane Doe" }),
-					Pet.create.bind(Pet, { name: "Deco" }),
-					Pet.create.bind(Pet, { name: "Fido" }),
+					Pet.create.bind(Pet, { name: "Deco"  }),
+					Pet.create.bind(Pet, { name: "Fido"  })
 				], done);
 			});
 		};
@@ -43,7 +43,15 @@ describe("hasOne", function () {
 	});
 
 	describe("reverse", function () {
-		before(setup());
+		removeHookRun = false;
+
+		before(setup({
+			hooks: {
+				beforeRemove: function () {
+					removeHookRun = true;
+				}
+			}
+		}));
 
 		it("should create methods in both models", function (done) {
 			var person = Person(1);
@@ -54,47 +62,106 @@ describe("hasOne", function () {
 			person.removePet.should.be.a("function");
 			person.hasPet.should.be.a("function");
 
-			pet.getOwner.should.be.a("function");
-			pet.setOwner.should.be.a("function");
-			pet.hasOwner.should.be.a("function");
+			pet.getOwners.should.be.a("function");
+			pet.setOwners.should.be.a("function");
+			pet.hasOwners.should.be.a("function");
 
 			return done();
 		});
 
-		it("should be able to fetch model from reverse model", function (done) {
-			Person.find({ name: "John Doe" }).first(function (err, John) {
-				Pet.find({ name: "Deco" }).first(function (err, Deco) {
-					Deco.hasOwner(function (err, has_owner) {
-						should.not.exist(err);
-						has_owner.should.be.false;
-
-						Deco.setOwner(John, function (err) {
+		describe(".getAccessor()", function () {
+			it("should work", function (done) {
+				Person.find({ name: "John Doe" }).first(function (err, John) {
+					Pet.find({ name: "Deco" }).first(function (err, Deco) {
+						Deco.hasOwners(function (err, has_owner) {
 							should.not.exist(err);
+							has_owner.should.be.false;
 
-							Deco.getOwner(function (err, JohnCopy) {
+							Deco.setOwners(John, function (err) {
 								should.not.exist(err);
-								should(Array.isArray(JohnCopy));
-								John.should.eql(JohnCopy[0]);
 
-								return done();
+								Deco.getOwners(function (err, JohnCopy) {
+									should.not.exist(err);
+									should(Array.isArray(JohnCopy));
+									John.should.eql(JohnCopy[0]);
+
+									return done();
+								});
 							});
 						});
 					});
 				});
+			});
+
+			describe("Chain", function () {
+				before(function (done) {
+					var petParams = [
+						{ name: "Hippo" },
+						{ name: "Finch", owners: [{ name: "Harold" }, { name: "Hagar" }] },
+						{ name: "Fox",   owners: [{ name: "Nelly"  }, { name: "Narnia" }] }
+					];
+
+					Pet.create(petParams, function (err, pets) {
+						should.not.exist(err);
+						should.equal(pets.length, 3);
+
+						Person.find({ name: ["Harold", "Hagar", "Nelly", "Narnia"] }, function (err, people) {
+							should.not.exist(err);
+							should.exist(people);
+							should.equal(people.length, 4);
+
+							done();
+						});
+					});
+				});
+
+				it("should be returned if no callback is passed", function (done) {
+					Pet.one(function (err, pet) {
+						should.not.exist(err);
+						should.exist(pet);
+
+						var chain = pet.getOwners();
+
+						should.equal(typeof chain,     'object');
+						should.equal(typeof chain.run, 'function');
+
+						done()
+					});
+				});
+
+				it(".remove() should not call hooks", function (done) {
+					Pet.one({ name: "Finch" }, function (err, pet) {
+						should.not.exist(err);
+						should.exist(pet);
+
+						should.equal(removeHookRun, false);
+						pet.getOwners().remove(function (err) {
+							should.not.exist(err);
+							should.equal(removeHookRun, false);
+
+							Person.find({ name: "Harold" }, function (err, items) {
+								should.not.exist(err);
+								should.equal(items.length, 0);
+								done();
+							});
+						});
+					});
+				});
+
 			});
 		});
 
 		it("should be able to set an array of people as the owner", function (done) {
 			Person.find({ name: ["John Doe", "Jane Doe"] }, function (err, owners) {
 				Pet.find({ name: "Fido" }).first(function (err, Fido) {
-					Fido.hasOwner(function (err, has_owner) {
+					Fido.hasOwners(function (err, has_owner) {
 						should.not.exist(err);
 						has_owner.should.be.false;
 
-						Fido.setOwner(owners, function (err) {
+						Fido.setOwners(owners, function (err) {
 							should.not.exist(err);
 
-							Fido.getOwner(function (err, ownersCopy) {
+							Fido.getOwners(function (err, ownersCopy) {
 								should.not.exist(err);
 								should(Array.isArray(owners));
 								owners.length.should.equal(2);
@@ -123,7 +190,7 @@ describe("hasOne", function () {
 				before(function (done) {
 					Person.one({ name: "Jane Doe" }, function (err, jane) {
 						Pet.one({ name: "Deco" }, function (err, deco) {
-							deco.setOwner(jane, function (err) {
+							deco.setOwners(jane, function (err) {
 								should.not.exist(err);
 								done();
 							});
@@ -133,14 +200,14 @@ describe("hasOne", function () {
 
 				it("should throw if no conditions passed", function (done) {
 					(function () {
-						Pet.findByOwner(function () {});
+						Pet.findByOwners(function () {});
 					}).should.throw();
 
 					return done();
 				});
 
 				it("should lookup reverse Model based on associated model properties", function (done) {
-					Pet.findByOwner({
+					Pet.findByOwners({
 						name: "Jane Doe"
 					}, function (err, pets) {
 						should.not.exist(err);
@@ -157,7 +224,7 @@ describe("hasOne", function () {
 				});
 
 				it("should return a ChainFind if no callback passed", function (done) {
-					var ChainFind = Pet.findByOwner({
+					var ChainFind = Pet.findByOwners({
 						name: "John Doe"
 					});
 					ChainFind.run.should.be.a("function");
@@ -177,11 +244,11 @@ describe("hasOne", function () {
 					Pet.find({ name: "Deco" }).first(function (err, Deco) {
 						should.not.exist(err);
 						should.exist(Deco);
-						Deco.hasOwner(function (err, has_owner) {
+						Deco.hasOwners(function (err, has_owner) {
 							should.not.exist(err);
 							has_owner.should.be.false;
 
-							Deco.setOwner(John, function (err) {
+							Deco.setOwners(John, function (err) {
 								should.not.exist(err);
 
 								Person.find({ pet_id: Deco[Pet.id[0]] }).first(function (err, owner) {
@@ -206,11 +273,11 @@ describe("hasOne", function () {
 					Pet.find({ name: "Deco" }).first(function (err, Deco) {
 						should.not.exist(err);
 						should.exist(Deco);
-						Deco.hasOwner(function (err, has_owner) {
+						Deco.hasOwners(function (err, has_owner) {
 							should.not.exist(err);
 							has_owner.should.be.false;
 
-							Deco.setOwner(John, function (err) {
+							Deco.setOwners(John, function (err) {
 								should.not.exist(err);
 
 								Person.find({ pet: Deco }).first(function (err, owner) {
@@ -237,11 +304,11 @@ describe("hasOne", function () {
 						should.exist(pets);
 						should.equal(pets.length, 2);
 
-						pets[0].hasOwner(function (err, has_owner) {
+						pets[0].hasOwners(function (err, has_owner) {
 							should.not.exist(err);
 							has_owner.should.be.false;
 
-							pets[0].setOwner(John, function (err) {
+							pets[0].setOwners(John, function (err) {
 								should.not.exist(err);
 
 								Person.find({ pet: pets }, function (err, owners) {

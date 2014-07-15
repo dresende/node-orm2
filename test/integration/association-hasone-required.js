@@ -11,6 +11,7 @@ describe("hasOne", function() {
 	var setup = function (required) {
 		return function (done) {
 			db.settings.set('instance.cache', false);
+			db.settings.set('instance.returnAllErrors', true);
 
 			Person = db.define('person', {
 				name     : String
@@ -39,8 +40,12 @@ describe("hasOne", function() {
 				name     : "John",
 				parentId : null
 			});
-			John.save(function (err) {
-				should.exist(err);
+			John.save(function (errors) {
+				should.exist(errors);
+				should.equal(errors.length, 1);
+				should.equal(errors[0].type,     'validation');
+				should.equal(errors[0].msg,      'required');
+				should.equal(errors[0].property, 'parentId');
 				return done();
 			});
 		});

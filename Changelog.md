@@ -1,3 +1,9 @@
+### v2.1.16 - 15 Jul 2014
+- Fix Model.create missing properties bug
+- Add missing `var` (#523)
+- Fix hasOne `required: true` when `instance.returnAllErrors` is true.
+  This also makes hasOne required validations messages consistent with other validation messages.
+
 ### v2.1.15 - 05 Jun 2014
 - Feature: Enable plugging in custom third-party drivers (now known as adapters) (#512)
 - Add Instance.set() so that properties of type object can have their properties set and mark model as dirty (#517)

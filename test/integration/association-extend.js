@@ -23,6 +23,8 @@ describe("Model.extendsTo()", function() {
 				Person.create({
 					name: "John Doe"
 				}, function (err, person) {
+					should.not.exist(err);
+
 					return person.setAddress(new PersonAddress({
 						street : "Liberty",
 						number : 123

@@ -29,3 +29,23 @@ And then open up [localhost:3000](http://localhost:3000/)
 
 You can also just run it with `node server.js` however the script launches nodemon which
 automatically restarts the server if you change any code.
+
+**Create table for mysql**
+
+```sql
+CREATE TABLE `comment` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `body` text NOT NULL,
+  `message_id` int(11) NOT NULL,
+  `createdAt` date NOT NULL,
+  PRIMARY KEY (`id`)
+)
+
+CREATE TABLE `message` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `title` varchar(55) NOT NULL,
+  `body` text NOT NULL,
+  `createdAt` date NOT NULL,
+  PRIMARY KEY (`id`)
+)
+```

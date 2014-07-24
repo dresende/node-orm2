@@ -15,37 +15,62 @@ describe("Postgres driver", function() {
 		});
 
 		describe("numbers", function () {
-			function valueToProperty (value, type) {
-				if (!type) type = 'number';
-				return driver.valueToProperty(value, { type: type });
-			}
+			describe("floats", function () {
+				function valueToProperty (value) {
+					return driver.valueToProperty(value, { type: 'number' });
+				}
 
-			it("should pass on empty string", function () {
-				should.strictEqual(valueToProperty(''), '');
+				it("should pass on empty string", function () {
+					should.strictEqual(valueToProperty(''), '');
+				});
+
+				it("should pass on text", function () {
+					should.strictEqual(valueToProperty('fff'), 'fff');
+				});
+
+				it("should pass on numbers", function () {
+					should.strictEqual(valueToProperty(1.2), 1.2);
+				});
+
+				it("should parse numbers in strings", function () {
+					should.strictEqual(valueToProperty('1.2'), 1.2);
+					should.strictEqual(valueToProperty('1.200 '), 1.2);
+				});
+
+				it("should support non finite numbers", function () {
+					should.strictEqual(valueToProperty( 'Infinity'),  Infinity);
+					should.strictEqual(valueToProperty('-Infinity'), -Infinity);
+					should.strictEqual(isNaN(valueToProperty('NaN')), true);
+				});
 			});
 
-			it("should pass on text", function () {
-				should.strictEqual(valueToProperty('fff'), 'fff');
-			});
+			describe("integers", function () {
+				function valueToProperty (value) {
+					return driver.valueToProperty(value, { type: 'integer' });
+				}
 
-			it("should pass on numbers", function () {
-				should.strictEqual(valueToProperty(1.2), 1.2);
-			});
+				it("should pass on empty string", function () {
+					should.strictEqual(valueToProperty(''), '');
+				});
 
-			it("should parse numbers in strings", function () {
-				should.strictEqual(valueToProperty('1.2'), 1.2);
-				should.strictEqual(valueToProperty('1.200 '), 1.2);
-			});
+				it("should pass on text", function () {
+					should.strictEqual(valueToProperty('fff'), 'fff');
+				});
 
-			it("should parse integers in strings", function () {
-				should.strictEqual(valueToProperty('1.2',    'integer'), 1);
-				should.strictEqual(valueToProperty('1.200 ', 'integer'), 1);
-			});
+				it("should pass on non finite numbers as text", function () {
+					should.strictEqual(valueToProperty( 'Infinity'),  'Infinity');
+					should.strictEqual(valueToProperty('-Infinity'), '-Infinity');
+					should.strictEqual(valueToProperty('NaN'), 'NaN');
+				});
 
-			it("should support non finite numbers", function () {
-				should.strictEqual(valueToProperty( 'Infinity'),  Infinity);
-				should.strictEqual(valueToProperty('-Infinity'), -Infinity);
-				should.strictEqual(isNaN(valueToProperty('NaN')), true);
+				it("should pass on numbers", function () {
+					should.strictEqual(valueToProperty(1.2), 1.2);
+				});
+
+				it("should parse integers in strings", function () {
+					should.strictEqual(valueToProperty('1.2'), 1);
+					should.strictEqual(valueToProperty('1.200 '), 1);
+				});
 			});
 		});
 	});

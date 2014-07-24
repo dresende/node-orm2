@@ -1,3 +1,6 @@
+### v2.1.17 - 24 Jul 2014
+- Fix postgres & sqlite driver conversion of floats and ints.
+
 ### v2.1.16 - 15 Jul 2014
 - Fix Model.create missing properties bug
 - Add missing `var` (#523)

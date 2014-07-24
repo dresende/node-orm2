@@ -7,6 +7,49 @@ var common = require('../../common');
 if (common.protocol() != "postgres") return;
 
 describe("Postgres driver", function() {
+	describe("#valueToProperty", function () {
+		var driver = null;
+
+		before(function () {
+			driver = new Driver({}, {}, {});
+		});
+
+		describe("numbers", function () {
+			function valueToProperty (value, type) {
+				if (!type) type = 'number';
+				return driver.valueToProperty(value, { type: type });
+			}
+
+			it("should pass on empty string", function () {
+				should.strictEqual(valueToProperty(''), '');
+			});
+
+			it("should pass on text", function () {
+				should.strictEqual(valueToProperty('fff'), 'fff');
+			});
+
+			it("should pass on numbers", function () {
+				should.strictEqual(valueToProperty(1.2), 1.2);
+			});
+
+			it("should parse numbers in strings", function () {
+				should.strictEqual(valueToProperty('1.2'), 1.2);
+				should.strictEqual(valueToProperty('1.200 '), 1.2);
+			});
+
+			it("should parse integers in strings", function () {
+				should.strictEqual(valueToProperty('1.2',    'integer'), 1);
+				should.strictEqual(valueToProperty('1.200 ', 'integer'), 1);
+			});
+
+			it("should support non finite numbers", function () {
+				should.strictEqual(valueToProperty( 'Infinity'),  Infinity);
+				should.strictEqual(valueToProperty('-Infinity'), -Infinity);
+				should.strictEqual(isNaN(valueToProperty('NaN')), true);
+			});
+		});
+	});
+
 	describe("#propertyToValue", function () {
 		describe("type object", function () {
 			function evaluate (input) {

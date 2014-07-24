@@ -21,7 +21,7 @@ Edit `anontxt/config/settings.js` to set your database, user & password.
 ```bash
 cd examples/anontxt
 npm install
-node tasks/reset
+node tasks/reset # resets the database
 ./script/start
 ```
 

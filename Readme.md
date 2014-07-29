@@ -736,6 +736,12 @@ You can mark the `owner_id` field as required in the database by specifying the 
 Animal.hasOne("owner", Person, { required: true });
 ```
 
+If a field is not required, but should be validated even if it is not present, then specify the `alwaysValidate` option.
+(this can happen, for example when validation of a null field depends on other fields in the record)
+```js
+Animal.hasOne("owner", Person, { required: false, alwaysValidate: true });
+```
+
 If you prefer to use another name for the field (owner_id) you can change this parameter in the settings.
 
 ```js

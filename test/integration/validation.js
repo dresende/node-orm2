@@ -9,6 +9,7 @@ var ORM      = require('../../');
 describe("Validations", function() {
 	var db = null;
 	var Person = null;
+	var Person2 = null;
 
 	var setup = function (returnAll, required) {
 		return function (done) {
@@ -17,7 +18,7 @@ describe("Validations", function() {
 
 			Person = db.define("person", {
 				name:   { type: 'text'   },
-				height: { type: 'number' }
+				height: { type: 'number' },
 			}, {
 				validations: {
 					name:   ORM.validators.rangeLength(3, 30),
@@ -26,6 +27,29 @@ describe("Validations", function() {
 			});
 
 			return helper.dropSync(Person, done);
+		};
+	};
+
+	notNull = function(val, next, data) {
+		if (val != null) {
+			return next('notnull');
+		}
+		return next();
+	};
+	var setupAlwaysValidate = function () {
+		return function (done) {
+			Person2 = db.define("person2", {
+				name:   { type: 'text'   },
+				mustbenull: { type: 'text', required:false, alwaysValidate: true }
+				, canbenull: { type: 'text', required:false }
+			}, {
+				validations: {
+					name:   ORM.validators.rangeLength(3, 30),
+					mustbenull: notNull,
+					canbenull: notNull
+				}
+			});
+			return helper.dropSync(Person2, done);
 		};
 	};
 
@@ -38,6 +62,32 @@ describe("Validations", function() {
 
 	after(function () {
 		db.close();
+	});
+
+
+	describe("alwaysValidate", function () {
+		before(setupAlwaysValidate());
+
+		it("I want to see it fail first (the absence of evidence)", function(done) {
+			var rachel = new Person2({name: 'rachel', canbenull:null, mustbenull:null});
+			rachel.save(function (err) {
+				should.not.exist(err);
+				return done();
+			});
+		});
+
+		it("then it should work", function(done) {
+			var tom = new Person2({name: 'tom', canbenull:null, mustbenull:'notnull'});
+			tom.save(function (err) {
+				should.exist(err);
+				should.equal(typeof err,   "object");
+				should.equal(err.property, "mustbenull");
+				should.equal(err.msg,      "notnull");
+				should.equal(err.type,     "validation");
+				should.equal(tom.id,      null);
+				return done();
+			});
+		});
 	});
 
 	describe("predefined", function () {
@@ -59,7 +109,7 @@ describe("Validations", function() {
 		});
 
 		describe("unique", function () {
-		    if (protocol === "mongodb") return;
+			if (protocol === "mongodb") return;
 
 			var Product = null;
 
@@ -77,8 +127,6 @@ describe("Validations", function() {
 							productId : ORM.validators.unique() // this must be straight after a required & validated row.
 						}
 					});
-					Product.hasOne('product', Product, { field: 'productId', required: false, autoFetch: true });
-
 					return helper.dropSync(Product, done);
 				};
 			};
@@ -220,6 +268,7 @@ describe("Validations", function() {
 						});
 					});
 				});
+
 			});
 		});
 	});
@@ -363,4 +412,7 @@ describe("Validations", function() {
 			});
 		});
 	});
+
+
 });
+

@@ -1,3 +1,8 @@
+### v2.1.18 - 29 Jul 2014
+- Add `alwaysValidate` flag (#540, #352)
+- Fix mongo hasMany wrong instance bug (#479)
+- Fix mysql index bug (dresende/node-sql-ddl-sync#19)
+
 ### v2.1.17 - 24 Jul 2014
 - Fix postgres & sqlite driver conversion of floats and ints.
 

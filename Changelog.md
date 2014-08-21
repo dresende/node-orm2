@@ -1,3 +1,6 @@
+### v2.1.19 - 21 Aug 2014
+- Fix Chain.find().remove() & Chain.find.count() with mapsTo keys (#530)
+
 ### v2.1.18 - 29 Jul 2014
 - Add `alwaysValidate` flag (#540, #352)
 - Fix mongo hasMany wrong instance bug (#479)

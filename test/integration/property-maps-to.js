@@ -253,5 +253,39 @@ describe("Property.mapsTo", function() {
 				});
 			});
 		});
+
+		it("should count", function (done) {
+			Person.create({ firstName: 'Greg', lastName: 'McDoofus', age: 30 }, function (err, person) {
+				should.not.exist(err);
+
+				Person.find({ firstName: 'Greg', lastName: 'McDoofus' }).count(function (err, count) {
+					should.not.exist(err);
+					should.equal(count, 1);
+					done();
+				});
+			});
+		});
+
+		it("should chain delete", function (done) {
+			Person.create({ firstName: 'Alfred', lastName: 'McDoogle', age: 50 }, function (err, person) {
+				should.not.exist(err);
+
+				Person.find({ firstName: 'Alfred', lastName: 'McDoogle' }).count(function (err, count) {
+					should.not.exist(err);
+					should.equal(count, 1);
+
+					Person.find({ firstName: 'Alfred', lastName: 'McDoogle' }).remove(function (err) {
+						should.not.exist(err);
+
+						Person.find({ firstName: 'Alfred', lastName: 'McDoogle' }).count(function (err, count) {
+							should.not.exist(err);
+							should.equal(count, 0);
+
+							done()
+						});
+					});
+				});
+			});
+		});
 	});
 });

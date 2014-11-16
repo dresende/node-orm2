@@ -36,7 +36,7 @@ describe("Timezones", function() {
 	};
 
 	describe("specified", function () {
-		var a, zones = [ 'local', '-0734'/*, '+11:22'*/ ];
+		var a, zones = [ 'local', '-0734', 'Z' /*, '+11:22'*/ ];
 
 		for (a = 0; a < zones.length; a++ ) {
 			describe(zones[a], function () {
@@ -64,6 +64,10 @@ describe("Timezones", function() {
 		}
 	});
 
+	if (common.protocol() == "sqlite") {
+		return; // Dates are stored as UTC
+	}
+
 	describe("different for each connection", function () {
 		before(setup({
 			sync  : true,
@@ -74,7 +78,7 @@ describe("Timezones", function() {
 			return db.close();
 		});
 
-		// This isn't consistent accross drivers. Needs more thinking and investigation.
+		// This isn't consistent across drivers. Needs more thinking and investigation.
 		it("should get back a correctly offset time", function (done) {
 			var when = new Date(2013, 12, 5, 5, 34, 27);
 
@@ -88,7 +92,7 @@ describe("Timezones", function() {
 
 					db.close(function () {
 						setup({
-							sync  : false, // don't recreate table, don't want to loose previous value
+							sync  : false, // don't recreate table, don't want to lose previous value
 							query : { timezone: '+0400' }
 						})(function () {
 							Event.one({ name: "raid fridge" }, function (err, item) {

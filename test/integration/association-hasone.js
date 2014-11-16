@@ -13,6 +13,8 @@ describe("hasOne", function() {
 	var treeId = null;
 	var stalkId = null;
 
+	this.timeout(5000);
+
 	var setup = function (opts) {
 		opts = opts || {};
 		return function (done) {

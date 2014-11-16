@@ -6,6 +6,8 @@ describe("Model.one()", function() {
 	var db = null;
 	var Person = null;
 
+	this.timeout(5000);
+
 	var setup = function () {
 		return function (done) {
 			Person = db.define("person", {

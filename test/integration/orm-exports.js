@@ -220,7 +220,10 @@ describe("ORM.connect()", function () {
 		});
 
 		it("should allow pool and debug settings to be false", function(done) {
-			var connString = common.getConnectionString() + "debug=false&pool=false";
+			var connString = common
+				.getConnectionString()
+				.replace(/\b(debug|pool)=.*\b&?/g, '');
+			connString += "debug=false&pool=false";
 			ORM.connect(connString, function(err, db) {
 				db.driver.opts.pool.should.equal(false);
 				db.driver.opts.debug.should.equal(false);

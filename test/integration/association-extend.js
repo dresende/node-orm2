@@ -7,6 +7,8 @@ describe("Model.extendsTo()", function() {
 	var Person = null;
 	var PersonAddress = null;
 
+	this.timeout(5000);
+
 	var setup = function () {
 		return function (done) {
 			Person = db.define("person", {

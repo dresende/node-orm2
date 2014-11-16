@@ -7,6 +7,8 @@ var common = require('../common');
 describe("Model.sync", function () {
   var db     = null;
 
+  this.timeout(5000);
+
   before(function(done) {
     helper.connect(function (connection) {
       db = connection;

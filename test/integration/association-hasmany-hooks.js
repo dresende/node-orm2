@@ -7,6 +7,8 @@ describe("hasMany hooks", function() {
 	var Person = null;
 	var Pet    = null;
 
+	this.timeout(5000);
+
 	var setup = function (props, opts) {
 		return function (done) {
 			db.settings.set('instance.cache', false);

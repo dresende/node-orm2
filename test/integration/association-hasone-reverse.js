@@ -10,6 +10,8 @@ describe("hasOne", function () {
 	var Person = null;
 	var Pet = null;
 
+	this.timeout(5000);
+
 	var setup = function () {
 		return function (done) {
 			Person = db.define('person', {

@@ -37,7 +37,7 @@
 	"analyse"     : false,
 	"dependencies": {
 		"enforce"      : "0.1.2",
-		"sql-query"    : "git+https://github.com/dresende/node-sql-query.git#v0.1.23",
+		"sql-query"    : "git+https://github.com/apoco/node-sql-query.git#sqlite-utc-dates",
 		"sql-ddl-sync" : "git+https://github.com/dresende/node-sql-ddl-sync.git#v0.3.10",
 		"hat"          : "0.0.3",
 		"lodash"       : "2.4.1"

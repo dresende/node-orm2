@@ -284,7 +284,7 @@ describe("db.driver", function () {
 				db.driver.execQuery(query, args, function (err, data) {
 					should.not.exist(err);
 
-					should(JSON.stringify(data) == JSON.stringify([{ "what": "user login" }]));
+					JSON.stringify(data).should.equal(JSON.stringify([{ "what": "user login" }]));
 					done();
 				});
 			});

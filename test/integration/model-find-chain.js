@@ -9,6 +9,8 @@ describe("Model.find() chaining", function() {
 	var Person = null;
 	var Dog = null;
 
+	this.timeout(5000);
+
 	var setup = function (extraOpts) {
 		if (!extraOpts) extraOpts = {};
 

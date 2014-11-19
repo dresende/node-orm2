@@ -1,3 +1,7 @@
+### v2.1.20 - 19 Nov 2014
+- Exposing dirty properties array on the instance (#575)
+- Bump node-enforce version (#562)
+
 ### v2.1.19 - 21 Aug 2014
 - Fix Chain.find().remove() & Chain.find.count() with mapsTo keys (#530)
 - Add not_like comparator

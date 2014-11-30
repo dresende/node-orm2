@@ -48,6 +48,18 @@ describe("Model keys option", function() {
 				return done();
 			});
 		});
+
+		it("should not allow duplicate IDs", function (done) {
+			Person.create({
+				uid     : "john-doe",
+				name    : "John",
+				surname : "Doe"
+			}, function (err, JohnDoe) {
+				should.notEqual(err, null);
+				should.equal(err.code, 'ER_DUP_ENTRY');
+				return done();
+			});
+		});
 	});
 
 	describe("if model defines several keys", function () {

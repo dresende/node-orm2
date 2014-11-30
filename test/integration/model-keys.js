@@ -56,7 +56,6 @@ describe("Model keys option", function() {
 				surname : "Doe"
 			}, function (err, JohnDoe) {
 				should.notEqual(err, null);
-				should.equal(err.code, 'ER_DUP_ENTRY');
 				return done();
 			});
 		});

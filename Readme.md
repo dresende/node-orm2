@@ -474,6 +474,7 @@ a few examples to describe it:
 { col1: orm.not_between(123, 456) } // `col1` NOT BETWEEN 123 AND 456
 { col1: orm.like(12 + "%") } // `col1` LIKE '12%'
 { col1: orm.not_like(12 + "%") } // `col1` NOT LIKE '12%'
+{ col1: orm.not_in([1, 4, 8]) } // `col1` NOT IN (1, 4, 8)
 ```
 
 #### Raw queries

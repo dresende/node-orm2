@@ -115,7 +115,7 @@ describe("Validations", function() {
 
 			var setupUnique = function (ignoreCase, scope, msg) {
 				return function (done) {
-					Product = db.define("product_unique", {
+					Product = db.define("productUnique", {
 						instock  : { type: 'boolean', required: true, defaultValue: false },
 						name     : String,
 						category : String

@@ -1,3 +1,8 @@
+### v2.1.21
+- Fix mixed case uniqueness constraint on postgres (#597)
+- Fix mongo adapter association delete (#543)
+- Fix mongo ne/eq comparators for _id key (#586)
+
 ### v2.1.20 - 19 Nov 2014
 - Exposing dirty properties array on the instance (#575)
 - Bump node-enforce version (#562)

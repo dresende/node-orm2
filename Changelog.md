@@ -1,3 +1,6 @@
+### v2.1.22
+- Fix ignorecase unique scope for hasOne property (#603)
+
 ### v2.1.21
 - Fix mixed case uniqueness constraint on postgres (#597)
 - Fix mongo adapter association delete (#543)

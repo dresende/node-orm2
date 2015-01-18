@@ -111,23 +111,36 @@ describe("Validations", function() {
 		describe("unique", function () {
 			if (protocol === "mongodb") return;
 
-			var Product = null;
+			var Product = null, Supplier = null;
 
 			var setupUnique = function (ignoreCase, scope, msg) {
 				return function (done) {
-					Product = db.define("productUnique", {
-						instock  : { type: 'boolean', required: true, defaultValue: false },
-						name     : String,
-						category : String
-					}, {
-						cache: false,
-						validations: {
-							name      : ORM.validators.unique({ ignoreCase: ignoreCase, scope: scope }, msg),
-							instock   : ORM.validators.required(),
-							productId : ORM.validators.unique() // this must be straight after a required & validated row.
-						}
+					Supplier = db.define("supplier", {
+						name     : String
+                    }, {
+						cache: false
 					});
-					return helper.dropSync(Product, done);
+					helper.dropSync(Supplier, function(err){
+						if (err) {
+							return done(err);
+						}
+
+						Product = db.define("productUnique", {
+							instock  : { type: 'boolean', required: true, defaultValue: false },
+							name     : String,
+							category : String
+						}, {
+							cache: false,
+							validations: {
+								name      : ORM.validators.unique({ ignoreCase: ignoreCase, scope: scope }, msg),
+								instock   : ORM.validators.required(),
+								productId : ORM.validators.unique() // this must be straight after a required & validated row.
+							}
+						});
+				        Product.hasOne('supplier',  Supplier,  { field: 'supplierId' });
+
+						return helper.dropSync(Product, done);
+					});
 				};
 			};
 
@@ -174,7 +187,8 @@ describe("Validations", function() {
 
 			describe("scope", function () {
 				describe("to other property", function () {
-					before(setupUnique(false, ['category']));
+
+					before(setupUnique(true, ['category']));
 
 					it("should return validation error if other property also matches", function(done) {
 						Product.create({name: 'red', category: 'chair'}, function (err, product) {
@@ -189,7 +203,7 @@ describe("Validations", function() {
 						});
 					});
 
-					it("should pass if other peroperty is different", function (done) {
+					it("should pass if other property is different", function (done) {
 						Product.create({name: 'blue', category: 'chair'}, function (err, product) {
 							should.not.exist(err);
 
@@ -202,7 +216,67 @@ describe("Validations", function() {
 					});
 
 					// In SQL unique index land, NULL values are not considered equal.
-					it("should pass if other peroperty is null", function (done) {
+					it("should pass if other property is null", function (done) {
+						Product.create({name: 'blue', category: null}, function (err, product) {
+							should.not.exist(err);
+
+							Product.create({name: 'blue', category: null}, function (err, product) {
+								should.not.exist(err);
+
+								return done();
+							});
+						});
+					});
+				});
+
+				describe("to hasOne property", function () {
+					firstId = secondId = null;
+
+					before(function(done){
+						setupUnique(true, ['supplierId'])(function(err) {
+							should.not.exist(err);
+							Supplier.create({name: 'first'}, function (err, supplier) {
+								should.not.exist(err);
+
+								firstId = supplier.id;
+
+								Supplier.create({name: 'second'}, function (err, supplier) {
+									should.not.exist(err);
+
+									secondId = supplier.id;
+									done();
+								});
+							});
+						});
+					});
+
+					it("should return validation error if hasOne property also matches", function(done) {
+						Product.create({name: 'red', supplierId: firstId}, function (err, product) {
+							should.not.exist(err);
+
+							Product.create({name: 'red', supplierId: firstId}, function (err, product) {
+								should.exist(err);
+								should.equal(err.msg, 'not-unique');
+
+								return done();
+							});
+						});
+					});
+
+					it("should pass if hasOne property is different", function (done) {
+						Product.create({name: 'blue', supplierId: firstId}, function (err, product) {
+							should.not.exist(err);
+
+							Product.create({name: 'blue', supplierId: secondId}, function (err, product) {
+								should.not.exist(err);
+
+								return done();
+							});
+						});
+					});
+
+					// In SQL unique index land, NULL values are not considered equal.
+					it("should pass if other property is null", function (done) {
 						Product.create({name: 'blue', category: null}, function (err, product) {
 							should.not.exist(err);
 

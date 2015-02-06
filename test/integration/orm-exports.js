@@ -139,6 +139,26 @@ describe("ORM.connect()", function () {
 		});
 	});
 
+	it("should emit valid error if exception being thrown during connection try", function (done) {
+		var testConfig = {
+			protocol : 'mongodb',
+			href     : 'unknownhost',
+			database : 'unknowndb',
+			user     : '',
+			password : ''
+		},
+		db = ORM.connect(testConfig);
+
+		db.on("connect", function (err) {
+			should.exist(err);
+			should.equal(err.message.indexOf("Connection protocol not supported"), -1);
+			err.message.should.not.equal("CONNECTION_URL_NO_PROTOCOL");
+			err.message.should.not.equal("CONNECTION_URL_EMPTY");
+
+			return done();
+		});
+	});
+
 	it("should not modify connection opts", function (done) {
 		var opts = {
 			protocol : 'mysql',

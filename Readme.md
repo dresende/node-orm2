@@ -222,11 +222,11 @@ module.exports = function (db, cb) {
 
 ## Synchronizing Models
 
-See information in the [wiki](https://github.com/dresende/node-orm2/wiki/Synching-and-Dropping-Models).
+See information in the [wiki](https://github.com/dresende/node-orm2/wiki/Syncing-and-dropping-models).
 
 ## Dropping Models
 
-See information in the [wiki](https://github.com/dresende/node-orm2/wiki/Synching-and-Dropping-Models).
+See information in the [wiki](https://github.com/dresende/node-orm2/wiki/Syncing-and-dropping-models).
 
 ## Advanced Options
 

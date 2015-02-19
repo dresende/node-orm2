@@ -48,7 +48,7 @@ describe("LazyLoad properties", function() {
 				John.should.be.a("object");
 
 				John.should.have.property("name", "John Doe");
-				John.should.have.property("photo", null);
+				John.should.not.have.property("photo");
 
 				return done();
 			});

@@ -189,26 +189,26 @@ describe("Model.find() chaining", function() {
 	describe("only", function () {
 		before(setup());
 
-		it("('property', ...) should return only those properties, others null", function (done) {
+		it("('property', ...) should return only those properties, others undefined", function (done) {
 			Person.find().only("age", "surname").order("-age").run(function (err, instances) {
 				should.equal(err, null);
 				instances.should.have.property("length", 3);
 				instances[0].should.have.property("age");
 				instances[0].should.have.property("surname", "Doe");
-				instances[0].should.have.property("name", null);
+				instances[0].should.not.have.property("name");
 
 				return done();
 			});
 		});
 
 		// This works if cache is disabled. I suspect a cache bug.
-		xit("(['property', ...]) should return only those properties, others null", function (done) {
+		xit("(['property', ...]) should return only those properties, others undefined", function (done) {
 			Person.find().only([ "age", "surname" ]).order("-age").run(function (err, instances) {
 				should.equal(err, null);
 				instances.should.have.property("length", 3);
 				instances[0].should.have.property("age");
 				instances[0].should.have.property("surname", "Doe");
-				instances[0].should.have.property("name", null);
+				instances[0].should.not.have.property("name");
 
 				return done();
 			});
@@ -226,8 +226,8 @@ describe("Model.find() chaining", function() {
 					should.exist(instances[0].id);
 				}
 				should.exist(instances[0].friend_id);
-				instances[0].should.have.property("age", null);
-				instances[0].should.have.property("surname", null);
+				instances[0].should.not.have.property("age");
+				instances[0].should.not.have.property("surname");
 				instances[0].should.have.property("name", "Jane");
 
 				return done();
@@ -238,8 +238,8 @@ describe("Model.find() chaining", function() {
 			Person.find().omit(["age", "surname"]).order("-age").run(function (err, instances) {
 				should.equal(err, null);
 				instances.should.have.property("length", 3);
-				instances[0].should.have.property("age", null);
-				instances[0].should.have.property("surname", null);
+				instances[0].should.not.have.property("age");
+				instances[0].should.not.have.property("surname");
 				instances[0].should.have.property("name", "Jane");
 
 				return done();

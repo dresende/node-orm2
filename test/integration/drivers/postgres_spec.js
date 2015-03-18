@@ -10,7 +10,7 @@ describe("Postgres driver", function() {
 	describe("#valueToProperty", function () {
 		var driver = null;
 
-		before(function () {
+		beforeEach(function () {
 			driver = new Driver({}, {}, {});
 		});
 
@@ -72,6 +72,35 @@ describe("Postgres driver", function() {
 					should.strictEqual(valueToProperty('1.200 '), 1);
 				});
 			});
+
+			describe("dates with non local timezone", function () {
+				beforeEach(function () {
+					driver = new Driver({ timezone: 'Z' }, {}, {});
+				});
+
+				function valueToProperty (value) {
+					return driver.valueToProperty(value, { type: 'date' });
+				}
+
+				it("should accept null", function () {
+					should.strictEqual(valueToProperty(null), null);
+				});
+
+				it("should work", function () {
+					should.strictEqual(_.isDate(valueToProperty(new Date())), true);
+				});
+
+				describe("calculations", function () {
+					it("should offset time, relative to timezone", function () {
+						d = new Date();
+
+						expected  = d.getTime() - d.getTimezoneOffset() * 60000;
+						converted = valueToProperty(d).getTime();
+
+						should.equal(converted, expected);
+					});
+				});
+			});
 		});
 	});
 
@@ -116,9 +145,24 @@ describe("Postgres driver", function() {
 				should.equal(inputStr, out.toString());
 			});
 
-			it("should offset time by specified timezone amount for + timezones");
+			it("should work with null dates", function () {
+				should.strictEqual(evaluate(null, { config: { timezone: 'Z' }}), null);
+			});
 
-			it("should offset time by specified timezone amount for + timezones");
+			it("should work with date objects", function () {
+				should.strictEqual(_.isDate(evaluate(new Date(), { config: { timezone: 'Z' }})), true);
+			});
+
+			describe("calculations", function () {
+				it("should offset time, relative to timezone", function () {
+					d = new Date();
+
+					expected = d.getTime() + d.getTimezoneOffset() * 60000;
+					converted = evaluate(d, { config: { timezone: 'Z' }}).getTime();
+
+					should.equal(converted, expected);
+				});
+			});
 		});
 
 		describe("type point", function () {

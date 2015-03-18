@@ -1,3 +1,9 @@
+### v2.1.23
+- Green tests on io.js & node 0.12 (#618)
+- Don't crash on null dates if timezone is set (#618)
+- Fix wrong error when module is missing (#593)
+- Fix key field when using `mapsTo` and cache (#580)
+
 ### v2.1.22
 - Fix ignorecase unique scope for hasOne property (#603)
 

@@ -778,7 +778,7 @@ describe("hasMany", function () {
 						should.equal(data[0].name, 'account_id');
 						should.equal(data[0].pk, 1);
 						should.equal(data[1].name, 'emails_text');
-						should.equal(data[1].pk, 1);
+						should.equal(data[1].pk, 2);
 
 						done();
 					});

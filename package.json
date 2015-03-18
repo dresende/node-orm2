@@ -43,9 +43,9 @@
 		"lodash"       : "2.4.1"
 	},
 	"devDependencies": {
-		"mysql"   : "2.0.0-alpha9",
-		"pg"      : "2.6.2",
-		"sqlite3" : "2.1.7",
+		"mysql"   : "2.5.5",
+		"pg"      : "4.3.0",
+		"sqlite3" : "3.0.5",
 		"async"   : "0.9.0",
 		"mocha"   : "1.13.0",
 		"should"  : "1.2.2",

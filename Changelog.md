@@ -1,3 +1,6 @@
+### v2.1.24
+- Bump dependencies; Allow left/right joins in underlying db.driver.query
+
 ### v2.1.23
 - Green tests on io.js & node 0.12 (#618)
 - Don't crash on null dates if timezone is set (#618)

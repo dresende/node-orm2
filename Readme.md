@@ -69,15 +69,28 @@ orm.connect("mysql://username:password@host/database", function (err, db) {
 		}
 	});
 
-	Person.find({ surname: "Doe" }, function (err, people) {
-		// SQL: "SELECT * FROM person WHERE surname = 'Doe'"
+    // add the table to the database
+	db.sync(function(err) { 
+		if (err) throw err;
 
-		console.log("People found: %d", people.length);
-		console.log("First person: %s, age %d", people[0].fullName(), people[0].age);
+		// add a row to the person table
+		Person.create({ id: 1, name: "John", surname: "Doe", age: 27 }, function(err) {
+			if (err) throw err;
 
-		people[0].age = 16;
-		people[0].save(function (err) {
-			// err.msg = "under-age";
+				// query the person table by surname
+				Person.find({ surname: "Doe" }, function (err, people) {
+			        // SQL: "SELECT * FROM person WHERE surname = 'Doe'"
+		        	if (err) throw err;
+
+			        console.log("People found: %d", people.length);
+			        console.log("First person: %s, age %d", people[0].fullName(), people[0].age);
+
+			        people[0].age = 16;
+			        people[0].save(function (err) {
+			            // err.msg = "under-age";
+		        });
+		    });
+			
 		});
 	});
 });

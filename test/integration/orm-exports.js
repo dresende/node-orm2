@@ -238,12 +238,75 @@ describe("ORM.connect()", function () {
 				return done();
 			});
 		});
+	});
 
-		it("should allow pool and debug settings to be false", function(done) {
+	describe("query options", function () {
+		it("should understand pool `'false'` from query string", function (done) {
 			var connString = common.getConnectionString() + "debug=false&pool=false";
-			ORM.connect(connString, function(err, db) {
-				db.driver.opts.pool.should.equal(false);
-				db.driver.opts.debug.should.equal(false);
+			ORM.connect(connString, function (err, db) {
+				should.not.exist(err);
+				should.strictEqual(db.driver.opts.pool,  false);
+				should.strictEqual(db.driver.opts.debug, false);
+				done();
+			});
+		});
+
+		it("should understand pool `'0'` from query string", function (done) {
+			var connString = common.getConnectionString() + "debug=0&pool=0";
+			ORM.connect(connString, function (err, db) {
+				should.not.exist(err);
+				should.strictEqual(db.driver.opts.pool,  false);
+				should.strictEqual(db.driver.opts.debug, false);
+				done();
+			});
+		});
+
+		it("should understand pool `'true'` from query string", function (done) {
+			var connString = common.getConnectionString() + "debug=true&pool=true";
+			ORM.connect(connString, function (err, db) {
+				should.not.exist(err);
+				should.strictEqual(db.driver.opts.pool,  true);
+				should.strictEqual(db.driver.opts.debug, true);
+				done();
+			});
+		});
+
+		it("should understand pool `'1'` from query string", function (done) {
+			var connString = common.getConnectionString() + "debug=1&pool=1";
+			ORM.connect(connString, function (err, db) {
+				should.not.exist(err);
+				should.strictEqual(db.driver.opts.pool,  true);
+				should.strictEqual(db.driver.opts.debug, true);
+				done();
+			});
+		});
+
+		it("should understand pool `false` from query options", function (done) {
+			var connOpts = _.extend(common.getConfig(), {
+				protocol: common.protocol(),
+				query: {
+				  pool: false, debug: false
+				}
+			});
+			ORM.connect(connOpts, function (err, db) {
+				should.not.exist(err);
+				should.strictEqual(db.driver.opts.pool,  false);
+				should.strictEqual(db.driver.opts.debug, false);
+				done();
+			});
+		});
+
+		it("should understand pool `true` from query options", function (done) {
+			var connOpts = _.extend(common.getConfig(), {
+				protocol: common.protocol(),
+				query: {
+				  pool: true, debug: true
+				}
+			});
+			ORM.connect(connOpts, function (err, db) {
+				should.not.exist(err);
+				should.strictEqual(db.driver.opts.pool,  true);
+				should.strictEqual(db.driver.opts.debug, true);
 				done();
 			});
 		});

@@ -1,8 +1,10 @@
-var ORM    = require('../../');
-var helper = require('../support/spec_helper');
-var should = require('should');
-var async  = require('async');
-var _      = require('lodash');
+var ORM      = require('../../');
+var helper   = require('../support/spec_helper');
+var should   = require('should');
+var async    = require('async');
+var _        = require('lodash');
+var common   = require('../common');
+var protocol = common.protocol();
 
 describe("hasOne", function() {
 	var db    = null;
@@ -379,89 +381,91 @@ describe("hasOne", function() {
 		});
 	});
 
-	describe("mapsTo", function () {
-		describe("with `mapsTo` set via `hasOne`", function () {
-			var leaf = null;
+	if (protocol != "mongodb") {
+		describe("mapsTo", function () {
+			describe("with `mapsTo` set via `hasOne`", function () {
+				var leaf = null;
 
-			before(setup());
+				before(setup());
 
-			before(function (done) {
-				Leaf.create({ size: 444, stalkId: stalkId, holeId: holeId }, function (err, lf) {
-					should.not.exist(err);
-					leaf = lf;
-					done();
+				before(function (done) {
+					Leaf.create({ size: 444, stalkId: stalkId, holeId: holeId }, function (err, lf) {
+						should.not.exist(err);
+						leaf = lf;
+						done();
+					});
+				});
+
+				it("should have correct fields in the DB", function (done) {
+					var sql = db.driver.query.select()
+					  .from('leaf')
+					  .select('size', 'stalk_id')
+					  .where({ size: 444 })
+					  .build();
+
+					db.driver.execQuery(sql, function (err, rows) {
+						should.not.exist(err);
+
+						should.equal(rows[0].size, 444);
+						should.equal(rows[0].stalk_id, 1);
+
+						done();
+		      });
+				});
+
+				it("should get parent", function (done) {
+					leaf.getStalk(function (err, stalk) {
+						should.not.exist(err);
+
+						should.exist(stalk);
+						should.equal(stalk.id, stalkId);
+						should.equal(stalk.length, 20);
+						done();
+					});
 				});
 			});
 
-			it("should have correct fields in the DB", function (done) {
-				var sql = db.driver.query.select()
-				  .from('leaf')
-				  .select('size', 'stalk_id')
-				  .where({ size: 444 })
-				  .build();
+			describe("with `mapsTo` set via property definition", function () {
+				var leaf = null;
 
-				db.driver.execQuery(sql, function (err, rows) {
-					should.not.exist(err);
+				before(setup());
 
-					should.equal(rows[0].size, 444);
-					should.equal(rows[0].stalk_id, 1);
+				before(function (done) {
+					Leaf.create({ size: 444, stalkId: stalkId, holeId: holeId }, function (err, lf) {
+						should.not.exist(err);
+						leaf = lf;
+						done();
+					});
+				});
 
-					done();
-	      });
-			});
+				it("should have correct fields in the DB", function (done) {
+					var sql = db.driver.query.select()
+					  .from('leaf')
+					  .select('size', 'hole_id')
+					  .where({ size: 444 })
+					  .build();
 
-			it("should get parent", function (done) {
-				leaf.getStalk(function (err, stalk) {
-					should.not.exist(err);
+					db.driver.execQuery(sql, function (err, rows) {
+						should.not.exist(err);
 
-					should.exist(stalk);
-					should.equal(stalk.id, stalkId);
-					should.equal(stalk.length, 20);
-					done();
+						should.equal(rows[0].size, 444);
+						should.equal(rows[0].hole_id, 1);
+
+						done();
+		      });
+				});
+
+				it("should get parent", function (done) {
+					leaf.getHole(function (err, hole) {
+						should.not.exist(err);
+
+						should.exist(hole);
+						should.equal(hole.id, stalkId);
+						should.equal(hole.width, 3);
+						done();
+					});
 				});
 			});
 		});
-
-		describe("with `mapsTo` set via property definition", function () {
-			var leaf = null;
-
-			before(setup());
-
-			before(function (done) {
-				Leaf.create({ size: 444, stalkId: stalkId, holeId: holeId }, function (err, lf) {
-					should.not.exist(err);
-					leaf = lf;
-					done();
-				});
-			});
-
-			it("should have correct fields in the DB", function (done) {
-				var sql = db.driver.query.select()
-				  .from('leaf')
-				  .select('size', 'hole_id')
-				  .where({ size: 444 })
-				  .build();
-
-				db.driver.execQuery(sql, function (err, rows) {
-					should.not.exist(err);
-
-					should.equal(rows[0].size, 444);
-					should.equal(rows[0].hole_id, 1);
-
-					done();
-	      });
-			});
-
-			it("should get parent", function (done) {
-				leaf.getHole(function (err, hole) {
-					should.not.exist(err);
-
-					should.exist(hole);
-					should.equal(hole.id, stalkId);
-					should.equal(hole.width, 3);
-					done();
-				});
-			});
-		});
-	});
+	};
 });

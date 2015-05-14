@@ -1,3 +1,7 @@
+### v2.1.25
+- Fix `pool` and `debug` query options boolean check (#638)
+- Add `hasOne(field: 'userId', mapsTo: 'user_id')` option (#638)
+
 ### v2.1.24
 - Bump dependencies; Allow left/right joins in underlying db.driver.query
 

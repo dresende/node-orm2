@@ -113,6 +113,7 @@ var app = express();
 app.use(orm.express("mysql://username:password@host/database", {
 	define: function (db, models, next) {
 		models.person = db.define("person", { ... });
+		db.sync();
 		next();
 	}
 }));

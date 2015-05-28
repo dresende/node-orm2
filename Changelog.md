@@ -1,3 +1,7 @@
+### v2.1.26
+- Add `instance.saveAssociationsByDefault` setting
+- Bump node-sql-query version to v0.1.26
+
 ### v2.1.25
 - Fix `pool` and `debug` query options boolean check (#638)
 - Add `hasOne(field: 'userId', mapsTo: 'user_id')` option (#638)

@@ -271,8 +271,8 @@ It's also possible to have composite keys:
 
 ```js
 var Person = db.define("person", {
-	firstname : { type: 'string', key: true },
-	lastname  : { type: 'string', key: true }
+	firstname : { type: 'text', key: true },
+	lastname  : { type: 'text', key: true }
 });
 ```
 

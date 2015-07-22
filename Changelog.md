@@ -1,3 +1,32 @@
+### v2.1.26
+- Add `instance.saveAssociationsByDefault` setting
+- Bump node-sql-query version to v0.1.26
+
+### v2.1.25
+- Fix `pool` and `debug` query options boolean check (#638)
+- Add `hasOne(field: 'userId', mapsTo: 'user_id')` option (#638)
+
+### v2.1.24
+- Bump dependencies; Allow left/right joins in underlying db.driver.query
+
+### v2.1.23
+- Green tests on io.js & node 0.12 (#618)
+- Don't crash on null dates if timezone is set (#618)
+- Fix wrong error when module is missing (#593)
+- Fix key field when using `mapsTo` and cache (#580)
+
+### v2.1.22
+- Fix ignorecase unique scope for hasOne property (#603)
+
+### v2.1.21
+- Fix mixed case uniqueness constraint on postgres (#597)
+- Fix mongo adapter association delete (#543)
+- Fix mongo ne/eq comparators for _id key (#586)
+
+### v2.1.20 - 19 Nov 2014
+- Exposing dirty properties array on the instance (#575)
+- Bump node-enforce version (#562)
+
 ### v2.1.19 - 21 Aug 2014
 - Fix Chain.find().remove() & Chain.find.count() with mapsTo keys (#530)
 - Add not_like comparator

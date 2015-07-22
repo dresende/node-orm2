@@ -13,8 +13,10 @@ npm install orm
 
 ## Node.js Version Support
 
-Tests are done using [Travis CI](https://travis-ci.org/) for node versions `0.6.x`, `0.8.x` and `0.10.x`. If you want you can run
-tests locally.
+Supported: 0.8, 0.10, 0.12, iojs-1.5
+
+Tests are run on [Travis CI](https://travis-ci.org/) for node versions `0.10.x`, `0.12.x` and `iojs-1.5`.
+If you want you can run tests locally:
 
 ```sh
 npm test
@@ -67,15 +69,28 @@ orm.connect("mysql://username:password@host/database", function (err, db) {
 		}
 	});
 
-	Person.find({ surname: "Doe" }, function (err, people) {
-		// SQL: "SELECT * FROM person WHERE surname = 'Doe'"
+    // add the table to the database
+	db.sync(function(err) { 
+		if (err) throw err;
 
-		console.log("People found: %d", people.length);
-		console.log("First person: %s, age %d", people[0].fullName(), people[0].age);
+		// add a row to the person table
+		Person.create({ id: 1, name: "John", surname: "Doe", age: 27 }, function(err) {
+			if (err) throw err;
 
-		people[0].age = 16;
-		people[0].save(function (err) {
-			// err.msg = "under-age";
+				// query the person table by surname
+				Person.find({ surname: "Doe" }, function (err, people) {
+			        // SQL: "SELECT * FROM person WHERE surname = 'Doe'"
+		        	if (err) throw err;
+
+			        console.log("People found: %d", people.length);
+			        console.log("First person: %s, age %d", people[0].fullName(), people[0].age);
+
+			        people[0].age = 16;
+			        people[0].save(function (err) {
+			            // err.msg = "under-age";
+		        });
+		    });
+			
 		});
 	});
 });
@@ -222,11 +237,11 @@ module.exports = function (db, cb) {
 
 ## Synchronizing Models
 
-See information in the [wiki](https://github.com/dresende/node-orm2/wiki/Synching-and-Dropping-Models).
+See information in the [wiki](https://github.com/dresende/node-orm2/wiki/Syncing-and-dropping-models).
 
 ## Dropping Models
 
-See information in the [wiki](https://github.com/dresende/node-orm2/wiki/Synching-and-Dropping-Models).
+See information in the [wiki](https://github.com/dresende/node-orm2/wiki/Syncing-and-dropping-models).
 
 ## Advanced Options
 
@@ -256,8 +271,8 @@ It's also possible to have composite keys:
 
 ```js
 var Person = db.define("person", {
-	firstname : { type: 'string', key: true },
-	lastname  : { type: 'string', key: true }
+	firstname : { type: 'text', key: true },
+	lastname  : { type: 'text', key: true }
 });
 ```
 
@@ -474,6 +489,7 @@ a few examples to describe it:
 { col1: orm.not_between(123, 456) } // `col1` NOT BETWEEN 123 AND 456
 { col1: orm.like(12 + "%") } // `col1` LIKE '12%'
 { col1: orm.not_like(12 + "%") } // `col1` NOT LIKE '12%'
+{ col1: orm.not_in([1, 4, 8]) } // `col1` NOT IN (1, 4, 8)
 ```
 
 #### Raw queries

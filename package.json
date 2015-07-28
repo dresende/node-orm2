@@ -40,7 +40,8 @@
 		"sql-query"    : "0.1.26",
 		"sql-ddl-sync" : "0.3.11",
 		"hat"          : "0.0.3",
-		"lodash"       : "2.4.1"
+		"lodash"       : "2.4.1",
+		"cls-binder"   : "git@github.com:benkitzelman/cls-binder.git#master"
 	},
 	"devDependencies": {
 		"mysql"   : "2.5.5",

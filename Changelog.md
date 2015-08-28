@@ -1,3 +1,6 @@
+### v2.1.27
+- Fix noisy mysql debug output (#642)
+
 ### v2.1.26
 - Add `instance.saveAssociationsByDefault` setting
 - Bump node-sql-query version to v0.1.26

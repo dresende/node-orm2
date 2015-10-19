@@ -10,7 +10,7 @@ describe("hasMany extra properties", function() {
 	var setup = function (opts) {
 		opts = opts || {};
 		return function (done) {
-			db.settings.set('instance.cache', false);
+			db.settings.set('instance.identityCache', false);
 
 			Person = db.define('person', {
 				name    : String,

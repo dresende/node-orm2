@@ -9,7 +9,7 @@ describe("hasMany hooks", function() {
 
 	var setup = function (props, opts) {
 		return function (done) {
-			db.settings.set('instance.cache', false);
+			db.settings.set('instance.identityCache', false);
 
 			Person = db.define('person', {
 				name    : String,

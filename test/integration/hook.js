@@ -157,7 +157,7 @@ describe("Hook", function() {
 					items[0].name.should.equal("Jane Doe");
 
 					// ensure it was really saved
-					Person.find({ name: "Hook Worked" }, { cache: false }, 1, function (err, people) {
+					Person.find({ name: "Hook Worked" }, { identityCache: false }, 1, function (err, people) {
 						should.not.exist(err);
 						should(Array.isArray(people));
 
@@ -252,7 +252,7 @@ describe("Hook", function() {
 		        should.equal(people[0].name, "Hook Worked");
 
 				// garantee it was correctly saved on database
-				Person.find({ name: "Hook Worked" }, { cache: false }, 1, function (err, people) {
+				Person.find({ name: "Hook Worked" }, { identityCache: false }, 1, function (err, people) {
 					should.not.exist(err);
 					should(Array.isArray(people));
 

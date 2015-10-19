@@ -26,7 +26,7 @@ describe("hasMany with mapsTo", function () {
 			opts = opts || {};
 
 			return function (done) {
-				db.settings.set('instance.cache', false);
+				db.settings.set('instance.identityCache', false);
 
 				Person = db.define('person', {
                                         id        : {type : "serial",  size:"8",    mapsTo: "personID", key:true},

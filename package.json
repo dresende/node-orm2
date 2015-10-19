@@ -12,7 +12,7 @@
 		"sqlite",
 		"mongodb"
 	],
-	"version"     : "2.1.29",
+	"version"     : "3.0.0",
 	"license"     : "MIT",
 	"homepage"    : "http://dresende.github.io/node-orm2",
 	"repository"  : "http://github.com/dresende/node-orm2.git",
@@ -45,8 +45,8 @@
 	},
 	"devDependencies": {
 		"mysql"   : "2.9.0",
-		"pg"      : "4.3.0",
-		"sqlite3" : "3.0.5",
+		"pg"      : "4.4.3",
+		"sqlite3" : "3.1.0",
 		"async"   : "1.5.0",
 		"mocha"   : "2.3.3",
 		"should"  : "1.2.2",

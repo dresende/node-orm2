@@ -19,7 +19,7 @@ describe("Model instance", function() {
 				weight : { type: 'number',  required: false },
 				data   : { type: 'object',  required: false }
 			}, {
-				cache: false,
+				identityCache: false,
 				validations: {
 					age: ORM.validators.rangeNumber(0, 150)
 				}
@@ -65,7 +65,7 @@ describe("Model instance", function() {
 			item = db.define("item", {
 				name      : String
 			}, {
-				cache     : false
+				identityCache  : false
 			});
 			item.hasOne("main_item", main_item, {
 				reverse   : "items",

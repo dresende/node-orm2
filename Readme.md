@@ -70,7 +70,7 @@ orm.connect("mysql://username:password@host/database", function (err, db) {
 	});
 
     // add the table to the database
-	db.sync(function(err) { 
+	db.sync(function(err) {
 		if (err) throw err;
 
 		// add a row to the person table
@@ -90,7 +90,7 @@ orm.connect("mysql://username:password@host/database", function (err, db) {
 			            // err.msg = "under-age";
 		        });
 		    });
-			
+
 		});
 	});
 });
@@ -278,7 +278,7 @@ var Person = db.define("person", {
 
 Other options:
 
-- `cache` : (default: `true`) Set it to `false` to disable Instance cache ([Singletons](#singleton)) or set a timeout value (in seconds);
+- `cache` : (default: `false`) Set it to `true` to enable Instance cache ([Singletons](#singleton)) or set a timeout value (in seconds);
 - `autoSave` : (default: `false`) Set it to `true` to save an Instance right after changing any property;
 - `autoFetch` : (default: `false`) Set it to `true` to fetch associations when fetching an instance from the database;
 - `autoFetchLimit` : (default: `1`) If `autoFetch` is enabled this defines how many hoops (associations of associations)
@@ -516,16 +516,16 @@ db.driver.execQuery(
 
 ### Caching & Integrity
 
-Model instances are cached. If multiple different queries will result in the same result, you will
+Model instances can be cached (turned off by default). If enabled, multiple different queries will result in the same result - you will
 get the same object. If you have other systems that can change your database (or you're developing and need
-to make some manual changes) you should remove this feature by disabling cache. This can be done when you're
-defining the Model.
+to make some manual changes) you shouldn't use this feature.
+It can be enabled/disabled per model:
 
 ```js
 var Person = db.define('person', {
 	name    : String
 }, {
-	cache   : false
+	cache   : true
 });
 ```
 
@@ -533,7 +533,7 @@ and also globally:
 
 ```js
 orm.connect('...', function(err, db) {
-  db.settings.set('instance.cache', false);
+  db.settings.set('instance.cache', true);
 });
 ```
 

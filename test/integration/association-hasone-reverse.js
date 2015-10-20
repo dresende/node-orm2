@@ -153,7 +153,11 @@ describe("hasOne", function () {
 
 		it("should be able to set an array of people as the owner", function (done) {
 			Person.find({ name: ["John Doe", "Jane Doe"] }, function (err, owners) {
+				should.not.exist(err);
+
 				Pet.find({ name: "Fido" }).first(function (err, Fido) {
+					should.not.exist(err);
+
 					Fido.hasOwners(function (err, has_owner) {
 						should.not.exist(err);
 						has_owner.should.be.false;
@@ -166,7 +170,10 @@ describe("hasOne", function () {
 								should(Array.isArray(owners));
 								owners.length.should.equal(2);
 
-								if (owners[0] == ownersCopy[0]) {
+								// Don't know which order they'll be in.
+								var idProp = common.protocol() == 'mongodb' ? '_id' : 'id'
+
+								if (owners[0][idProp] == ownersCopy[0][idProp]) {
 									owners[0].should.eql(ownersCopy[0]);
 									owners[1].should.eql(ownersCopy[1]);
 								} else {

@@ -1,3 +1,6 @@
+### v2.2.0
+- Singleton/cache disabled by default (#672)
+
 ### v2.1.27
 - Fix noisy mysql debug output (#642)
 

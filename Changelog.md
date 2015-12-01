@@ -1,3 +1,6 @@
+### v2.1.28
+- Ensure hasMany associations work when properties have mapsTo (#679)
+
 ### v2.1.27
 - Fix noisy mysql debug output (#642)
 

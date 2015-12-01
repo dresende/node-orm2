@@ -5,7 +5,9 @@ var ORM      = require('../../');
 var common   = require('../common');
 var protocol = common.protocol();
 
-describe("hasMany", function () {
+if (common.protocol() == "mongodb") return;   // Can't do mapsTo testing on mongoDB ()
+
+describe("hasMany with mapsTo", function () {
 	this.timeout(4000);
 	var db     = null;
 	var Person = null;

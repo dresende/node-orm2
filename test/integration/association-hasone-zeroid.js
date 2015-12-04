@@ -110,12 +110,12 @@ describe("hasOne", function() {
                           pets[0].should.not.have.property("owner");
 
                           // But we should be able to see if its there
-                          pets[0].hasOwner(function(result) {
+                          pets[0].hasOwner(function(err, result) {
                             should.equal(result, true);
                           });
 
                           // ...and then get it
-                          pets[0].getOwner(function(result) {
+                          pets[0].getOwner(function(err, result) {
                             result.firstName.should.equal("Stuey");
                           });
 
@@ -135,12 +135,12 @@ describe("hasOne", function() {
                           pets[0].should.not.have.property("owner");
 
                           // But we should be able to see if its there
-                          pets[0].hasOwner(function(result) {
+                          pets[0].hasOwner(function(err, result) {
                             should.equal(result, true);
                           });
 
                           // ...and then get it
-                          pets[0].getOwner(function(result) {
+                          pets[0].getOwner(function(err, result) {
                             result.firstName.should.equal("John");
                           });
 

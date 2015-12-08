@@ -1,3 +1,7 @@
+### v2.1.29
+- Fix hasOne association when ID is 0 (#681)
+- Fix global var leak (#682)
+
 ### v2.1.28
 - Ensure hasMany associations work when properties have mapsTo (#679)
 

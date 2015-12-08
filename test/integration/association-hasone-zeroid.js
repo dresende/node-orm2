@@ -15,13 +15,13 @@ describe("hasOne", function() {
 			db.settings.set('instance.returnAllErrors', true);
 
 		        Person = db.define('person', {
-                          id        : {type : "integer",               mapsTo: "personID", key:true},
+                          id        : {type : "integer",             key:true},
 			  firstName : {type : "text",    size:"255"},
 			  lastName  : {type : "text",    size:"255"}
 			});
 
 		        Pet = db.define('pet', {
-                          id      :  {type : "integer",                mapsTo:"petID", key:true},
+                          id      :  {type : "integer",              key:true},
 			  petName :  {type : "text",     size:"255"},
                           ownerID :  {type : "integer",  size:"4"}
 			});

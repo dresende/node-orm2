@@ -8,9 +8,9 @@ describe("hasOne", function() {
 	var db     = null;
 	var Animal = null;
 
-	var setup = function (opts) {
+	var setup = function (cache) {
 		return function (done) {
-			db.settings.set('instance.cache', opts.cache);
+			db.settings.set('instance.cache', cache);
 			db.settings.set('instance.returnAllErrors', true);
 
 		        Animal = db.define('animal', {
@@ -18,7 +18,7 @@ describe("hasOne", function() {
 			  name      : {type : "text",    size:"255"},
                           damId     : {type : "integer"},
                           sireId    : {type : "integer"}
-			}, {cache:opts.timeout});
+			});
 
 		        Animal.hasOne('sire', Animal, {field: 'sireId', autoFetch:true});
 		        Animal.hasOne('dam',  Animal, {field: 'damId',  autoFetch:false});
@@ -46,10 +46,10 @@ describe("hasOne", function() {
 	  });
 	});
 
-        [false, true].forEach(function(cache) {
+        [false, 1].forEach(function(cache) {
 
 	  describe("recursive hasOne() with " + (cache ? "" : "out ") + "cache", function () {
-	    before(setup({cache:cache, timeout:0.5}));
+	    before(setup(cache));
 
 	    it("should get Bronson's Sire but not Dam", function (done) {
 	      Animal.find({name: "Bronson"}, function(err, animals) {
@@ -74,7 +74,7 @@ describe("hasOne", function() {
                 animals[0].sire.sireId.should.equal(11);
                 animals[0].sire.damId.should.equal(12);
 
-		return done();
+                return done();
 	      });
 	    });
 
@@ -93,21 +93,17 @@ describe("hasOne", function() {
 
                 animals[0].sire.name.should.equal("Todd");    // just to be sure
 
-                // Go get McTavish again
-                Animal.get(10, function(err, McTavish) {
+                // Let's make sure the cache is still working...
+                Animal.get(animals[0].id, function(err, McTavish) {
                   should.not.exist(err);
+
                   if(cache) {
-                    McTavish.id.should.equal(animals[0].id);
-                    McTavish.name.should.equal(animals[0].name);
-                    McTavish.should.equal(animals[0]);        // Should be the same one from cache again
+                    McTavish.should.equal(animals[0]);
+                  } else {
+                    McTavish.should.not.equal(animals[0]);
                   }
-                  else {
-                    McTavish.id.should.equal(animals[0].id);
-                    McTavish.name.should.equal(animals[0].name);
-                    McTavish.should.not.equal(animals[0]);    // Should be different one (not using cache)
-                  }
+		  return done();
                 });
-		return done();
 	      });
 	    });
 
@@ -126,21 +122,17 @@ describe("hasOne", function() {
 
                 animals[0].sire.name.should.equal("Liam");      // just to be sure
 
-                // Go get Suzy again
-                Animal.get(20, function(err, Suzy) {
+                // Let's make sure the cache is still working...
+                Animal.get(animals[0].id, function(err, Suzy) {
                   should.not.exist(err);
+
                   if(cache) {
-                    Suzy.id.should.equal(animals[0].id);
-                    Suzy.name.should.equal(animals[0].name);
-                    Suzy.should.equal(animals[0]);        // Should be the same one from cache again
+                    Suzy.should.equal(animals[0]);
+                  } else {
+                    Suzy.should.not.equal(animals[0]);
                   }
-                  else {
-                    Suzy.id.should.equal(animals[0].id);
-                    Suzy.name.should.equal(animals[0].name);
-                    Suzy.should.not.equal(animals[0]);    // Should be different one (not using cache)
-                  }
+		  return done();
                 });
-		return done();
 	      });
 	    });
 	  });

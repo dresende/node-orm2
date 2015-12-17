@@ -10,6 +10,7 @@ describe("hasMany", function () {
 	var db     = null;
 	var Person = null;
 	var Pet    = null;
+        var johnId = null;
 
 	before(function(done) {
 		helper.connect(function (connection) {
@@ -62,9 +63,12 @@ describe("hasMany", function () {
 						surname : "Dean",
 						age     : 18
 					}], function (err) {
-						Person.find({ name: "Jane" }, function (err, people) {
-							Pet.find({ name: "Mutt" }, function (err, pets) {
-								people[0].addPets(pets, done);
+ 						Person.find({ name: "John"}, function(err, people) {
+							johnId = people[0][Person.id];
+							Person.find({ name: "Jane" }, function (err, people) {
+								Pet.find({ name: "Mutt" }, function (err, pets) {
+									people[0].addPets(pets, done);
+								});
 							});
 						});
 					});
@@ -566,7 +570,7 @@ describe("hasMany", function () {
 			});
 
 			it("should fetch associations on get", function (done) {
-				Person.get(1, function (err, John) {
+				Person.get(johnId, function (err, John) {
 					should.equal(err, null);
 
 					John.should.have.property("pets");
@@ -588,7 +592,7 @@ describe("hasMany", function () {
 			});
 
 			it("should honor autoFetch FALSE on get", function (done) {
-				Person.get(1, {autoFetch: false}, function (err, John) {
+				Person.get(johnId, {autoFetch: false}, function (err, John) {
 					should.equal(err, null);
 
 					John.should.not.have.property("pets");

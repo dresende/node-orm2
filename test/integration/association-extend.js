@@ -6,6 +6,7 @@ describe("Model.extendsTo()", function() {
 	var db = null;
 	var Person = null;
 	var PersonAddress = null;
+        var johnId = null;
 
 	var setup = function () {
 		return function (done) {
@@ -24,7 +25,7 @@ describe("Model.extendsTo()", function() {
 					name: "John Doe"
 				}, function (err, person) {
 					should.not.exist(err);
-
+                                        johnId = person[Person.id];
 					return person.setAddress(new PersonAddress({
 						street : "Liberty",
 						number : 123
@@ -135,7 +136,7 @@ describe("Model.extendsTo()", function() {
 		});
 
 		it("should honor autoFetch:TRUE on get", function (done) {
-			Person.get(1, {autoFetch:true}, function (err, John) {
+			Person.get(johnId, {autoFetch:true}, function (err, John) {
 				should.equal(err, null);
 
 				John.should.have.property("address");
@@ -151,7 +152,7 @@ describe("Model.extendsTo()", function() {
 		});
 
 		it("should honor autoFetch:FALSE on get", function (done) {
-			Person.get(1, {autoFetch:false}, function (err, John) {
+			Person.get(johnId, {autoFetch:false}, function (err, John) {
 				should.equal(err, null);
 
 				John.should.not.have.property("address");

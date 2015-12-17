@@ -176,7 +176,7 @@ describe("hasOne", function() {
 
 			describe("autofetching get override", function() {
 				it((!af ? "should" : "shouldn't") + " be done", function (done) {
-					Leaf.get(1, {autoFetch: !af}, function (err, leaf) {
+					Leaf.get(leafId, {autoFetch: !af}, function (err, leaf) {
 						should.not.exist(err);
 						should.equal(typeof leaf.tree, !af ? 'object' : 'undefined');
 

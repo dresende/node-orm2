@@ -97,6 +97,8 @@ describe("Model.extendsTo()", function() {
 			Person.find().first(function (err, John) {
 				should.equal(err, null);
 
+				John.should.not.have.property("address");
+
 				John.getAddress(function (err, Address) {
 					should.equal(err, null);
 					Address.should.be.a("object");
@@ -104,6 +106,56 @@ describe("Model.extendsTo()", function() {
 
 					return done();
 				});
+			});
+		});
+
+		it("should honor autoFetch:TRUE on find", function (done) {
+			Person.find({name:"John Doe"}, {autoFetch:true}).first(function (err, John) {
+				should.equal(err, null);
+
+				John.should.have.property("address");
+
+				John.getAddress(function (err, Address) {
+					should.equal(err, null);
+					Address.should.be.a("object");
+					Address.should.have.property("street", "Liberty");
+
+					return done();
+				});
+			});
+		});
+
+		it("should honor autoFetch:FALSE on find", function (done) {
+			Person.find({name:"John Doe"}, {autoFetch:false}).first(function (err, John) {
+				should.equal(err, null);
+
+				John.should.not.have.property("address");
+				return done();
+			});
+		});
+
+		it("should honor autoFetch:TRUE on get", function (done) {
+			Person.get(1, {autoFetch:true}, function (err, John) {
+				should.equal(err, null);
+
+				John.should.have.property("address");
+
+				John.getAddress(function (err, Address) {
+					should.equal(err, null);
+					Address.should.be.a("object");
+					Address.should.have.property("street", "Liberty");
+
+					return done();
+				});
+			});
+		});
+
+		it("should honor autoFetch:FALSE on get", function (done) {
+			Person.get(1, {autoFetch:false}, function (err, John) {
+				should.equal(err, null);
+
+				John.should.not.have.property("address");
+				return done();
 			});
 		});
 

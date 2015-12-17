@@ -553,7 +553,7 @@ describe("hasMany", function () {
 				autoFetchPets : true
 			}));
 
-			it("should fetch associations", function (done) {
+			it("should fetch associations on find", function (done) {
 				Person.find({ name: "John" }).first(function (err, John) {
 					should.equal(err, null);
 
@@ -561,6 +561,37 @@ describe("hasMany", function () {
 					should(Array.isArray(John.pets));
 					John.pets.length.should.equal(2);
 
+					return done();
+				});
+			});
+
+			it("should fetch associations on get", function (done) {
+				Person.get(1, function (err, John) {
+					should.equal(err, null);
+
+					John.should.have.property("pets");
+					should(Array.isArray(John.pets));
+					John.pets.length.should.equal(2);
+
+					return done();
+				});
+			});
+
+			it("should honor autoFetch FALSE on find", function (done) {
+
+				Person.find({ name: "John" }, {autoFetch:false}).first(function (err, John) {
+					should.equal(err, null);
+
+					John.should.not.have.property("pets");
+					return done();
+				});
+			});
+
+			it("should honor autoFetch FALSE on get", function (done) {
+				Person.get(1, {autoFetch: false}, function (err, John) {
+					should.equal(err, null);
+
+					John.should.not.have.property("pets");
 					return done();
 				});
 			});

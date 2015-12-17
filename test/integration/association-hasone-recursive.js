@@ -78,6 +78,96 @@ describe("hasOne", function() {
 	      });
 	    });
 
+	    it("should honor auto-fetch override:TRUE on find", function (done) {
+	      Animal.find({name: "Bronson"}, {autoFetch:true}, function(err, animals) {
+                should.not.exist(err);
+
+                animals[0].name.should.equal("Bronson");
+
+                // All of Bronson's Sire & Dam stuff should be present
+                animals[0].sireId.should.equal(10);
+                animals[0].damId.should.equal(20);
+
+                animals[0].should.have.property("sire");
+                animals[0].should.have.property("dam");  // no auto-fetch - overridden for this find
+
+                animals[0].sire.name.should.equal("McTavish");
+                animals[0].dam.name.should.equal("Suzy");
+
+                // Bronson's paternal GrandSire & GrandDam shouldn't be present - autoFetchLimit
+                animals[0].sire.should.not.have.property("sire");
+                animals[0].sire.should.not.have.property("dam");
+
+                // but Bronson's paternal GrandSire & GrandDam ID's should be known
+                animals[0].sire.sireId.should.equal(11);
+                animals[0].sire.damId.should.equal(12);
+
+                return done();
+	      });
+	    });
+
+	    it("should honor auto-fetch override:FALSE on find", function (done) {
+	      Animal.find({name: "Bronson"}, {autoFetch:false}, function(err, animals) {
+                should.not.exist(err);
+
+                animals[0].name.should.equal("Bronson");
+
+                // Only Bronson's Sire & Dam IDs should be present
+                animals[0].sireId.should.equal(10);
+                animals[0].damId.should.equal(20);
+
+                animals[0].should.not.have.property("sire");
+                animals[0].should.not.have.property("dam");
+
+                return done();
+	      });
+	    });
+
+	    it("should honor auto-fetch override:TRUE on get", function (done) {
+	      Animal.get(1, {autoFetch:true}, function(err, Bronson) {
+                should.not.exist(err);
+
+                Bronson.name.should.equal("Bronson");
+
+                // All of Bronson's Sire & Dam stuff should be present
+                Bronson.sireId.should.equal(10);
+                Bronson.damId.should.equal(20);
+
+                Bronson.should.have.property("sire");
+                Bronson.should.have.property("dam");  // no auto-fetch - overridden for this find
+
+                Bronson.sire.name.should.equal("McTavish");
+                Bronson.dam.name.should.equal("Suzy");
+
+                // Bronson's paternal GrandSire & GrandDam shouldn't be present - autoFetchLimit
+                Bronson.sire.should.not.have.property("sire");
+                Bronson.sire.should.not.have.property("dam");
+
+                // but Bronson's paternal GrandSire & GrandDam ID's should be known
+                Bronson.sire.sireId.should.equal(11);
+                Bronson.sire.damId.should.equal(12);
+
+                return done();
+	      });
+	    });
+
+	    it("should honor auto-fetch override:FALSE on get", function (done) {
+	      Animal.get(1, {autoFetch:false}, function(err, Bronson) {
+                should.not.exist(err);
+
+                Bronson.name.should.equal("Bronson");
+
+                // Only Bronson's Sire & Dam IDs should be present
+                Bronson.sireId.should.equal(10);
+                Bronson.damId.should.equal(20);
+
+                Bronson.should.not.have.property("sire");
+                Bronson.should.not.have.property("dam");
+
+                return done();
+	      });
+	    });
+
 	    it("should get McTavish's Sire but not Dam", function (done) {
 	      Animal.find({name: "McTavish"}, function(err, animals) {
                 should.not.exist(err);

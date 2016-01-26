@@ -514,6 +514,72 @@ db.driver.execQuery(
 )
 ```
 
+#### Raw queries with Named Parameters
+
+You can also use named parameters via db.driver.execNamedQuery.
+
+You can begin with "::" for identifiers and other meta values, but beware that they are not escaped, only replaced as is. 
+
+Generally this should not be an issue, but make sure to understand what this means.
+
+For value substitution begin with: ":".
+
+Same named parameter can be used multiple times within the query.
+
+```js
+var query = 'SELECT ::table.* FROM ::table, ::joined WHERE id = :id AND (name = :name OR name0 = :name0 OR nick = :name) OFFSET ::offset LIMIT ::limit';
+var callback = function(err, data){ ... }
+var obj = {id:"245", name0:"Jane", name:"John"};
+var meta = {table:'users', joined:'orders', limit:7, offset:3};
+db.driver.execNamedQuery(query, callback, obj, meta);
+```
+
+One can test the resulting query and the parameters the function produces by passing in a true value for the fifth argument.
+
+If the query contains manually written statements that contain a pattern a similar to '":parameter"' and the parameter field exists in the 'obj' or 'meta' variables defined above, then those statements will be replaced as well.
+
+To fix this issue, custom regexes can be provided as the last and sixth argument.
+
+```js
+var query = 'SELECT !::table.* FROM !::table, !::joined WHERE id = !:id AND (name = !:name OR name0 = !:name0 OR nick = !:name) AND controlField = ":name" AND controlMeta = "::table" OFFSET !::offset LIMIT !::limit';
+```
+
+We define regexes that replace "!:" and "!::" instead of the default ":" and "::".
+```js
+var rgx = {values: /!:(\w+)/g, meta: /!::(\w+)/g};
+var unit_test = true;
+```
+
+By passing in the unit_test "true" argument as the fifth argument, the query is not executed but the processed query and prepared parameters are returned for inspection.
+
+If the regexes are passed in, but you want to execute the query, make sure to provide false value for the fifth argument.
+
+```js
+var data = db.driver.execNamedQuery(query, cb, obj, meta, unit_test, rgx);
+console.log(data.sql);
+```
+
+```sql
+SELECT users.* FROM users, orders 
+WHERE id = ? AND (name = ? OR name0 = ? OR nick = ?) AND 
+controlField = ":name" AND controlMeta = "::table" 
+OFFSET 3 LIMIT 7
+```
+
+```js
+console.log(data.sql);
+//["245", "John", "Jane", "John"]
+```
+
+If we did not use custom regexes, then we would have received 'controlField = "?" AND controlMeta = "users"', which is not what we want.
+
+With the data returned from the test, you can also go ahead and execute it if you want.
+
+This is very similar to the way the query is executed internally through db.driver.execNamedQuery 
+```js
+db.driver.execQuery(data.sql, data.values, callback);
+```
+
 ### Caching & Integrity
 
 Model instances are cached. If multiple different queries will result in the same result, you will

@@ -289,5 +289,34 @@ describe("db.driver", function () {
 				});
 			});
 		});
+
+		describe("#execNamedQuery", function () {
+			var obj = {id:"245", name0:"Jane", name:"John"};
+			var meta = {table:'users', joined:'orders', limit:7, offset:3};
+			var unit_test = true;
+			var cb = function(){};
+			it("default regexes work as expected", function (done) {
+				var query = 'SELECT ::table.* FROM ::table, ::joined WHERE id = :id AND (name = :name OR name0 = :name0 OR nick = :name) OFFSET ::offset LIMIT ::limit';
+				var data = db.driver.execNamedQuery(query, cb, obj, meta, unit_test);
+				should(data.sql === 'SELECT users.* FROM users, orders WHERE id = ? AND (name = ? OR name0 = ? OR nick = ?) OFFSET 3 LIMIT 7');
+				should(data.values[0] === "245");
+				should(data.values[1] === "John");
+				should(data.values[2] === "Jane");
+				should(data.values[3] === "John");
+				done();
+			});
+
+			it("different symbols can be used with custom regexes to preserve text within quotes", function (done) {
+				var query = 'SELECT !::table.* FROM !::table, !::joined WHERE id = !:id AND (name = !:name OR name0 = !:name0 OR nick = !:name) AND control_field = ":name" AND control_meta = "::table" OFFSET !::offset LIMIT !::limit';
+				var rgx = {values: /!:(\w+)/g, meta: /!::(\w+)/g};
+				var data = db.driver.execNamedQuery(query, cb, obj, meta, unit_test, rgx);
+				should(data.sql === 'SELECT users.* FROM users, orders WHERE id = ? AND (name = ? OR name0 = ? OR nick = ?) AND control_field = ":name" AND control_meta = "::table" OFFSET 3 LIMIT 7');
+				should(data.values[0] === "245");
+				should(data.values[1] === "John");
+				should(data.values[2] === "Jane");
+				should(data.values[3] === "John");
+				done();
+			});
+		});
 	});
 });

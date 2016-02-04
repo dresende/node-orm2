@@ -174,6 +174,27 @@ describe("hasOne", function() {
 				});
 			});
 
+			describe("autofetching get override", function() {
+				it((!af ? "should" : "shouldn't") + " be done", function (done) {
+					Leaf.get(leafId, {autoFetch: !af}, function (err, leaf) {
+						should.not.exist(err);
+						should.equal(typeof leaf.tree, !af ? 'object' : 'undefined');
+
+						return done();
+					});
+				});
+			});
+			describe("autofetching find override", function() {
+				it((!af ? "should" : "shouldn't") + " be done", function (done) {
+					Leaf.find({size:14}, {autoFetch: !af}, function (err, leaves) {
+						should.not.exist(err);
+						should.equal(typeof leaves[0].tree, !af ? 'object' : 'undefined');
+
+						return done();
+					});
+				});
+			});
+
 			describe("associating by parent id", function () {
 				var tree = null;
 

@@ -10,6 +10,7 @@ describe("hasMany", function () {
 	var db     = null;
 	var Person = null;
 	var Pet    = null;
+        var johnId = null;
 
 	before(function(done) {
 		helper.connect(function (connection) {
@@ -62,9 +63,12 @@ describe("hasMany", function () {
 						surname : "Dean",
 						age     : 18
 					}], function (err) {
-						Person.find({ name: "Jane" }, function (err, people) {
-							Pet.find({ name: "Mutt" }, function (err, pets) {
-								people[0].addPets(pets, done);
+ 						Person.find({ name: "John"}, function(err, people) {
+							johnId = people[0][Person.id];
+							Person.find({ name: "Jane" }, function (err, people) {
+								Pet.find({ name: "Mutt" }, function (err, pets) {
+									people[0].addPets(pets, done);
+								});
 							});
 						});
 					});
@@ -553,7 +557,7 @@ describe("hasMany", function () {
 				autoFetchPets : true
 			}));
 
-			it("should fetch associations", function (done) {
+			it("should fetch associations on find", function (done) {
 				Person.find({ name: "John" }).first(function (err, John) {
 					should.equal(err, null);
 
@@ -561,6 +565,37 @@ describe("hasMany", function () {
 					should(Array.isArray(John.pets));
 					John.pets.length.should.equal(2);
 
+					return done();
+				});
+			});
+
+			it("should fetch associations on get", function (done) {
+				Person.get(johnId, function (err, John) {
+					should.equal(err, null);
+
+					John.should.have.property("pets");
+					should(Array.isArray(John.pets));
+					John.pets.length.should.equal(2);
+
+					return done();
+				});
+			});
+
+			it("should honor autoFetch FALSE on find", function (done) {
+
+				Person.find({ name: "John" }, {autoFetch:false}).first(function (err, John) {
+					should.equal(err, null);
+
+					John.should.not.have.property("pets");
+					return done();
+				});
+			});
+
+			it("should honor autoFetch FALSE on get", function (done) {
+				Person.get(johnId, {autoFetch: false}, function (err, John) {
+					should.equal(err, null);
+
+					John.should.not.have.property("pets");
 					return done();
 				});
 			});

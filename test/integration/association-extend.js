@@ -6,6 +6,7 @@ describe("Model.extendsTo()", function() {
 	var db = null;
 	var Person = null;
 	var PersonAddress = null;
+        var johnId = null;
 
 	var setup = function () {
 		return function (done) {
@@ -24,7 +25,7 @@ describe("Model.extendsTo()", function() {
 					name: "John Doe"
 				}, function (err, person) {
 					should.not.exist(err);
-
+                                        johnId = person[Person.id];
 					return person.setAddress(new PersonAddress({
 						street : "Liberty",
 						number : 123
@@ -97,6 +98,8 @@ describe("Model.extendsTo()", function() {
 			Person.find().first(function (err, John) {
 				should.equal(err, null);
 
+				John.should.not.have.property("address");
+
 				John.getAddress(function (err, Address) {
 					should.equal(err, null);
 					Address.should.be.a("object");
@@ -104,6 +107,56 @@ describe("Model.extendsTo()", function() {
 
 					return done();
 				});
+			});
+		});
+
+		it("should honor autoFetch:TRUE on find", function (done) {
+			Person.find({name:"John Doe"}, {autoFetch:true}).first(function (err, John) {
+				should.equal(err, null);
+
+				John.should.have.property("address");
+
+				John.getAddress(function (err, Address) {
+					should.equal(err, null);
+					Address.should.be.a("object");
+					Address.should.have.property("street", "Liberty");
+
+					return done();
+				});
+			});
+		});
+
+		it("should honor autoFetch:FALSE on find", function (done) {
+			Person.find({name:"John Doe"}, {autoFetch:false}).first(function (err, John) {
+				should.equal(err, null);
+
+				John.should.not.have.property("address");
+				return done();
+			});
+		});
+
+		it("should honor autoFetch:TRUE on get", function (done) {
+			Person.get(johnId, {autoFetch:true}, function (err, John) {
+				should.equal(err, null);
+
+				John.should.have.property("address");
+
+				John.getAddress(function (err, Address) {
+					should.equal(err, null);
+					Address.should.be.a("object");
+					Address.should.have.property("street", "Liberty");
+
+					return done();
+				});
+			});
+		});
+
+		it("should honor autoFetch:FALSE on get", function (done) {
+			Person.get(johnId, {autoFetch:false}, function (err, John) {
+				should.equal(err, null);
+
+				John.should.not.have.property("address");
+				return done();
 			});
 		});
 

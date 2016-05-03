@@ -1,6 +1,20 @@
 ### v3.0.0
 - Rename cache -> identityCache & disabled by default (#350, #564, #626, #672, #684, #694, #721)
 
+**This is a potentially breaking change:**
+```js
+User.get(14, (err, userA) =>
+  User.get(14, (err, userB) =>
+    // v2
+    userA    == userB
+    userA.id == userB.id
+    // v3
+    userA    != userB
+    userA.id == userB.id
+  )
+)
+```
+
 ### v2.1.29
 - Fix hasOne association when ID is 0 (#681)
 - Fix global var leak (#682)

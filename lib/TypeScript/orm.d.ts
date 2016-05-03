@@ -190,8 +190,8 @@ declare module "orm" {
         export class singleton {
             static clear(key?: string): singleton;
             static get(key, opts: {
-                cache?: any;
-                save_check?: boolean;
+                identityCache?: any;
+                saveCheck?: boolean;
             }, createCb: Function, returnCb: Function);
         }
 
@@ -206,8 +206,8 @@ declare module "orm" {
                 };
 
                 instance: {
-                    cache: boolean;
-                    cacheSaveCheck: boolean;
+                    identityCache: boolean;
+                    identityCacheSaveCheck: boolean;
                     autoSave: boolean;
                     autoFetch: boolean;
                     autoFetchLimit: number;

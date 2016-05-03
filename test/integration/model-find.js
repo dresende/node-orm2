@@ -299,9 +299,9 @@ describe("Model.find()", function() {
 		});
 	});
 
-	describe("with cache disabled", function () {
+	describe("with identityCache disabled", function () {
 		it("should not return singletons", function (done) {
-			Person.find({ name: "Jasmine" }, { cache: false }, function (err, people) {
+			Person.find({ name: "Jasmine" }, { identityCache: false }, function (err, people) {
 				should.not.exist(err);
 				people.should.be.a("object");
 				people.should.have.property("length", 1);
@@ -310,7 +310,7 @@ describe("Model.find()", function() {
 
 				people[0].surname = "Dux";
 
-				Person.find({ name: "Jasmine" }, { cache: false }, function (err, people) {
+				Person.find({ name: "Jasmine" }, { identityCache: false }, function (err, people) {
 					should.not.exist(err);
 					people.should.be.a("object");
 					people.should.have.property("length", 1);

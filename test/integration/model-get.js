@@ -10,20 +10,20 @@ describe("Model.get()", function() {
 	var Person = null;
 	var John;
 
-	var setup = function (cache) {
+	var setup = function (identityCache) {
 		return function (done) {
 			Person = db.define("person", {
-				name   : { type: 'text', mapsTo: 'fullname' }
+				name     : { type: 'text', mapsTo: 'fullname' }
 			}, {
-				cache  : cache,
-				methods: {
+				identityCache : identityCache,
+				methods  : {
 					UID: function () {
 						return this[Person.id];
 					}
 				}
 			});
 
-			ORM.singleton.clear(); // clear cache
+			ORM.singleton.clear(); // clear identityCache cache
 
 			return helper.dropSync(Person, function () {
 				Person.create([{
@@ -78,7 +78,7 @@ describe("Model.get()", function() {
 		});
 	});
 
-	describe("with cache", function () {
+	describe("with identityCache cache", function () {
 		before(setup(true));
 
 		it("should return item with id 1", function (done) {
@@ -123,9 +123,9 @@ describe("Model.get()", function() {
 			});
 		});
 
-		describe("changing instance.cacheSaveCheck = false", function () {
+		describe("changing instance.identityCacheSaveCheck = false", function () {
 			before(function (done) {
-				Person.settings.set("instance.cacheSaveCheck", false);
+				Person.settings.set("instance.identityCacheSaveCheck", false);
 
 				it("should return the same object with the changed name", function (done) {
 					Person.get(John[Person.id], function (err, John1) {
@@ -147,7 +147,7 @@ describe("Model.get()", function() {
 		});
 	});
 
-	describe("with no cache", function () {
+	describe("with no identityCache cache", function () {
 		before(setup(false));
 
 		describe("fetching several times", function () {
@@ -167,7 +167,7 @@ describe("Model.get()", function() {
 		});
 	});
 
-	describe("with cache = 0.5 secs", function () {
+	describe("with identityCache cache = 0.5 secs", function () {
 		before(setup(0.5));
 
 		describe("fetching again after 0.2 secs", function () {

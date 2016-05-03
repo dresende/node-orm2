@@ -19,7 +19,7 @@ describe("hasOne", function() {
 	var setup = function (opts) {
 		opts = opts || {};
 		return function (done) {
-			db.settings.set('instance.cache', false);
+			db.settings.set('instance.identityCache', false);
 			db.settings.set('instance.returnAllErrors', true);
 			Tree  = db.define("tree",   { type:   { type: 'text'    } });
 			Stalk = db.define("stalk",  { length: { type: 'integer' } });
@@ -295,7 +295,7 @@ describe("hasOne", function() {
 
 	describe("if not passing another Model", function () {
 		it("should use same model", function (done) {
-			db.settings.set('instance.cache', false);
+			db.settings.set('instance.identityCache', false);
 			db.settings.set('instance.returnAllErrors', true);
 
 			var Person = db.define("person", {
@@ -320,7 +320,7 @@ describe("hasOne", function() {
 
 	describe("association name letter case", function () {
 		it("should be kept", function (done) {
-			db.settings.set('instance.cache', false);
+			db.settings.set('instance.identityCache', false);
 			db.settings.set('instance.returnAllErrors', true);
 
 			var Person = db.define("person", {

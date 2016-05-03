@@ -12,7 +12,7 @@ describe("Property.mapsTo", function() {
 	before(function (done) {
 		helper.connect(function (connection) {
 			db = connection;
-			db.settings.set('instance.cache', false);
+			db.settings.set('instance.identityCache', false);
 
 			return done();
 		});

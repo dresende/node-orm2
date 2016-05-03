@@ -70,7 +70,7 @@ orm.connect("mysql://username:password@host/database", function (err, db) {
 	});
 
     // add the table to the database
-	db.sync(function(err) { 
+	db.sync(function(err) {
 		if (err) throw err;
 
 		// add a row to the person table
@@ -90,7 +90,7 @@ orm.connect("mysql://username:password@host/database", function (err, db) {
 			            // err.msg = "under-age";
 		        });
 		    });
-			
+
 		});
 	});
 });
@@ -278,9 +278,9 @@ var Person = db.define("person", {
 
 Other options:
 
-- `cache` : (default: `true`) Set it to `false` to disable Instance cache ([Singletons](#singleton)) or set a timeout value (in seconds);
-- `autoSave` : (default: `false`) Set it to `true` to save an Instance right after changing any property;
-- `autoFetch` : (default: `false`) Set it to `true` to fetch associations when fetching an instance from the database;
+- `identityCache`  : (default: `false`) Set it to `true` to enable identity cache ([Singletons](#singleton)) or set a timeout value (in seconds);
+- `autoSave`       : (default: `false`) Set it to `true` to save an Instance right after changing any property;
+- `autoFetch`      : (default: `false`) Set it to `true` to fetch associations when fetching an instance from the database;
 - `autoFetchLimit` : (default: `1`) If `autoFetch` is enabled this defines how many hoops (associations of associations)
   you want it to automatically fetch.
 
@@ -514,18 +514,20 @@ db.driver.execQuery(
 )
 ```
 
-### Caching & Integrity
+### Identity pattern
 
-Model instances are cached. If multiple different queries will result in the same result, you will
-get the same object. If you have other systems that can change your database (or you're developing and need
-to make some manual changes) you should remove this feature by disabling cache. This can be done when you're
-defining the Model.
+You can use the identity pattern (turned off by default). If enabled, multiple different queries will result in the same result - you will
+get the same object. If you have other systems that can change your database or you need to call some manual SQL queries,
+you shouldn't use this feature. It is also know to cause some problems with complex
+autofetch relationships. Use at your own risk.
+
+It can be enabled/disabled per model:
 
 ```js
 var Person = db.define('person', {
-	name    : String
+	name          : String
 }, {
-	cache   : false
+	identityCache : true
 });
 ```
 
@@ -533,11 +535,11 @@ and also globally:
 
 ```js
 orm.connect('...', function(err, db) {
-  db.settings.set('instance.cache', false);
+  db.settings.set('instance.identityCache', true);
 });
 ```
 
-The cache can be configured to expire after a period of time by passing in a number instead of a
+The identity cache can be configured to expire after a period of time by passing in a number instead of a
 boolean. The number will be considered the cache timeout in seconds (you can use floating point).
 
 **Note**: One exception about Caching is that it won't be used if an instance is not saved. For example, if

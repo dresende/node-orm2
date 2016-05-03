@@ -1,3 +1,6 @@
+### v3.0.0
+- Rename cache -> identityCache & disabled by default (#350, #564, #626, #672, #684, #694, #721)
+
 ### v2.1.29
 - Fix hasOne association when ID is 0 (#681)
 - Fix global var leak (#682)

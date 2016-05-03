@@ -21,7 +21,7 @@ describe("Model.find() chaining", function() {
 			Person.hasMany("parents");
 			Person.hasOne("friend");
 
-			ORM.singleton.clear(); // clear cache
+			ORM.singleton.clear(); // clear identityCache cache
 
 			return helper.dropSync(Person, function () {
 				Person.create([{
@@ -52,7 +52,7 @@ describe("Model.find() chaining", function() {
 			Dog.hasMany("friends");
 			Dog.hasMany("family");
 
-			ORM.singleton.clear(); // clear cache
+			ORM.singleton.clear(); // clear identityCache cache
 
 			return helper.dropSync(Dog, function () {
 				Dog.create([{

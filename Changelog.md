@@ -1,5 +1,5 @@
 ### v3.0.0
-- Rename cache -> identityCache & disabled by default (#350, #564, #626, #672, #684, #694, #721)
+- Rename `cache` -> `identityCache` and **disable by default** (#350, #564, #626, #672, #684, #694, #721)
 
 **This is a potentially breaking change:**
 ```js
@@ -8,7 +8,7 @@ User.get(14, (err, userA) =>
     // v2
     userA    == userB
     userA.id == userB.id
-    // v3
+    // v3, identity cache is now disabled by default
     userA    != userB
     userA.id == userB.id
   )

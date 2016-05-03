@@ -125,7 +125,7 @@ describe("Model.aggregate()", function() {
 				should(Array.isArray(people));
 				people.length.should.be.above(0);
 
-				people[0].should.be.a("object");
+				people[0].should.be.a.Object();
 				people[0].should.have.property("id");
 				people[0].should.not.have.property("name");
 
@@ -140,7 +140,7 @@ describe("Model.aggregate()", function() {
 				should(Array.isArray(people));
 				people.length.should.be.above(0);
 
-				people[0].should.be.a("object");
+				people[0].should.be.a.Object();
 				people[0].should.have.property("id");
 				people[0].should.not.have.property("name");
 
@@ -178,7 +178,7 @@ describe("Model.aggregate()", function() {
 			Person.aggregate().distinct('name').get(function (err, names) {
 				should.equal(err, null);
 
-				names.should.be.a("object");
+				names.should.be.a.Object();
 				names.should.have.property("length", 2);
 
 				return done();
@@ -190,7 +190,7 @@ describe("Model.aggregate()", function() {
 				Person.aggregate().distinct('name').limit(1).order("name").get(function (err, names) {
 					should.equal(err, null);
 
-					names.should.be.a("object");
+					names.should.be.a.Object();
 					names.should.have.property("length", 1);
 					names[0].should.equal("Jane Doe");
 
@@ -204,7 +204,7 @@ describe("Model.aggregate()", function() {
 				Person.aggregate().distinct('name').limit(1, 1).order("name").get(function (err, names) {
 					should.equal(err, null);
 
-					names.should.be.a("object");
+					names.should.be.a.Object();
 					names.should.have.property("length", 1);
 					names[0].should.equal("John Doe");
 
@@ -221,7 +221,7 @@ describe("Model.aggregate()", function() {
 			Person.aggregate().count().groupBy('name').get(function (err, rows) {
 				should.equal(err, null);
 
-				rows.should.be.a("object");
+				rows.should.be.a.Object();
 				rows.should.have.property("length", 2);
 
 				(rows[0].count + rows[1].count).should.equal(3); // 1 + 2
@@ -237,7 +237,7 @@ describe("Model.aggregate()", function() {
 				Person.aggregate().count().groupBy('name').order('-count').get(function (err, rows) {
 					should.equal(err, null);
 
-					rows.should.be.a("object");
+					rows.should.be.a.Object();
 					rows.should.have.property("length", 2);
 
 					rows[0].count.should.equal(2);
@@ -259,7 +259,7 @@ describe("Model.aggregate()", function() {
 				should(Array.isArray(people));
 				people.length.should.be.above(0);
 
-				people[0].should.be.a("object");
+				people[0].should.be.a.Object();
 				people[0].should.have.property("total");
 
 				return done();

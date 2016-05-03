@@ -45,7 +45,7 @@ describe("LazyLoad properties", function() {
 			Person.find().first(function (err, John) {
 				should.equal(err, null);
 
-				John.should.be.a("object");
+				John.should.be.a.Object();
 
 				John.should.have.property("name", "John Doe");
 				John.should.have.property("photo", null);
@@ -58,10 +58,10 @@ describe("LazyLoad properties", function() {
 			Person.find().first(function (err, John) {
 				should.equal(err, null);
 
-				John.should.be.a("object");
-				John.getPhoto.should.be.a("function");
-				John.setPhoto.should.be.a("function");
-				John.removePhoto.should.be.a("function");
+				John.should.be.a.Object();
+				John.getPhoto.should.be.a.Function();
+				John.setPhoto.should.be.a.Function();
+				John.removePhoto.should.be.a.Function();
 
 				return done();
 			});
@@ -71,7 +71,7 @@ describe("LazyLoad properties", function() {
 			Person.find().first(function (err, John) {
 				should.equal(err, null);
 
-				John.should.be.a("object");
+				John.should.be.a.Object();
 
 				John.getPhoto(function (err, photo) {
 					should.equal(err, null);
@@ -86,7 +86,7 @@ describe("LazyLoad properties", function() {
 			Person.find().first(function (err, John) {
 				should.equal(err, null);
 
-				John.should.be.a("object");
+				John.should.be.a.Object();
 
 				John.setPhoto(OtherPersonPhoto, function (err) {
 					should.equal(err, null);
@@ -94,7 +94,7 @@ describe("LazyLoad properties", function() {
 					Person.find().first(function (err, John) {
 						should.equal(err, null);
 
-						John.should.be.a("object");
+						John.should.be.a.Object();
 
 						John.getPhoto(function (err, photo) {
 							should.equal(err, null);
@@ -111,7 +111,7 @@ describe("LazyLoad properties", function() {
 			Person.find().first(function (err, John) {
 				should.equal(err, null);
 
-				John.should.be.a("object");
+				John.should.be.a.Object();
 
 				John.removePhoto(function (err) {
 					should.equal(err, null);
@@ -119,7 +119,7 @@ describe("LazyLoad properties", function() {
 					Person.get(John[Person.id], function (err, John) {
 						should.equal(err, null);
 
-						John.should.be.a("object");
+						John.should.be.a.Object();
 
 						John.getPhoto(function (err, photo) {
 							should.equal(err, null);

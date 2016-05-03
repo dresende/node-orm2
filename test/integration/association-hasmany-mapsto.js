@@ -89,7 +89,7 @@ describe("hasMany with mapsTo", function () {
 				Person.find({ firstName: "John" }).first(function (err, John) {
 					should.equal(err, null);
 
-					John.should.not.have.property("pets");
+					should.equal(John.pets, null);
 					return done();
 				});
 			});
@@ -177,11 +177,11 @@ describe("hasMany with mapsTo", function () {
 
 					var chain = people[0].getPets({ firstName: "Mutt" });
 
-					chain.should.be.a("object");
-					chain.find.should.be.a("function");
-					chain.only.should.be.a("function");
-					chain.limit.should.be.a("function");
-					chain.order.should.be.a("function");
+					chain.should.be.a.Object();
+					chain.find.should.be.a.Function();
+					chain.only.should.be.a.Function();
+					chain.limit.should.be.a.Function();
+					chain.order.should.be.a.Function();
 
 					return done();
 				});

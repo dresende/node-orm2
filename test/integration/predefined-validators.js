@@ -73,7 +73,7 @@ describe("Predefined Validators", function () {
 				surname : "Doe" // <-- in table already!
 			});
 			janeDoe.save(function (err) {
-				err.should.be.a("object");
+				err.should.be.a.Object();
 				err.should.have.property("property", "surname");
 				err.should.have.property("value",    "Doe");
 				err.should.have.property("msg",      "not-unique");

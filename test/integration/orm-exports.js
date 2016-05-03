@@ -10,40 +10,40 @@ var protocol = common.protocol();
 describe("ORM", function() {
 	describe("when loaded", function () {
 		it("should expose .express(), .use() and .connect()", function (done) {
-			ORM.express.should.a("function");
-			ORM.use.should.a("function");
-			ORM.connect.should.a("function");
+			ORM.express.should.be.a.Function();
+			ORM.use.should.be.a.Function();
+			ORM.connect.should.be.a.Function();
 
 			return done();
 		});
 
 		it("should expose default settings container", function (done) {
-			ORM.settings.should.a("object");
-			ORM.settings.get.should.a("function");
-			ORM.settings.set.should.a("function");
-			ORM.settings.unset.should.a("function");
+			ORM.settings.should.be.a.Object();
+			ORM.settings.get.should.be.a.Function();
+			ORM.settings.set.should.be.a.Function();
+			ORM.settings.unset.should.be.a.Function();
 
 			return done();
 		});
 
 		it("should expose generic Settings constructor", function (done) {
-			ORM.Settings.should.a("object");
-			ORM.Settings.Container.should.a("function");
+			ORM.Settings.should.be.a.Object();
+			ORM.Settings.Container.should.be.a.Function();
 
 			return done();
 		});
 
 		it("should expose singleton manager", function (done) {
-			ORM.singleton.should.a("object");
-			ORM.singleton.clear.should.a("function");
+			ORM.singleton.should.be.a.Object();
+			ORM.singleton.clear.should.be.a.Function();
 
 			return done();
 		});
 
 		it("should expose predefined validators", function (done) {
-			ORM.validators.should.a("object");
-			ORM.validators.rangeNumber.should.a("function");
-			ORM.validators.rangeLength.should.a("function");
+			ORM.validators.should.be.a.Object();
+			ORM.validators.rangeNumber.should.be.a.Function();
+			ORM.validators.rangeLength.should.be.a.Function();
 
 			return done();
 		});
@@ -54,10 +54,10 @@ describe("ORM.connect()", function () {
 	it("should expose .use(), .define(), .sync() and .load()", function (done) {
 		var db = ORM.connect();
 
-		db.use.should.a("function");
-		db.define.should.a("function");
-		db.sync.should.a("function");
-		db.load.should.a("function");
+		db.use.should.be.a.Function();
+		db.define.should.be.a.Function();
+		db.sync.should.be.a.Function();
+		db.load.should.be.a.Function();
 
 		return done();
 	});

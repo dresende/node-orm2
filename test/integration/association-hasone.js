@@ -337,9 +337,9 @@ describe("hasOne", function() {
 					Person.get(person[Person.id], function (err, person) {
 						should.equal(err, null);
 
-						person.setTopParent.should.be.a("function");
-						person.removeTopParent.should.be.a("function");
-						person.hasTopParent.should.be.a("function");
+						person.setTopParent.should.be.a.Function();
+						person.removeTopParent.should.be.a.Function();
+						person.hasTopParent.should.be.a.Function();
 
 						return done();
 					});
@@ -375,7 +375,7 @@ describe("hasOne", function() {
 			var ChainFind = Leaf.findByTree({
 				type: "pine"
 			});
-			ChainFind.run.should.be.a("function");
+			ChainFind.run.should.be.a.Function();
 
 			return done();
 		});

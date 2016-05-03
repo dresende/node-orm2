@@ -57,14 +57,14 @@ describe("hasOne", function () {
 			var person = Person(1);
 			var pet = Pet(1);
 
-			person.getPet.should.be.a("function");
-			person.setPet.should.be.a("function");
-			person.removePet.should.be.a("function");
-			person.hasPet.should.be.a("function");
+			person.getPet.should.be.a.Function();
+			person.setPet.should.be.a.Function();
+			person.removePet.should.be.a.Function();
+			person.hasPet.should.be.a.Function();
 
-			pet.getOwners.should.be.a("function");
-			pet.setOwners.should.be.a("function");
-			pet.hasOwners.should.be.a("function");
+			pet.getOwners.should.be.a.Function();
+			pet.setOwners.should.be.a.Function();
+			pet.hasOwners.should.be.a.Function();
 
 			return done();
 		});
@@ -234,7 +234,7 @@ describe("hasOne", function () {
 					var ChainFind = Pet.findByOwners({
 						name: "John Doe"
 					});
-					ChainFind.run.should.be.a("function");
+					ChainFind.run.should.be.a.Function();
 
 					return done();
 				});

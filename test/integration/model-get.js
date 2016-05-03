@@ -68,7 +68,7 @@ describe("Model.get()", function() {
 			db.driver.execQuery(sql, [Person.table], function (err, data) {
 				should.not.exist(err);
 
-				var names = _.pluck(data, protocol == 'sqlite' ? 'name' : 'column_name')
+				var names = _.map(data, protocol == 'sqlite' ? 'name' : 'column_name')
 
 				should.equal(typeof Person.properties.name, 'object');
 				should.notEqual(names.indexOf('fullname'), -1);
@@ -85,7 +85,7 @@ describe("Model.get()", function() {
 			Person.get(John[Person.id], function (err, John) {
 				should.equal(err, null);
 
-				John.should.be.a("object");
+				John.should.be.a.Object();
 				John.should.have.property(Person.id, John[Person.id]);
 				John.should.have.property("name", "John Doe");
 
@@ -97,7 +97,7 @@ describe("Model.get()", function() {
 			Person.get(John[Person.id], function (err, John) {
 				should.equal(err, null);
 
-				John.UID.should.be.a("function");
+				John.UID.should.be.a.Function();
 				John.UID().should.equal(John[Person.id]);
 
 				return done();
@@ -215,7 +215,7 @@ describe("Model.get()", function() {
 			Person.get(John[Person.id], {}, function (err, John) {
 				should.equal(err, null);
 
-				John.should.be.a("object");
+				John.should.be.a.Object();
 				John.should.have.property(Person.id, John[Person.id]);
 				John.should.have.property("name", "John Doe");
 
@@ -241,7 +241,7 @@ describe("Model.get()", function() {
 
 		it("should return an error", function (done) {
 			Person.get(999, function (err) {
-				err.should.be.a("object");
+				err.should.be.a.Object();
 				err.message.should.equal("Not found");
 
 				return done();
@@ -256,7 +256,7 @@ describe("Model.get()", function() {
 			Person.get([ John[Person.id] ], function (err, John) {
 				should.equal(err, null);
 
-				John.should.be.a("object");
+				John.should.be.a.Object();
 				John.should.have.property(Person.id, John[Person.id]);
 				John.should.have.property("name", "John Doe");
 

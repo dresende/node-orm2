@@ -69,7 +69,7 @@ describe("hasMany hooks", function() {
 		before(setup({}, {
 			hooks : {
 				beforeSave: function (next) {
-					next.should.be.a("function");
+					next.should.be.a.Function();
 					return next();
 				}
 			}

@@ -68,7 +68,7 @@ describe("Model.extendsTo()", function() {
 
 				John.removeAddress(function () {
 					John.hasAddress(function (err, hasAddress) {
-						err.should.be.a("object");
+						err.should.be.a.Object();
 						hasAddress.should.equal(false);
 
 						return done();
@@ -82,7 +82,7 @@ describe("Model.extendsTo()", function() {
 				name: "Jane"
 			});
 			Jane.hasAddress(function (err, hasAddress) {
-				err.should.be.a("object");
+				err.should.be.a.Object();
 				err.should.have.property("code", ORM.ErrorCodes.NOT_DEFINED);
 
 				return done();
@@ -99,7 +99,7 @@ describe("Model.extendsTo()", function() {
 
 				John.getAddress(function (err, Address) {
 					should.equal(err, null);
-					Address.should.be.a("object");
+					Address.should.be.a.Object();
 					Address.should.have.property("street", "Liberty");
 
 					return done();
@@ -113,7 +113,7 @@ describe("Model.extendsTo()", function() {
 
 				John.removeAddress(function () {
 					John.getAddress(function (err, Address) {
-						err.should.be.a("object");
+						err.should.be.a.Object();
 						err.should.have.property("code", ORM.ErrorCodes.NOT_FOUND);
 
 						return done();
@@ -127,7 +127,7 @@ describe("Model.extendsTo()", function() {
 				name: "Jane"
 			});
 			Jane.getAddress(function (err, Address) {
-				err.should.be.a("object");
+				err.should.be.a.Object();
 				err.should.have.property("code", ORM.ErrorCodes.NOT_DEFINED);
 
 				return done();
@@ -156,7 +156,7 @@ describe("Model.extendsTo()", function() {
 
 						John.getAddress(function (err, Address) {
 							should.equal(err, null);
-							Address.should.be.a("object");
+							Address.should.be.a.Object();
 							Address.should.have.property("street", addr.street);
 
 							PersonAddress.find({ number: 123 }).count(function (err, c) {
@@ -207,7 +207,7 @@ describe("Model.extendsTo()", function() {
 				name: "Jane"
 			});
 			Jane.removeAddress(function (err) {
-				err.should.be.a("object");
+				err.should.be.a.Object();
 				err.should.have.property("code", ORM.ErrorCodes.NOT_DEFINED);
 
 				return done();
@@ -242,7 +242,7 @@ describe("Model.extendsTo()", function() {
 			var ChainFind = Person.findByAddress({
 				number: 123
 			});
-			ChainFind.run.should.be.a("function");
+			ChainFind.run.should.be.a.Function();
 
 			return done();
 		});

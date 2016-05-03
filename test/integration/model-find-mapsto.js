@@ -77,7 +77,7 @@ describe("Model.pkMapTo.find()", function() {
 		it("1st find should work", function (done) {
 			Person.find({ surname: "Dean" }, function (err, people) {
 				should.not.exist(err);
-				people.should.be.a("object");
+				people.should.be.a.Object();
 				people.should.have.property("length", 2);
 				people[0].surname.should.equal("Dean");
 
@@ -87,7 +87,7 @@ describe("Model.pkMapTo.find()", function() {
 		it("2nd find should should also work", function (done) {
 			Person.find({ surname: "Doe" }, function (err, people) {
 				should.not.exist(err);
-				people.should.be.a("object");
+				people.should.be.a.Object();
 				people.should.have.property("length", 3);
 				people[0].surname.should.equal("Doe");
 

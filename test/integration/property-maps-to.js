@@ -117,13 +117,13 @@ describe("Property.mapsTo", function() {
 					Book.find().order("-title").all(function (err, items) {
 						should.not.exist(err);
 						should.equal(
-							_.pluck(items, 'title').join(','),
+							_.map(items, 'title').join(','),
 							"Zzz,Stuff,Quantum theory,Aaa"
 						)
 						Book.find().order("title").all(function (err, items) {
 							should.not.exist(err);
 							should.equal(
-								_.pluck(items, 'title').join(','),
+								_.map(items, 'title').join(','),
 								"Aaa,Quantum theory,Stuff,Zzz"
 							)
 							done();

@@ -4,9 +4,9 @@ module.exports = function MyPlugin(DB, opts) {
 
 	return {
 		define: function (Model) {
-			Model.should.be.a("function");
-			Model.id.should.be.a("object");
-			Model.id[0].should.be.a("string");
+			Model.should.be.a.Function();
+			Model.id.should.be.a.Object();
+			Model.id[0].should.be.a.String();
 
 			opts.calledDefine = true;
 		},

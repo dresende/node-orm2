@@ -84,7 +84,7 @@ if (protocol != "sqlite") {
 							return done();
 						});
 					} else {
-						err.should.be.a("object");
+						err.should.be.a.Object();
 					}
 
 					return done();
@@ -102,7 +102,7 @@ if (protocol != "sqlite") {
 							return done();
 						});
 					} else {
-						err.should.be.a("object");
+						err.should.be.a.Object();
 					}
 
 					return done();
@@ -120,7 +120,7 @@ if (protocol != "sqlite") {
 							return done();
 						});
 					} else {
-						err.should.be.a("object");
+						err.should.be.a.Object();
 					}
 
 					return done();

@@ -13,9 +13,9 @@ npm install orm
 
 ## Node.js Version Support
 
-Supported: 0.8, 0.10, 0.12, iojs-1.5
+Supported: 0.12 - 4.0 +
 
-Tests are run on [Travis CI](https://travis-ci.org/) for node versions `0.10.x`, `0.12.x` and `iojs-1.5`.
+Tests are run on [Travis CI](https://travis-ci.org/)
 If you want you can run tests locally:
 
 ```sh

@@ -1,3 +1,6 @@
+### v3.1.0
+- Add `enumerable` flag to exclude instance properties from enumeration (#724)
+
 ### v3.0.0
 - Rename `cache` -> `identityCache` and **disable by default** (#350, #564, #626, #672, #684, #694, #721)
 

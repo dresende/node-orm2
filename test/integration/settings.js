@@ -123,13 +123,13 @@ describe("Settings", function () {
 				return done();
 			});
 			it("should return an empty object for some.*", function (done) {
-				settings.get("some.*").should.be.a("object");
+				settings.get("some.*").should.be.a.Object();
 				Object.keys(settings.get("some.*")).should.have.lengthOf(0);
 
 				return done();
 			});
 			it("should return an empty object for some", function (done) {
-				settings.get("some").should.be.a("object");
+				settings.get("some").should.be.a.Object();
 				Object.keys(settings.get("some")).should.have.lengthOf(0);
 
 				return done();

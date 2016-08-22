@@ -1,8 +1,10 @@
-var ORM    = require('../../');
-var helper = require('../support/spec_helper');
-var should = require('should');
-var async  = require('async');
-var _      = require('lodash');
+var ORM      = require('../../');
+var helper   = require('../support/spec_helper');
+var should   = require('should');
+var async    = require('async');
+var _        = require('lodash');
+var common   = require('../common');
+var protocol = common.protocol();
 
 describe("hasOne", function() {
 	var db    = null;
@@ -12,23 +14,27 @@ describe("hasOne", function() {
 	var leafId = null;
 	var treeId = null;
 	var stalkId = null;
+	var holeId  = null;
 
 	var setup = function (opts) {
 		opts = opts || {};
 		return function (done) {
-			db.settings.set('instance.cache', false);
+			db.settings.set('instance.identityCache', false);
 			db.settings.set('instance.returnAllErrors', true);
-			Tree  = db.define("tree",   { type:   { type: 'text' } });
+			Tree  = db.define("tree",   { type:   { type: 'text'    } });
 			Stalk = db.define("stalk",  { length: { type: 'integer' } });
+			Hole  = db.define("hole",   { width:  { type: 'integer' } });
 			Leaf  = db.define("leaf", {
-				size: { type: 'integer' }
+				size:   { type: 'integer' },
+				holeId: { type: 'integer', mapsTo: 'hole_id' }
 			}, {
 				validations: opts.validations
 			});
 			Leaf.hasOne('tree',  Tree,  { field: 'treeId', autoFetch: !!opts.autoFetch });
-			Leaf.hasOne('stalk', Stalk, { field: 'stalkId' });
+			Leaf.hasOne('stalk', Stalk, { field: 'stalkId', mapsTo: 'stalk_id' });
+			Leaf.hasOne('hole',  Hole,  { field: 'holeId' });
 
-			return helper.dropSync([Tree, Stalk, Leaf], function() {
+			return helper.dropSync([Tree, Stalk, Hole, Leaf], function() {
 				Tree.create({ type: 'pine' }, function (err, tree) {
 					should.not.exist(err);
 					treeId = tree[Tree.id];
@@ -41,7 +47,11 @@ describe("hasOne", function() {
 								should.not.exist(err);
 								should.exist(stalk);
 								stalkId = stalk[Stalk.id];
-								done();
+								Hole.create({ width: 3 }, function (err, hole) {
+									should.not.exist(err);
+									holeId = hole.id;
+									done();
+								});
 							});
 						});
 					});
@@ -285,7 +295,7 @@ describe("hasOne", function() {
 
 	describe("if not passing another Model", function () {
 		it("should use same model", function (done) {
-			db.settings.set('instance.cache', false);
+			db.settings.set('instance.identityCache', false);
 			db.settings.set('instance.returnAllErrors', true);
 
 			var Person = db.define("person", {
@@ -310,7 +320,7 @@ describe("hasOne", function() {
 
 	describe("association name letter case", function () {
 		it("should be kept", function (done) {
-			db.settings.set('instance.cache', false);
+			db.settings.set('instance.identityCache', false);
 			db.settings.set('instance.returnAllErrors', true);
 
 			var Person = db.define("person", {
@@ -327,9 +337,9 @@ describe("hasOne", function() {
 					Person.get(person[Person.id], function (err, person) {
 						should.equal(err, null);
 
-						person.setTopParent.should.be.a("function");
-						person.removeTopParent.should.be.a("function");
-						person.hasTopParent.should.be.a("function");
+						person.setTopParent.should.be.a.Function();
+						person.removeTopParent.should.be.a.Function();
+						person.hasTopParent.should.be.a.Function();
 
 						return done();
 					});
@@ -365,9 +375,97 @@ describe("hasOne", function() {
 			var ChainFind = Leaf.findByTree({
 				type: "pine"
 			});
-			ChainFind.run.should.be.a("function");
+			ChainFind.run.should.be.a.Function();
 
 			return done();
 		});
 	});
+
+	if (protocol != "mongodb") {
+		describe("mapsTo", function () {
+			describe("with `mapsTo` set via `hasOne`", function () {
+				var leaf = null;
+
+				before(setup());
+
+				before(function (done) {
+					Leaf.create({ size: 444, stalkId: stalkId, holeId: holeId }, function (err, lf) {
+						should.not.exist(err);
+						leaf = lf;
+						done();
+					});
+				});
+
+				it("should have correct fields in the DB", function (done) {
+					var sql = db.driver.query.select()
+					  .from('leaf')
+					  .select('size', 'stalk_id')
+					  .where({ size: 444 })
+					  .build();
+
+					db.driver.execQuery(sql, function (err, rows) {
+						should.not.exist(err);
+
+						should.equal(rows[0].size, 444);
+						should.equal(rows[0].stalk_id, 1);
+
+						done();
+		      });
+				});
+
+				it("should get parent", function (done) {
+					leaf.getStalk(function (err, stalk) {
+						should.not.exist(err);
+
+						should.exist(stalk);
+						should.equal(stalk.id, stalkId);
+						should.equal(stalk.length, 20);
+						done();
+					});
+				});
+			});
+
+			describe("with `mapsTo` set via property definition", function () {
+				var leaf = null;
+
+				before(setup());
+
+				before(function (done) {
+					Leaf.create({ size: 444, stalkId: stalkId, holeId: holeId }, function (err, lf) {
+						should.not.exist(err);
+						leaf = lf;
+						done();
+					});
+				});
+
+				it("should have correct fields in the DB", function (done) {
+					var sql = db.driver.query.select()
+					  .from('leaf')
+					  .select('size', 'hole_id')
+					  .where({ size: 444 })
+					  .build();
+
+					db.driver.execQuery(sql, function (err, rows) {
+						should.not.exist(err);
+
+						should.equal(rows[0].size, 444);
+						should.equal(rows[0].hole_id, 1);
+
+						done();
+		      });
+				});
+
+				it("should get parent", function (done) {
+					leaf.getHole(function (err, hole) {
+						should.not.exist(err);
+
+						should.exist(hole);
+						should.equal(hole.id, stalkId);
+						should.equal(hole.width, 3);
+						done();
+					});
+				});
+			});
+		});
+	};
 });

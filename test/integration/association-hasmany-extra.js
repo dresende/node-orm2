@@ -10,7 +10,7 @@ describe("hasMany extra properties", function() {
 	var setup = function (opts) {
 		opts = opts || {};
 		return function (done) {
-			db.settings.set('instance.cache', false);
+			db.settings.set('instance.identityCache', false);
 
 			Person = db.define('person', {
 				name    : String,
@@ -63,7 +63,7 @@ describe("hasMany extra properties", function() {
 
 							John.pets[0].should.have.property("name");
 							John.pets[0].should.have.property("extra");
-							John.pets[0].extra.should.be.a("object");
+							John.pets[0].extra.should.be.a.Object();
 							John.pets[0].extra.should.have.property("since");
 							should(John.pets[0].extra.since instanceof Date);
 

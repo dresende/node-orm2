@@ -3,9 +3,11 @@ var glob     = require("glob");
 var path     = require("path");
 var common   = require("./common");
 var logging  = require("./logging");
+
 var location = path.normalize(path.join(__dirname, "integration", "**", "*.js"));
 var mocha    = new Mocha({
-	reporter: "progress"
+	reporter: "progress",
+	timeout: 5000
 });
 
 switch (common.hasConfig(common.protocol())) {

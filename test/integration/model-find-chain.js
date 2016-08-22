@@ -21,7 +21,7 @@ describe("Model.find() chaining", function() {
 			Person.hasMany("parents");
 			Person.hasOne("friend");
 
-			ORM.singleton.clear(); // clear cache
+			ORM.singleton.clear(); // clear identityCache cache
 
 			return helper.dropSync(Person, function () {
 				Person.create([{
@@ -52,7 +52,7 @@ describe("Model.find() chaining", function() {
 			Dog.hasMany("friends");
 			Dog.hasMany("family");
 
-			ORM.singleton.clear(); // clear cache
+			ORM.singleton.clear(); // clear identityCache cache
 
 			return helper.dropSync(Dog, function () {
 				Dog.create([{
@@ -395,9 +395,9 @@ describe("Model.find() chaining", function() {
 		it("should return a ChainInstance", function (done) {
 			var chain = Person.find().each();
 
-			chain.filter.should.be.a("function");
-			chain.sort.should.be.a("function");
-			chain.count.should.be.a("function");
+			chain.filter.should.be.a.Function();
+			chain.sort.should.be.a.Function();
+			chain.count.should.be.a.Function();
 
 			return done();
 		});
@@ -459,12 +459,12 @@ describe("Model.find() chaining", function() {
 		it("should return a ChainFind", function (done) {
 			var chain = Person.find({ age: 22 }).each();
 
-			chain.should.be.a("object");
-			chain.filter.should.be.a("function");
-			chain.sort.should.be.a("function");
-			chain.count.should.be.a("function");
-			chain.get.should.be.a("function");
-			chain.save.should.be.a("function");
+			chain.should.be.a.Object();
+			chain.filter.should.be.a.Function();
+			chain.sort.should.be.a.Function();
+			chain.count.should.be.a.Function();
+			chain.get.should.be.a.Function();
+			chain.save.should.be.a.Function();
 
 			return done();
 		});

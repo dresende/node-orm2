@@ -3,46 +3,47 @@ var sqlite   = require('sqlite3');
 var pg       = require('pg');
 var should   = require('should');
 var helper   = require('../support/spec_helper');
-var common   = require('../common');
 var ORM      = require('../../');
+var common   = require('../common');
+var protocol = common.protocol();
 
 describe("ORM", function() {
 	describe("when loaded", function () {
 		it("should expose .express(), .use() and .connect()", function (done) {
-			ORM.express.should.a("function");
-			ORM.use.should.a("function");
-			ORM.connect.should.a("function");
+			ORM.express.should.be.a.Function();
+			ORM.use.should.be.a.Function();
+			ORM.connect.should.be.a.Function();
 
 			return done();
 		});
 
 		it("should expose default settings container", function (done) {
-			ORM.settings.should.a("object");
-			ORM.settings.get.should.a("function");
-			ORM.settings.set.should.a("function");
-			ORM.settings.unset.should.a("function");
+			ORM.settings.should.be.a.Object();
+			ORM.settings.get.should.be.a.Function();
+			ORM.settings.set.should.be.a.Function();
+			ORM.settings.unset.should.be.a.Function();
 
 			return done();
 		});
 
 		it("should expose generic Settings constructor", function (done) {
-			ORM.Settings.should.a("object");
-			ORM.Settings.Container.should.a("function");
+			ORM.Settings.should.be.a.Object();
+			ORM.Settings.Container.should.be.a.Function();
 
 			return done();
 		});
 
 		it("should expose singleton manager", function (done) {
-			ORM.singleton.should.a("object");
-			ORM.singleton.clear.should.a("function");
+			ORM.singleton.should.be.a.Object();
+			ORM.singleton.clear.should.be.a.Function();
 
 			return done();
 		});
 
 		it("should expose predefined validators", function (done) {
-			ORM.validators.should.a("object");
-			ORM.validators.rangeNumber.should.a("function");
-			ORM.validators.rangeLength.should.a("function");
+			ORM.validators.should.be.a.Object();
+			ORM.validators.rangeNumber.should.be.a.Function();
+			ORM.validators.rangeLength.should.be.a.Function();
 
 			return done();
 		});
@@ -53,10 +54,10 @@ describe("ORM.connect()", function () {
 	it("should expose .use(), .define(), .sync() and .load()", function (done) {
 		var db = ORM.connect();
 
-		db.use.should.a("function");
-		db.define.should.a("function");
-		db.sync.should.a("function");
-		db.load.should.a("function");
+		db.use.should.be.a.Function();
+		db.define.should.be.a.Function();
+		db.sync.should.be.a.Function();
+		db.load.should.be.a.Function();
 
 		return done();
 	});
@@ -128,6 +129,26 @@ describe("ORM.connect()", function () {
 
 	it("should emit an error if cannot connect", function (done) {
 		var db = ORM.connect("mysql://fakeuser:nopassword@127.0.0.1/unknowndb");
+
+		db.on("connect", function (err) {
+			should.exist(err);
+			should.equal(err.message.indexOf("Connection protocol not supported"), -1);
+			err.message.should.not.equal("CONNECTION_URL_NO_PROTOCOL");
+			err.message.should.not.equal("CONNECTION_URL_EMPTY");
+
+			return done();
+		});
+	});
+
+	it("should emit valid error if exception being thrown during connection try", function (done) {
+		var testConfig = {
+			protocol : 'mongodb',
+			href     : 'unknownhost',
+			database : 'unknowndb',
+			user     : '',
+			password : ''
+		},
+		db = ORM.connect(testConfig);
 
 		db.on("connect", function (err) {
 			should.exist(err);
@@ -218,16 +239,81 @@ describe("ORM.connect()", function () {
 				return done();
 			});
 		});
+	});
 
-		it("should allow pool and debug settings to be false", function(done) {
-			var connString = common.getConnectionString() + "debug=false&pool=false";
-			ORM.connect(connString, function(err, db) {
-				db.driver.opts.pool.should.equal(false);
-				db.driver.opts.debug.should.equal(false);
-				done();
+	if (protocol != 'mongodb') {
+		describe("query options", function () {
+			it("should understand pool `'false'` from query string", function (done) {
+				var connString = common.getConnectionString() + "debug=false&pool=false";
+				ORM.connect(connString, function (err, db) {
+					should.not.exist(err);
+					should.strictEqual(db.driver.opts.pool,  false);
+					should.strictEqual(db.driver.opts.debug, false);
+					done();
+				});
+			});
+
+			it("should understand pool `'0'` from query string", function (done) {
+				var connString = common.getConnectionString() + "debug=0&pool=0";
+				ORM.connect(connString, function (err, db) {
+					should.not.exist(err);
+					should.strictEqual(db.driver.opts.pool,  false);
+					should.strictEqual(db.driver.opts.debug, false);
+					done();
+				});
+			});
+
+			it("should understand pool `'true'` from query string", function (done) {
+				var connString = common.getConnectionString() + "debug=true&pool=true";
+				ORM.connect(connString, function (err, db) {
+					should.not.exist(err);
+					should.strictEqual(db.driver.opts.pool,  true);
+					should.strictEqual(db.driver.opts.debug, true);
+					done();
+				});
+			});
+
+			it("should understand pool `'1'` from query string", function (done) {
+				var connString = common.getConnectionString() + "debug=1&pool=1";
+				ORM.connect(connString, function (err, db) {
+					should.not.exist(err);
+					should.strictEqual(db.driver.opts.pool,  true);
+					should.strictEqual(db.driver.opts.debug, true);
+					done();
+				});
+			});
+
+			it("should understand pool `true` from query options", function (done) {
+				var connOpts = _.extend(common.getConfig(), {
+					protocol: common.protocol(),
+					query: {
+					  pool: true, debug: true
+					}
+				});
+				ORM.connect(connOpts, function (err, db) {
+					should.not.exist(err);
+					should.strictEqual(db.driver.opts.pool,  true);
+					should.strictEqual(db.driver.opts.debug, true);
+					done();
+				});
+			});
+
+			it("should understand pool `false` from query options", function (done) {
+				var connOpts = _.extend(common.getConfig(), {
+					protocol: common.protocol(),
+					query: {
+					  pool: false, debug: false
+					}
+				});
+				ORM.connect(connOpts, function (err, db) {
+					should.not.exist(err);
+					should.strictEqual(db.driver.opts.pool,  false);
+					should.strictEqual(db.driver.opts.debug, false);
+					done();
+				});
 			});
 		});
-	});
+	}
 });
 
 describe("ORM.use()", function () {

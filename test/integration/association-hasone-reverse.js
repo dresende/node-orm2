@@ -57,14 +57,14 @@ describe("hasOne", function () {
 			var person = Person(1);
 			var pet = Pet(1);
 
-			person.getPet.should.be.a("function");
-			person.setPet.should.be.a("function");
-			person.removePet.should.be.a("function");
-			person.hasPet.should.be.a("function");
+			person.getPet.should.be.a.Function();
+			person.setPet.should.be.a.Function();
+			person.removePet.should.be.a.Function();
+			person.hasPet.should.be.a.Function();
 
-			pet.getOwners.should.be.a("function");
-			pet.setOwners.should.be.a("function");
-			pet.hasOwners.should.be.a("function");
+			pet.getOwners.should.be.a.Function();
+			pet.setOwners.should.be.a.Function();
+			pet.hasOwners.should.be.a.Function();
 
 			return done();
 		});
@@ -153,7 +153,11 @@ describe("hasOne", function () {
 
 		it("should be able to set an array of people as the owner", function (done) {
 			Person.find({ name: ["John Doe", "Jane Doe"] }, function (err, owners) {
+				should.not.exist(err);
+
 				Pet.find({ name: "Fido" }).first(function (err, Fido) {
+					should.not.exist(err);
+
 					Fido.hasOwners(function (err, has_owner) {
 						should.not.exist(err);
 						has_owner.should.be.false;
@@ -166,7 +170,10 @@ describe("hasOne", function () {
 								should(Array.isArray(owners));
 								owners.length.should.equal(2);
 
-								if (owners[0] == ownersCopy[0]) {
+								// Don't know which order they'll be in.
+								var idProp = common.protocol() == 'mongodb' ? '_id' : 'id'
+
+								if (owners[0][idProp] == ownersCopy[0][idProp]) {
 									owners[0].should.eql(ownersCopy[0]);
 									owners[1].should.eql(ownersCopy[1]);
 								} else {
@@ -227,7 +234,7 @@ describe("hasOne", function () {
 					var ChainFind = Pet.findByOwners({
 						name: "John Doe"
 					});
-					ChainFind.run.should.be.a("function");
+					ChainFind.run.should.be.a.Function();
 
 					return done();
 				});

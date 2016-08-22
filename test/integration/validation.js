@@ -421,12 +421,12 @@ describe("Validations", function() {
 					should(Array.isArray(err));
 					should.equal(err.length, 2);
 
-					should.deepEqual(err[0], _.extend(new Error(),{
-						property: 'name', value: 'n', msg: 'out-of-range-length'
+					should.deepEqual(err[0], _.extend(new Error('out-of-range-length'), {
+						property: 'name', value: 'n', msg: 'out-of-range-length', type: 'validation'
 					}));
 
-					should.deepEqual(err[1], _.extend(new Error(),{
-						property: 'height', value: '4', msg: 'out-of-range-number'
+					should.deepEqual(err[1], _.extend(new Error('out-of-range-number'), {
+						property: 'height', value: 4, msg: 'out-of-range-number', type: 'validation'
 					}));
 
 					should.equal(john.id, null);
@@ -447,17 +447,16 @@ describe("Validations", function() {
 					should(Array.isArray(err));
 					should.equal(err.length, 3);
 
-					// `type` is a non enumerable undocumented property of `Error` in V8.
-					should.deepEqual(err[0], _.extend(new Error(),{
-						property: 'name', value: null, msg: 'required'
+					should.deepEqual(err[0], _.extend(new Error('required'), {
+						property: 'name', value: null, msg: 'required', type: 'validation'
 					}));
 
-					should.deepEqual(err[1], _.extend(new Error(),{
-						property: 'name', value: null, msg: 'undefined'
+					should.deepEqual(err[1], _.extend(new Error('undefined'), {
+						property: 'name', value: null, msg: 'undefined', type: 'validation'
 					}));
 
-					should.deepEqual(err[2], _.extend(new Error(),{
-						property: 'height', value: '4', msg: 'out-of-range-number'
+					should.deepEqual(err[2], _.extend(new Error('out-of-range-number'), {
+						property: 'height', value: 4, msg: 'out-of-range-number', type: 'validation'
 					}));
 
 					should.equal(john.id, null);

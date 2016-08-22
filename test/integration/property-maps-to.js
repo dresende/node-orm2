@@ -12,7 +12,7 @@ describe("Property.mapsTo", function() {
 	before(function (done) {
 		helper.connect(function (connection) {
 			db = connection;
-			db.settings.set('instance.cache', false);
+			db.settings.set('instance.identityCache', false);
 
 			return done();
 		});
@@ -117,13 +117,13 @@ describe("Property.mapsTo", function() {
 					Book.find().order("-title").all(function (err, items) {
 						should.not.exist(err);
 						should.equal(
-							_.pluck(items, 'title').join(','),
+							_.map(items, 'title').join(','),
 							"Zzz,Stuff,Quantum theory,Aaa"
 						)
 						Book.find().order("title").all(function (err, items) {
 							should.not.exist(err);
 							should.equal(
-								_.pluck(items, 'title').join(','),
+								_.map(items, 'title').join(','),
 								"Aaa,Quantum theory,Stuff,Zzz"
 							)
 							done();

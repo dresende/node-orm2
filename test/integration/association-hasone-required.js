@@ -10,7 +10,7 @@ describe("hasOne", function() {
 
 	var setup = function (required) {
 		return function (done) {
-			db.settings.set('instance.cache', false);
+			db.settings.set('instance.identityCache', false);
 			db.settings.set('instance.returnAllErrors', true);
 
 			Person = db.define('person', {

@@ -111,8 +111,8 @@ describe("Hook", function() {
 
 		it("should trigger before creating instance", function (done) {
 			Person.create([{ name: "John Doe" }], function () {
-				triggeredHooks.afterCreate.should.be.a("number");
-				triggeredHooks.beforeCreate.should.be.a("number");
+				triggeredHooks.afterCreate.should.be.a.Number();
+				triggeredHooks.beforeCreate.should.be.a.Number();
 				triggeredHooks.beforeCreate.should.not.be.above(triggeredHooks.afterCreate);
 
 				return done();
@@ -152,12 +152,12 @@ describe("Hook", function() {
 				Person.create([{ }], function (err, items) {
 					should.equal(err, null);
 
-					items.should.be.a("object");
+					items.should.be.a.Object();
 					items.should.have.property("length", 1);
 					items[0].name.should.equal("Jane Doe");
 
 					// ensure it was really saved
-					Person.find({ name: "Hook Worked" }, { cache: false }, 1, function (err, people) {
+					Person.find({ name: "Hook Worked" }, { identityCache: false }, 1, function (err, people) {
 						should.not.exist(err);
 						should(Array.isArray(people));
 
@@ -203,7 +203,7 @@ describe("Hook", function() {
 					this.timeout(500);
 
 					Person.create([{ name: "John Doe" }], function (err) {
-						err.should.be.a("object");
+						err.should.be.a.Object();
 						err.message.should.equal("beforeCreate-error");
 
 						return done();
@@ -218,8 +218,8 @@ describe("Hook", function() {
 
 		it("should trigger after creating instance", function (done) {
 			Person.create([{ name: "John Doe" }], function () {
-				triggeredHooks.afterCreate.should.be.a("number");
-				triggeredHooks.beforeCreate.should.be.a("number");
+				triggeredHooks.afterCreate.should.be.a.Number();
+				triggeredHooks.beforeCreate.should.be.a.Number();
 				triggeredHooks.afterCreate.should.not.be.below(triggeredHooks.beforeCreate);
 
 				return done();
@@ -232,8 +232,8 @@ describe("Hook", function() {
 
 		it("should trigger before saving an instance", function (done) {
 			Person.create([{ name: "John Doe" }], function () {
-				triggeredHooks.afterSave.should.be.a("number");
-				triggeredHooks.beforeSave.should.be.a("number");
+				triggeredHooks.afterSave.should.be.a.Number();
+				triggeredHooks.beforeSave.should.be.a.Number();
 				triggeredHooks.beforeSave.should.not.be.above(triggeredHooks.afterSave);
 
 				return done();
@@ -252,7 +252,7 @@ describe("Hook", function() {
 		        should.equal(people[0].name, "Hook Worked");
 
 				// garantee it was correctly saved on database
-				Person.find({ name: "Hook Worked" }, { cache: false }, 1, function (err, people) {
+				Person.find({ name: "Hook Worked" }, { identityCache: false }, 1, function (err, people) {
 					should.not.exist(err);
 					should(Array.isArray(people));
 
@@ -272,7 +272,7 @@ describe("Hook", function() {
 				Person.create([{ }], function (err, items) {
 					should.equal(err, null);
 
-					items.should.be.a("object");
+					items.should.be.a.Object();
 					items.should.have.property("length", 1);
 					items[0].name.should.equal("Jane Doe");
 
@@ -327,7 +327,7 @@ describe("Hook", function() {
 					this.timeout(500);
 
 					Person.create([{ name: "Jane Doe" }], function (err) {
-						err.should.be.a("object");
+						err.should.be.a.Object();
 						err.message.should.equal("beforeSave-error");
 
 						return done();
@@ -342,7 +342,7 @@ describe("Hook", function() {
 
 						John[0].name = "Jane Doe";
 						John[0].save(function (err) {
-							err.should.be.a("object");
+							err.should.be.a.Object();
 							err.message.should.equal("beforeSave-error");
 
 							return done();
@@ -360,8 +360,8 @@ describe("Hook", function() {
 			Person.create({ name: "John Doe" }, function (err, john) {
 				should.not.exist(err);
 
-				triggeredHooks.afterSave.should.be.a("number");
-				triggeredHooks.beforeSave.should.be.a("number");
+				triggeredHooks.afterSave.should.be.a.Number();
+				triggeredHooks.beforeSave.should.be.a.Number();
 				triggeredHooks.afterSave.should.not.be.below(triggeredHooks.beforeSave);
 				done();
 			});
@@ -375,8 +375,8 @@ describe("Hook", function() {
 
 				triggeredHooks = {};
 				john.save(function (err) {
-					triggeredHooks.afterSave.should.be.a("number");
-					triggeredHooks.beforeSave.should.be.a("number");
+					triggeredHooks.afterSave.should.be.a.Number();
+					triggeredHooks.beforeSave.should.be.a.Number();
 					triggeredHooks.afterSave.should.not.be.below(triggeredHooks.beforeSave);
 					done();
 				});
@@ -402,9 +402,9 @@ describe("Hook", function() {
 
 		it("should trigger before instance validation", function (done) {
 			Person.create([{ name: "John Doe" }], function () {
-				triggeredHooks.beforeValidation.should.be.a("number");
-				triggeredHooks.beforeCreate.should.be.a("number");
-				triggeredHooks.beforeSave.should.be.a("number");
+				triggeredHooks.beforeValidation.should.be.a.Number();
+				triggeredHooks.beforeCreate.should.be.a.Number();
+				triggeredHooks.beforeSave.should.be.a.Number();
 				triggeredHooks.beforeValidation.should.not.be.above(triggeredHooks.beforeCreate);
 				triggeredHooks.beforeValidation.should.not.be.above(triggeredHooks.beforeSave);
 
@@ -605,8 +605,8 @@ describe("Hook", function() {
 		it("should trigger before removing an instance", function (done) {
 			Person.create([{ name: "John Doe" }], function (err, items) {
 				items[0].remove(function () {
-					triggeredHooks.afterRemove.should.be.a("number");
-					triggeredHooks.beforeRemove.should.be.a("number");
+					triggeredHooks.afterRemove.should.be.a.Number();
+					triggeredHooks.beforeRemove.should.be.a.Number();
 					triggeredHooks.beforeRemove.should.not.be.above(triggeredHooks.afterRemove);
 
 					return done();
@@ -654,7 +654,7 @@ describe("Hook", function() {
 
 					Person.create([{ name: "John Doe" }], function (err, items) {
 						items[0].remove(function (err) {
-							err.should.be.a("object");
+							err.should.be.a.Object();
 							err.message.should.equal("beforeRemove-error");
 
 							return done();
@@ -671,8 +671,8 @@ describe("Hook", function() {
 		it("should trigger after removing an instance", function (done) {
 			Person.create([{ name: "John Doe" }], function (err, items) {
 				items[0].remove(function () {
-					triggeredHooks.afterRemove.should.be.a("number");
-					triggeredHooks.beforeRemove.should.be.a("number");
+					triggeredHooks.afterRemove.should.be.a.Number();
+					triggeredHooks.beforeRemove.should.be.a.Number();
 					triggeredHooks.afterRemove.should.not.be.below(triggeredHooks.beforeRemove);
 
 					return done();
@@ -702,13 +702,13 @@ describe("Hook", function() {
 			Person.create({ name : "John", surname : "Doe" }, function (err, John) {
 				should.equal(err, null);
 
-				triggeredHooks.afterSave.should.be.a("number");
+				triggeredHooks.afterSave.should.be.a.Number();
 				triggeredHooks.afterSave = false;
 
 				John.surname = "Dean";
 
 				setTimeout(function () {
-					triggeredHooks.afterSave.should.be.a("number");
+					triggeredHooks.afterSave.should.be.a.Number();
 
 					return done();
 				}, 200);

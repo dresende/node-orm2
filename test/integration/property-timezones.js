@@ -19,7 +19,7 @@ describe("Timezones", function() {
 		return function (done) {
 			helper.connect({ query: opts.query }, function (connection) {
 				db = connection;
-				db.settings.set('instance.cache', false);
+				db.settings.set('instance.identityCache', false);
 
 				Event = db.define("event", {
 					name : { type: 'text' },

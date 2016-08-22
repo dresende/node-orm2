@@ -67,7 +67,7 @@ describe("Event", function() {
 			John.on("save", function (err) {
 				triggered = true;
 
-				err.should.be.a("object");
+				err.should.be.a.Object();
 				err.should.have.property("msg", "required");
 			});
 

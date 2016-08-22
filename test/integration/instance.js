@@ -16,10 +16,11 @@ describe("Model instance", function() {
 				name   : String,
 				age    : { type: 'integer', required: false },
 				height : { type: 'integer', required: false },
-				weight : { type: 'number',  required: false },
+				weight : { type: 'number',  required: false, enumerable: true },
+				secret : { type: 'text',  required: false, enumerable: false },
 				data   : { type: 'object',  required: false }
 			}, {
-				cache: false,
+				identityCache: false,
 				validations: {
 					age: ORM.validators.rangeNumber(0, 150)
 				}
@@ -65,7 +66,7 @@ describe("Model instance", function() {
 			item = db.define("item", {
 				name      : String
 			}, {
-				cache     : false
+				identityCache  : false
 			});
 			item.hasOne("main_item", main_item, {
 				reverse   : "items",
@@ -444,6 +445,22 @@ describe("Model instance", function() {
 					});
 				});
 			}
+		});
+
+		describe("Enumerable", function () {
+			it("should not stringify properties marked as not enumerable", function (done) {
+				Person.create({ name: 'Dilbert', secret: 'dogbert', weight: 100, data: {data: 3} }, function (err, p) {
+					if (err) return done(err);
+
+					var result = JSON.parse(JSON.stringify(p));
+					should.not.exist(result.secret);
+					should.exist(result.weight);
+					should.exist(result.data);
+					should.exist(result.name);
+
+					done();
+				});
+			});
 		});
 	});
 });

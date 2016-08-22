@@ -64,7 +64,7 @@ describe("Model.find()", function() {
 		it("should return all items", function (done) {
 			Person.find(function (err, people) {
 				should.not.exist(err);
-				people.should.be.a("object");
+				people.should.be.a.Object();
 				people.should.have.property("length", 5);
 
 				return done();
@@ -78,7 +78,7 @@ describe("Model.find()", function() {
 		it("should use it as limit", function (done) {
 			Person.find(2, function (err, people) {
 				should.not.exist(err);
-				people.should.be.a("object");
+				people.should.be.a.Object();
 				people.should.have.property("length", 2);
 
 				return done();
@@ -92,7 +92,7 @@ describe("Model.find()", function() {
 		it("should use it as property ascending order", function (done) {
 			Person.find("age", function (err, people) {
 				should.not.exist(err);
-				people.should.be.a("object");
+				people.should.be.a.Object();
 				people.should.have.property("length", 5);
 				people[0].age.should.equal(16);
 				people[4].age.should.equal(20);
@@ -104,7 +104,7 @@ describe("Model.find()", function() {
 		it("should use it as property descending order if starting with '-'", function (done) {
 			Person.find("-age", function (err, people) {
 				should.not.exist(err);
-				people.should.be.a("object");
+				people.should.be.a.Object();
 				people.should.have.property("length", 5);
 				people[0].age.should.equal(20);
 				people[4].age.should.equal(16);
@@ -120,7 +120,7 @@ describe("Model.find()", function() {
 		it("should use it as property ascending order", function (done) {
 			Person.find([ "age" ], function (err, people) {
 				should.not.exist(err);
-				people.should.be.a("object");
+				people.should.be.a.Object();
 				people.should.have.property("length", 5);
 				people[0].age.should.equal(16);
 				people[4].age.should.equal(20);
@@ -132,7 +132,7 @@ describe("Model.find()", function() {
 		it("should use it as property descending order if starting with '-'", function (done) {
 			Person.find([ "-age" ], function (err, people) {
 				should.not.exist(err);
-				people.should.be.a("object");
+				people.should.be.a.Object();
 				people.should.have.property("length", 5);
 				people[0].age.should.equal(20);
 				people[4].age.should.equal(16);
@@ -144,7 +144,7 @@ describe("Model.find()", function() {
 		it("should use it as property descending order if element is 'Z'", function (done) {
 			Person.find([ "age", "Z" ], function (err, people) {
 				should.not.exist(err);
-				people.should.be.a("object");
+				people.should.be.a.Object();
 				people.should.have.property("length", 5);
 				people[0].age.should.equal(20);
 				people[4].age.should.equal(16);
@@ -156,7 +156,7 @@ describe("Model.find()", function() {
 		it("should accept multiple ordering", function (done) {
 			Person.find([ "age", "name", "Z" ], function (err, people) {
 				should.not.exist(err);
-				people.should.be.a("object");
+				people.should.be.a.Object();
 				people.should.have.property("length", 5);
 				people[0].age.should.equal(16);
 				people[4].age.should.equal(20);
@@ -168,7 +168,7 @@ describe("Model.find()", function() {
 		it("should accept multiple ordering using '-' instead of 'Z'", function (done) {
 			Person.find([ "age", "-name" ], function (err, people) {
 				should.not.exist(err);
-				people.should.be.a("object");
+				people.should.be.a.Object();
 				people.should.have.property("length", 5);
 				people[0].age.should.equal(16);
 				people[4].age.should.equal(20);
@@ -184,7 +184,7 @@ describe("Model.find()", function() {
 		it("should use it as conditions", function (done) {
 			Person.find({ age: 16 }, function (err, people) {
 				should.not.exist(err);
-				people.should.be.a("object");
+				people.should.be.a.Object();
 				people.should.have.property("length", 1);
 				people[0].age.should.equal(16);
 
@@ -195,7 +195,7 @@ describe("Model.find()", function() {
 		it("should accept comparison objects", function (done) {
 			Person.find({ age: ORM.gt(18) }, function (err, people) {
 				should.not.exist(err);
-				people.should.be.a("object");
+				people.should.be.a.Object();
 				people.should.have.property("length", 2);
 				people[0].age.should.equal(20);
 				people[1].age.should.equal(20);
@@ -210,7 +210,7 @@ describe("Model.find()", function() {
 			it("should use it as options", function (done) {
 				Person.find({ age: 18 }, 1, { cache: false }, function (err, people) {
 					should.not.exist(err);
-					people.should.be.a("object");
+					people.should.be.a.Object();
 					people.should.have.property("length", 1);
 					people[0].age.should.equal(18);
 
@@ -224,7 +224,7 @@ describe("Model.find()", function() {
 				it("should use it", function (done) {
 					Person.find({ age: 18 }, { limit: 1 }, function (err, people) {
 						should.not.exist(err);
-						people.should.be.a("object");
+						people.should.be.a.Object();
 						people.should.have.property("length", 1);
 						people[0].age.should.equal(18);
 
@@ -239,7 +239,7 @@ describe("Model.find()", function() {
 				it("should use it", function (done) {
 					Person.find({}, { offset: 1 }, "age", function (err, people) {
 						should.not.exist(err);
-						people.should.be.a("object");
+						people.should.be.a.Object();
 						people.should.have.property("length", 4);
 						people[0].age.should.equal(18);
 
@@ -254,7 +254,7 @@ describe("Model.find()", function() {
 				it("should use it", function (done) {
 					Person.find({ surname: "Doe" }, { order: "age" }, function (err, people) {
 						should.not.exist(err);
-						people.should.be.a("object");
+						people.should.be.a.Object();
 						people.should.have.property("length", 3);
 						people[0].age.should.equal(16);
 
@@ -265,7 +265,7 @@ describe("Model.find()", function() {
 				it("should use it and ignore previously defined order", function (done) {
 					Person.find({ surname: "Doe" }, "-age", { order: "age" }, function (err, people) {
 						should.not.exist(err);
-						people.should.be.a("object");
+						people.should.be.a.Object();
 						people.should.have.property("length", 3);
 						people[0].age.should.equal(16);
 
@@ -289,7 +289,7 @@ describe("Model.find()", function() {
 
 			Person.over18().family("Doe").run(function (err, people) {
 				should.not.exist(err);
-				people.should.be.a("object");
+				people.should.be.a.Object();
 				people.should.have.property("length", 1);
 				people[0].name.should.equal("Jasmine");
 				people[0].surname.should.equal("Doe");
@@ -299,20 +299,20 @@ describe("Model.find()", function() {
 		});
 	});
 
-	describe("with cache disabled", function () {
+	describe("with identityCache disabled", function () {
 		it("should not return singletons", function (done) {
-			Person.find({ name: "Jasmine" }, { cache: false }, function (err, people) {
+			Person.find({ name: "Jasmine" }, { identityCache: false }, function (err, people) {
 				should.not.exist(err);
-				people.should.be.a("object");
+				people.should.be.a.Object();
 				people.should.have.property("length", 1);
 				people[0].name.should.equal("Jasmine");
 				people[0].surname.should.equal("Doe");
 
 				people[0].surname = "Dux";
 
-				Person.find({ name: "Jasmine" }, { cache: false }, function (err, people) {
+				Person.find({ name: "Jasmine" }, { identityCache: false }, function (err, people) {
 					should.not.exist(err);
-					people.should.be.a("object");
+					people.should.be.a.Object();
 					people.should.have.property("length", 1);
 					people[0].name.should.equal("Jasmine");
 					people[0].surname.should.equal("Doe");
@@ -327,7 +327,7 @@ describe("Model.find()", function() {
 		it("should work exactly the same", function (done) {
 			Person.all({ surname: "Doe" }, "-age", 1, function (err, people) {
 				should.not.exist(err);
-				people.should.be.a("object");
+				people.should.be.a.Object();
 				people.should.have.property("length", 1);
 				people[0].name.should.equal("Jasmine");
 				people[0].surname.should.equal("Doe");

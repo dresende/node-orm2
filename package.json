@@ -41,6 +41,7 @@
 		"sql-ddl-sync"     : "0.3.11",
 		"hat"              : "0.0.3",
 		"lodash"           : "4.11.2",
+		"node-uuid"        : "^1.4.7",
 		"path-is-absolute" : "1.0.0"
 	},
 	"devDependencies": {

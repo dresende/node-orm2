@@ -390,7 +390,7 @@ Person.aggregate(["age"], { country: "someCountry" }).avg("weight").groupBy("age
 
 There are more aggregate functions depending on the driver (Math functions for example).
 
-#### Chaining
+### Chaining
 
 If you prefer less complicated syntax you can chain `.find()` by not giving a callback parameter.
 
@@ -409,6 +409,8 @@ Person.find({ age: 18 }).where("LOWER(surname) LIKE ?", ['dea%']).all( ... );
 It's bad practice to manually escape SQL parameters as it's error prone and exposes your application to SQL injection.
 The `?` syntax takes care of escaping for you, by safely substituting the question mark in the query with the parameters provided.
 You can also chain multiple `where` clauses as needed.
+
+`.find`, `.where` & `.all` do the same thing; they are all interchangeable and chainable.
 
 You can also `order` or `orderRaw`:
 ```js

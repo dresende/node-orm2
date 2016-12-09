@@ -389,6 +389,46 @@ describe("Model.find() chaining", function() {
 		});
 	});
 
+	describe("finders should be chainable & interchangeable including", function () {
+		before(setup());
+
+		before(function (done) {
+			Person.create([
+					{ name: "Mel", surname: "Gabbs", age: 12 },
+					{ name: "Mel", surname: "Gibbs", age: 22 },
+					{ name: "Mel", surname: "Gobbs", age: 32 }
+				], function (err, items) {
+					should.not.exist(err);
+					done()
+				}
+			);
+		});
+
+		['find', 'where', 'all'].forEach(function (func) {
+			it("." + func + "()", function (done) {
+				Person[func]({ name: "Mel" })[func]({ age: ORM.gt(20) })[func](function (err, items) {
+					should.not.exist(err);
+					should.equal(items.length, 2);
+
+					should.equal(items[0].surname, "Gibbs");
+					should.equal(items[1].surname, "Gobbs");
+					done();
+				});
+			});
+		});
+
+		it("a mix", function (done) {
+			Person.all({ name: "Mel" }).where({ age: ORM.gt(20) }).find(function (err, items) {
+				should.not.exist(err);
+				should.equal(items.length, 2);
+
+				should.equal(items[0].surname, "Gibbs");
+				should.equal(items[1].surname, "Gobbs");
+				done();
+			});
+		});
+	});
+
 	describe(".each()", function () {
 		before(setup());
 

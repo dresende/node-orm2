@@ -1,3 +1,7 @@
+### v3.2.0
+- Make [.find|.where|.all] synonyms & allow them to chain multiple times
+- Update dependencies
+
 ### v3.1.0
 - Add `enumerable` flag to exclude instance properties from enumeration ([#724](../../issues/724))
 

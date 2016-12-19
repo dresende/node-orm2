@@ -1,3 +1,6 @@
+### v3.2.1
+- Fix has many 'has' accessor failing when join table has duplicate entries ([#761](../../issues/761))
+
 ### v3.2.0
 - Make [.find|.where|.all] synonyms & allow them to chain multiple times
 - Update dependencies

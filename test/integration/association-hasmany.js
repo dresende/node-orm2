@@ -36,35 +36,53 @@ describe("hasMany", function () {
 				});
 				Person.hasMany('pets', Pet, {}, { autoFetch: opts.autoFetchPets });
 
-				helper.dropSync([ Person, Pet ], function (err) {
-					if (err) return done(err);
-					/**
-					 * John --+---> Deco
-					 *        '---> Mutt <----- Jane
-					 *
-					 * Justin
-					 */
-					Person.create([{
-						name    : "John",
-						surname : "Doe",
-						age     : 20,
-						pets    : [{
-							name    : "Deco"
-						}, {
-							name    : "Mutt"
-						}]
-					}, {
-						name    : "Jane",
-						surname : "Doe",
-						age     : 16
-					}, {
-						name    : "Justin",
-						surname : "Dean",
-						age     : 18
-					}], function (err) {
-						Person.find({ name: "Jane" }, function (err, people) {
-							Pet.find({ name: "Mutt" }, function (err, pets) {
-								people[0].addPets(pets, done);
+				helper.dropSync([ Person, Pet], function (err) {
+					should.not.exist(err);
+
+					Pet.create([{ name: "Cat" }, { name: "Dog" }], function (err) {
+						should.not.exist(err);
+
+						/**
+						 * John --+---> Deco
+						 *        '---> Mutt <----- Jane
+						 *
+						 * Justin
+						 */
+						Person.create([
+							{
+								name    : "Bob",
+								surname : "Smith",
+								age     : 30
+							},
+							{
+								name    : "John",
+								surname : "Doe",
+								age     : 20,
+								pets    : [{
+									name    : "Deco"
+								}, {
+									name    : "Mutt"
+								}]
+							}, {
+								name    : "Jane",
+								surname : "Doe",
+								age     : 16
+							}, {
+								name    : "Justin",
+								surname : "Dean",
+								age     : 18
+							}
+						], function (err) {
+							should.not.exist(err);
+
+							Person.find({ name: "Jane" }, function (err, people) {
+								should.not.exist(err);
+
+								Pet.find({ name: "Mutt" }, function (err, pets) {
+									should.not.exist(err);
+
+									people[0].addPets(pets, done);
+								});
 							});
 						});
 					});
@@ -172,17 +190,17 @@ describe("hasMany", function () {
 				Person.find({}, function (err, people) {
 					should.equal(err, null);
 
-					people[0].getPets().count(function (err, count) {
+					people[1].getPets().count(function (err, count) {
 						should.not.exist(err);
 
 						should.strictEqual(count, 2);
 
-						people[1].getPets().count(function (err, count) {
+						people[2].getPets().count(function (err, count) {
 							should.not.exist(err);
 
 							should.strictEqual(count, 1);
 
-							people[2].getPets().count(function (err, count) {
+							people[3].getPets().count(function (err, count) {
 								should.not.exist(err);
 
 								should.strictEqual(count, 0);
@@ -257,6 +275,39 @@ describe("hasMany", function () {
 					});
 				});
 			});
+
+			if (common.protocol() != "mongodb") {
+				it("should return true if join table has duplicate entries", function (done) {
+					Pet.find({ name: ["Mutt", "Deco"] }, function (err, pets) {
+						should.not.exist(err);
+						should.equal(pets.length, 2);
+
+						Person.find({ name: "John" }).first(function (err, John) {
+							should.not.exist(err);
+
+							John.hasPets(pets, function (err, hasPets) {
+								should.equal(err, null);
+								should.equal(hasPets, true);
+
+								db.driver.execQuery(
+									"INSERT INTO person_pets (person_id, pets_id) VALUES (?,?), (?,?)",
+									[John.id, pets[0].id, John.id, pets[1].id],
+									function (err) {
+										should.not.exist(err);
+
+										John.hasPets(pets, function (err, hasPets) {
+											should.equal(err, null);
+											should.equal(hasPets, true);
+
+											done()
+										});
+									}
+								);
+							});
+						});
+					});
+				});
+			}
 		});
 
 		describe("delAccessor", function () {
@@ -499,7 +550,7 @@ describe("hasMany", function () {
 					should.equal(err, null);
 					Justin.getPets(function (err, pets) {
 						should.equal(err, null);
-						should.equal(pets.length, 2);
+						should.equal(pets.length, 4);
 
 						Justin.setPets([], function (err) {
 							should.equal(err, null);
@@ -586,7 +637,7 @@ describe("hasMany", function () {
 			it("should not auto save associations which were autofetched", function (done) {
 				Pet.all(function (err, pets) {
 					should.not.exist(err);
-					should.equal(pets.length, 2);
+					should.equal(pets.length, 4);
 
 					Person.create({ name: 'Paul' }, function (err, paul) {
 						should.not.exist(err);
@@ -601,7 +652,7 @@ describe("hasMany", function () {
 								// reload paul to make sure we have 2 pets
 								Person.one({ name: 'Paul' }, function (err, paul) {
 									should.not.exist(err);
-									should.equal(paul.pets.length, 2);
+									should.equal(paul.pets.length, 4);
 
 									// Saving paul2 should NOT auto save associations and hence delete
 									// the associations we just created.
@@ -611,7 +662,7 @@ describe("hasMany", function () {
 										// let's check paul - pets should still be associated
 										Person.one({ name: 'Paul' }, function (err, paul) {
 											should.not.exist(err);
-											should.equal(paul.pets.length, 2);
+											should.equal(paul.pets.length, 4);
 
 											done();
 										});
@@ -666,7 +717,7 @@ describe("hasMany", function () {
 			Account.hasMany('emails', Email, {}, { key: opts.key });
 
 			helper.dropSync([ Email, Account ], function (err) {
-				if (err) return done(err);
+				should.not.exist(err);
 				done()
 			});
 		};

@@ -181,7 +181,7 @@ describe("Hook", function() {
 			}));
 
 			it("should wait for hook to finish", function (done) {
-				this.timeout(500);
+				this.timeout(800);
 
 				Person.create([{ name: "John Doe" }], function () {
 					beforeCreate.should.be.true;
@@ -200,7 +200,7 @@ describe("Hook", function() {
 				}));
 
 				it("should trigger error", function (done) {
-					this.timeout(500);
+					this.timeout(800);
 
 					Person.create([{ name: "John Doe" }], function (err) {
 						err.should.be.a.Object();
@@ -301,7 +301,7 @@ describe("Hook", function() {
 			}));
 
 			it("should wait for hook to finish", function (done) {
-				this.timeout(500);
+				this.timeout(800);
 
 				Person.create([{ name: "John Doe" }], function () {
 					beforeSave.should.be.true;
@@ -324,7 +324,7 @@ describe("Hook", function() {
 				}));
 
 				it("should trigger error when creating", function (done) {
-					this.timeout(500);
+					this.timeout(800);
 
 					Person.create([{ name: "Jane Doe" }], function (err) {
 						err.should.be.a.Object();
@@ -335,7 +335,7 @@ describe("Hook", function() {
 				});
 
 				it("should trigger error when saving", function (done) {
-					this.timeout(500);
+					this.timeout(800);
 
 					Person.create([{ name: "John Doe" }], function (err, John) {
 						should.equal(err, null);
@@ -429,7 +429,7 @@ describe("Hook", function() {
 
 		describe("if hook method has 1 argument", function () {
 			var beforeValidation = false;
-			this.timeout(500);
+			this.timeout(800);
 
 			before(setup({
 				beforeValidation : function (next) {
@@ -508,7 +508,7 @@ describe("Hook", function() {
 			}));
 
 			it("should wait for hook to finish", function (done) {
-				this.timeout(500);
+				this.timeout(800);
 
 				Person.create([{ name: "John Doe" }], function (err, items) {
 					afterLoad.should.be.true;
@@ -525,7 +525,7 @@ describe("Hook", function() {
 				}));
 
 				it("should return error", function (done) {
-					this.timeout(500);
+					this.timeout(800);
 
 					Person.create([{ name: "John Doe" }], function (err, items) {
 						err.should.exist;
@@ -569,7 +569,7 @@ describe("Hook", function() {
 			}));
 
 			it("should wait for hook to finish", function (done) {
-				this.timeout(500);
+				this.timeout(800);
 
 				Person.create([{ name: "John Doe" }], function (err, items) {
 					afterAutoFetch.should.be.true;
@@ -586,7 +586,7 @@ describe("Hook", function() {
 				}));
 
 				it("should return error", function (done) {
-					this.timeout(500);
+					this.timeout(800);
 
 					Person.create([{ name: "John Doe" }], function (err, items) {
 						err.should.exist;
@@ -628,7 +628,7 @@ describe("Hook", function() {
 			}));
 
 			it("should wait for hook to finish", function (done) {
-				this.timeout(500);
+				this.timeout(800);
 
 				Person.create([{ name: "John Doe" }], function (err, items) {
 					items[0].remove(function () {
@@ -650,7 +650,7 @@ describe("Hook", function() {
 				}));
 
 				it("should trigger error", function (done) {
-					this.timeout(500);
+					this.timeout(800);
 
 					Person.create([{ name: "John Doe" }], function (err, items) {
 						items[0].remove(function (err) {

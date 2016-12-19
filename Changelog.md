@@ -1,3 +1,6 @@
+### v3.2.2
+- Fix the fix in [#761](../../issues/761) so that it works with custom keys ([#762](../../issues/762))
+
 ### v3.2.1
 - Fix has many 'has' accessor failing when join table has duplicate entries ([#761](../../issues/761))
 

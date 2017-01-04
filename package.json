@@ -37,7 +37,7 @@
 	"analyse"     : false,
 	"dependencies": {
 		"async"            : "2.1.4",
-		"enforce"          : "0.1.6",
+		"enforce"          : "0.1.7",
 		"hat"              : "0.0.3",
 		"lodash"           : "4.17.2",
 		"path-is-absolute" : "1.0.1",

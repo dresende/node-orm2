@@ -1,3 +1,6 @@
+### v3.2.3
+- Upgrade `enforce` package to improve TLD validation ([#763](../../issues/763))
+
 ### v3.2.2
 - Fix the fix in [#761](../../issues/761) so that it works with custom keys ([#762](../../issues/762))
 

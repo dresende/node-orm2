@@ -55,7 +55,7 @@ orm.connect("mysql://username:password@host/database", function (err, db) {
 		surname   : String,
 		age       : Number, // FLOAT
 		male      : Boolean,
-		continent : [ "Europe", "America", "Asia", "Africa", "Australia", "Antartica" ], // ENUM type
+		continent : [ "Europe", "America", "Asia", "Africa", "Australia", "Antarctica" ], // ENUM type
 		photo     : Buffer, // BLOB/BINARY
 		data      : Object // JSON encoded
 	}, {

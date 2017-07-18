@@ -3,6 +3,7 @@ language: node_js
 node_js:
   - '4'
   - '6'
+  - '8'
 before_script:
   - mysql -e 'create database orm_test;'
   - psql -c 'create database orm_test;' -U postgres

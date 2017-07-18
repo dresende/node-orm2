@@ -4,6 +4,7 @@ var async       = require('async');
 var _           = require('lodash');
 var util        = require('util');
 var querystring = require('querystring');
+var Semver      = require('semver');
 var ORM         = require('../');
 
 common.ORM = ORM;
@@ -165,3 +166,7 @@ common.retry = function (before, run, until, done, args) {
 		runNext();
 	}
 };
+
+common.nodeVersion = function () {
+	return new Semver(process.versions.node);
+}

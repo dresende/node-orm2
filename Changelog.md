@@ -1,3 +1,6 @@
+### v3.2.4
+- Update dependencies
+
 ### v3.2.3
 - Upgrade `enforce` package to improve TLD validation ([#763](../../issues/763))
 

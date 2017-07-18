@@ -28,7 +28,7 @@ npm test
 - PostgreSQL
 - Amazon Redshift
 - SQLite
-- MongoDB (beta, missing aggregation for now)
+- MongoDB (beta, node 6 or older, doesn't work with node 8. Also, missing aggregation features)
 
 ## Features
 

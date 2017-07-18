@@ -1,3 +1,4 @@
+var chalk    = require("chalk");
 var Mocha    = require("mocha");
 var glob     = require("glob");
 var path     = require("path");
@@ -22,6 +23,13 @@ switch (common.hasConfig(common.protocol())) {
 runTests();
 
 function runTests() {
+	if (common.protocol() == 'mongodb' && common.nodeVersion().major > 6) {
+		console.warn(chalk.red("MongoDB 1.x doesn't work with node 7, 8 or newer."));
+		console.warn(chalk.red("Tests will not run."));
+		console.warn(chalk.red("If you would like this to work, please submit a pull request."));
+		return;
+	}
+
 	glob.sync(location).forEach(function (file) {
 		if (!shouldRunTest(file)) return;
 		mocha.addFile(file);
@@ -43,3 +51,4 @@ function shouldRunTest(file) {
 
 	return true;
 }
+

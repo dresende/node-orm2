@@ -3,125 +3,125 @@ var helper   = require('../support/spec_helper');
 var ORM      = require('../../');
 
 describe("Model.create()", function() {
-	var db = null;
-	var Pet = null;
-	var Person = null;
+  var db = null;
+  var Pet = null;
+  var Person = null;
 
-	var setup = function () {
-		return function (done) {
-			Person = db.define("person", {
-				name   : String
-			});
-			Pet = db.define("pet", {
-				name   : { type: "text", defaultValue: "Mutt" }
-			});
-			Person.hasMany("pets", Pet);
+  var setup = function () {
+    return function (done) {
+      Person = db.define("person", {
+        name   : String
+      });
+      Pet = db.define("pet", {
+        name   : { type: "text", defaultValue: "Mutt" }
+      });
+      Person.hasMany("pets", Pet);
 
-			return helper.dropSync([ Person, Pet ], done);
-		};
-	};
+      return helper.dropSync([ Person, Pet ], done);
+    };
+  };
 
-	before(function (done) {
-		helper.connect(function (connection) {
-			db = connection;
+  before(function (done) {
+    helper.connect(function (connection) {
+      db = connection;
 
-			return done();
-		});
-	});
+      return done();
+    });
+  });
 
-	after(function () {
-		return db.close();
-	});
+  after(function () {
+    return db.close();
+  });
 
-	describe("if passing an object", function () {
-		before(setup());
+  describe("if passing an object", function () {
+    before(setup());
 
-		it("should accept it as the only item to create", function (done) {
-			Person.create({
-				name : "John Doe"
-			}, function (err, John) {
-				should.equal(err, null);
-				John.should.have.property("name", "John Doe");
+    it("should accept it as the only item to create", function (done) {
+      Person.create({
+        name : "John Doe"
+      }, function (err, John) {
+        should.equal(err, null);
+        John.should.have.property("name", "John Doe");
 
-				return done();
-			});
-		});
-	});
+        return done();
+      });
+    });
+  });
 
-	describe("if passing an array", function () {
-		before(setup());
+  describe("if passing an array", function () {
+    before(setup());
 
-		it("should accept it as a list of items to create", function (done) {
-			Person.create([{
-				name : "John Doe"
-			}, {
-				name : "Jane Doe"
-			}], function (err, people) {
-				should.equal(err, null);
-				should(Array.isArray(people));
+    it("should accept it as a list of items to create", function (done) {
+      Person.create([{
+        name : "John Doe"
+      }, {
+        name : "Jane Doe"
+      }], function (err, people) {
+        should.equal(err, null);
+        should(Array.isArray(people));
 
-				people.should.have.property("length", 2);
-				people[0].should.have.property("name", "John Doe");
-				people[1].should.have.property("name", "Jane Doe");
+        people.should.have.property("length", 2);
+        people[0].should.have.property("name", "John Doe");
+        people[1].should.have.property("name", "Jane Doe");
 
-				return done();
-			});
-		});
-	});
+        return done();
+      });
+    });
+  });
 
-	describe("if element has an association", function () {
-		before(setup());
+  describe("if element has an association", function () {
+    before(setup());
 
-		it("should also create it or save it", function (done) {
-			Person.create({
-				name : "John Doe",
-				pets : [ new Pet({ name: "Deco" }) ]
-			}, function (err, John) {
-				should.equal(err, null);
+    it("should also create it or save it", function (done) {
+      Person.create({
+        name : "John Doe",
+        pets : [ new Pet({ name: "Deco" }) ]
+      }, function (err, John) {
+        should.equal(err, null);
 
-				John.should.have.property("name", "John Doe");
+        John.should.have.property("name", "John Doe");
 
-				should(Array.isArray(John.pets));
+        should(Array.isArray(John.pets));
 
-				John.pets[0].should.have.property("name", "Deco");
-				John.pets[0].should.have.property(Pet.id);
-				John.pets[0].saved().should.be.true;
+        John.pets[0].should.have.property("name", "Deco");
+        John.pets[0].should.have.property(Pet.id);
+        John.pets[0].saved().should.be.true;
 
-				return done();
-			});
-		});
+        return done();
+      });
+    });
 
-		it("should also create it or save it even if it's an object and not an instance", function (done) {
-			Person.create({
-				name : "John Doe",
-				pets : [ { name: "Deco" } ]
-			}, function (err, John) {
-				should.equal(err, null);
+    it("should also create it or save it even if it's an object and not an instance", function (done) {
+      Person.create({
+        name : "John Doe",
+        pets : [ { name: "Deco" } ]
+      }, function (err, John) {
+        should.equal(err, null);
 
-				John.should.have.property("name", "John Doe");
+        John.should.have.property("name", "John Doe");
 
-				should(Array.isArray(John.pets));
+        should(Array.isArray(John.pets));
 
-				John.pets[0].should.have.property("name", "Deco");
-				John.pets[0].should.have.property(Pet.id);
-				John.pets[0].saved().should.be.true;
+        John.pets[0].should.have.property("name", "Deco");
+        John.pets[0].should.have.property(Pet.id);
+        John.pets[0].saved().should.be.true;
 
-				return done();
-			});
-		});
-	});
+        return done();
+      });
+    });
+  });
 
-	describe("when not passing a property", function () {
-		before(setup());
+  describe("when not passing a property", function () {
+    before(setup());
 
-		it("should use defaultValue if defined", function (done) {
-			Pet.create({}, function (err, Mutt) {
-				should.equal(err, null);
+    it("should use defaultValue if defined", function (done) {
+      Pet.create({}, function (err, Mutt) {
+        should.equal(err, null);
 
-				Mutt.should.have.property("name", "Mutt");
+        Mutt.should.have.property("name", "Mutt");
 
-				return done();
-			});
-		});
-	});
+        return done();
+      });
+    });
+  });
 });

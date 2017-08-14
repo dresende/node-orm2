@@ -1,9 +1,9 @@
 module.exports = function (db, cb) {
-	db.define("pet", {
-		name : String
-	});
+  db.define("pet", {
+    name : String
+  });
 
-	setTimeout(function () {
-		return cb();
-	}, 200);
+  setTimeout(function () {
+    return cb();
+  }, 200);
 };

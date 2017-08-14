@@ -3,68 +3,68 @@ var helper   = require('../support/spec_helper');
 var ORM      = require('../../');
 
 describe("Model.clear()", function() {
-	var db = null;
-	var Person = null;
+  var db = null;
+  var Person = null;
 
-	var setup = function () {
-		return function (done) {
-			Person = db.define("person", {
-				name   : String
-			});
+  var setup = function () {
+    return function (done) {
+      Person = db.define("person", {
+        name   : String
+      });
 
-			ORM.singleton.clear();
+      ORM.singleton.clear();
 
-			return helper.dropSync(Person, function () {
-				Person.create([{
-					name: "John Doe"
-				}, {
-					name: "Jane Doe"
-				}], done);
-			});
-		};
-	};
+      return helper.dropSync(Person, function () {
+        Person.create([{
+          name: "John Doe"
+        }, {
+          name: "Jane Doe"
+        }], done);
+      });
+    };
+  };
 
-	before(function (done) {
-		helper.connect(function (connection) {
-			db = connection;
+  before(function (done) {
+    helper.connect(function (connection) {
+      db = connection;
 
-			return done();
-		});
-	});
+      return done();
+    });
+  });
 
-	after(function () {
-		return db.close();
-	});
+  after(function () {
+    return db.close();
+  });
 
-	describe("with callback", function () {
-		before(setup());
+  describe("with callback", function () {
+    before(setup());
 
-		it("should call when done", function (done) {
-			Person.clear(function (err) {
-				should.equal(err, null);
+    it("should call when done", function (done) {
+      Person.clear(function (err) {
+        should.equal(err, null);
 
-				Person.find().count(function (err, count) {
-					count.should.equal(0);
+        Person.find().count(function (err, count) {
+          count.should.equal(0);
 
-					return done();
-				});
-			});
-		});
-	});
+          return done();
+        });
+      });
+    });
+  });
 
-	describe("without callback", function () {
-		before(setup());
+  describe("without callback", function () {
+    before(setup());
 
-		it("should still remove", function (done) {
-			Person.clear();
+    it("should still remove", function (done) {
+      Person.clear();
 
-			setTimeout(function () {
-				Person.find().count(function (err, count) {
-					count.should.equal(0);
+      setTimeout(function () {
+        Person.find().count(function (err, count) {
+          count.should.equal(0);
 
-					return done();
-				});
-			}, 200);
-		});
-	});
+          return done();
+        });
+      }, 200);
+    });
+  });
 });

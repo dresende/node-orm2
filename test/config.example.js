@@ -8,19 +8,19 @@
 // make test
 
 exports.mysql = {
-	user     : "root",
-	password : "",
-	database : "test"
+  user     : "root",
+  password : "",
+  database : "test"
 };
 exports.postgres = {
-	user     : "root",
-	password : "",
-	database : "test"
+  user     : "root",
+  password : "",
+  database : "test"
 };
 exports.redshift = {
-	user      : "root",
-	password  : "",
-	database  : "test"
+  user      : "root",
+  password  : "",
+  database  : "test"
 };
 exports.mongodb = {
     host: "localhost",

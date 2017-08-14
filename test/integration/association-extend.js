@@ -3,248 +3,248 @@ var helper   = require('../support/spec_helper');
 var ORM      = require('../../');
 
 describe("Model.extendsTo()", function() {
-	var db = null;
-	var Person = null;
-	var PersonAddress = null;
+  var db = null;
+  var Person = null;
+  var PersonAddress = null;
 
-	var setup = function () {
-		return function (done) {
-			Person = db.define("person", {
-				name   : String
-			});
-			PersonAddress = Person.extendsTo("address", {
-				street : String,
-				number : Number
-			});
+  var setup = function () {
+    return function (done) {
+      Person = db.define("person", {
+        name   : String
+      });
+      PersonAddress = Person.extendsTo("address", {
+        street : String,
+        number : Number
+      });
 
-			ORM.singleton.clear();
+      ORM.singleton.clear();
 
-			return helper.dropSync([ Person, PersonAddress ], function () {
-				Person.create({
-					name: "John Doe"
-				}, function (err, person) {
-					should.not.exist(err);
+      return helper.dropSync([ Person, PersonAddress ], function () {
+        Person.create({
+          name: "John Doe"
+        }, function (err, person) {
+          should.not.exist(err);
 
-					return person.setAddress(new PersonAddress({
-						street : "Liberty",
-						number : 123
-					}), done);
-				});
-			});
-		};
-	};
+          return person.setAddress(new PersonAddress({
+            street : "Liberty",
+            number : 123
+          }), done);
+        });
+      });
+    };
+  };
 
-	before(function (done) {
-		helper.connect(function (connection) {
-			db = connection;
+  before(function (done) {
+    helper.connect(function (connection) {
+      db = connection;
 
-			return done();
-		});
-	});
+      return done();
+    });
+  });
 
-	after(function () {
-		return db.close();
-	});
+  after(function () {
+    return db.close();
+  });
 
-	describe("when calling hasAccessor", function () {
-		before(setup());
+  describe("when calling hasAccessor", function () {
+    before(setup());
 
-		it("should return true if found", function (done) {
-			Person.find().first(function (err, John) {
-				should.equal(err, null);
+    it("should return true if found", function (done) {
+      Person.find().first(function (err, John) {
+        should.equal(err, null);
 
-				John.hasAddress(function (err, hasAddress) {
-					should.equal(err, null);
-					hasAddress.should.equal(true);
+        John.hasAddress(function (err, hasAddress) {
+          should.equal(err, null);
+          hasAddress.should.equal(true);
 
-					return done();
-				});
-			});
-		});
+          return done();
+        });
+      });
+    });
 
-		it("should return false if not found", function (done) {
-			Person.find().first(function (err, John) {
-				should.equal(err, null);
+    it("should return false if not found", function (done) {
+      Person.find().first(function (err, John) {
+        should.equal(err, null);
 
-				John.removeAddress(function () {
-					John.hasAddress(function (err, hasAddress) {
-						err.should.be.a.Object();
-						hasAddress.should.equal(false);
+        John.removeAddress(function () {
+          John.hasAddress(function (err, hasAddress) {
+            err.should.be.a.Object();
+            hasAddress.should.equal(false);
 
-						return done();
-					});
-				});
-			});
-		});
+            return done();
+          });
+        });
+      });
+    });
 
-		it("should return error if instance not with an ID", function (done) {
-			var Jane = new Person({
-				name: "Jane"
-			});
-			Jane.hasAddress(function (err, hasAddress) {
-				err.should.be.a.Object();
-				err.should.have.property("code", ORM.ErrorCodes.NOT_DEFINED);
+    it("should return error if instance not with an ID", function (done) {
+      var Jane = new Person({
+        name: "Jane"
+      });
+      Jane.hasAddress(function (err, hasAddress) {
+        err.should.be.a.Object();
+        err.should.have.property("code", ORM.ErrorCodes.NOT_DEFINED);
 
-				return done();
-			});
-		});
-	});
+        return done();
+      });
+    });
+  });
 
-	describe("when calling getAccessor", function () {
-		before(setup());
+  describe("when calling getAccessor", function () {
+    before(setup());
 
-		it("should return extension if found", function (done) {
-			Person.find().first(function (err, John) {
-				should.equal(err, null);
+    it("should return extension if found", function (done) {
+      Person.find().first(function (err, John) {
+        should.equal(err, null);
 
-				John.getAddress(function (err, Address) {
-					should.equal(err, null);
-					Address.should.be.a.Object();
-					Address.should.have.property("street", "Liberty");
+        John.getAddress(function (err, Address) {
+          should.equal(err, null);
+          Address.should.be.a.Object();
+          Address.should.have.property("street", "Liberty");
 
-					return done();
-				});
-			});
-		});
+          return done();
+        });
+      });
+    });
 
-		it("should return error if not found", function (done) {
-			Person.find().first(function (err, John) {
-				should.equal(err, null);
+    it("should return error if not found", function (done) {
+      Person.find().first(function (err, John) {
+        should.equal(err, null);
 
-				John.removeAddress(function () {
-					John.getAddress(function (err, Address) {
-						err.should.be.a.Object();
-						err.should.have.property("code", ORM.ErrorCodes.NOT_FOUND);
+        John.removeAddress(function () {
+          John.getAddress(function (err, Address) {
+            err.should.be.a.Object();
+            err.should.have.property("code", ORM.ErrorCodes.NOT_FOUND);
 
-						return done();
-					});
-				});
-			});
-		});
+            return done();
+          });
+        });
+      });
+    });
 
-		it("should return error if instance not with an ID", function (done) {
-			var Jane = new Person({
-				name: "Jane"
-			});
-			Jane.getAddress(function (err, Address) {
-				err.should.be.a.Object();
-				err.should.have.property("code", ORM.ErrorCodes.NOT_DEFINED);
+    it("should return error if instance not with an ID", function (done) {
+      var Jane = new Person({
+        name: "Jane"
+      });
+      Jane.getAddress(function (err, Address) {
+        err.should.be.a.Object();
+        err.should.have.property("code", ORM.ErrorCodes.NOT_DEFINED);
 
-				return done();
-			});
-		});
-	});
+        return done();
+      });
+    });
+  });
 
-	describe("when calling setAccessor", function () {
-		before(setup());
+  describe("when calling setAccessor", function () {
+    before(setup());
 
-		it("should remove any previous extension", function (done) {
-			Person.find().first(function (err, John) {
-				should.equal(err, null);
+    it("should remove any previous extension", function (done) {
+      Person.find().first(function (err, John) {
+        should.equal(err, null);
 
-				PersonAddress.find({ number: 123 }).count(function (err, c) {
-					should.equal(err, null);
-					c.should.equal(1);
+        PersonAddress.find({ number: 123 }).count(function (err, c) {
+          should.equal(err, null);
+          c.should.equal(1);
 
-					var addr = new PersonAddress({
-						street : "4th Ave",
-						number : 4
-					});
+          var addr = new PersonAddress({
+            street : "4th Ave",
+            number : 4
+          });
 
-					John.setAddress(addr, function (err) {
-						should.equal(err, null);
+          John.setAddress(addr, function (err) {
+            should.equal(err, null);
 
-						John.getAddress(function (err, Address) {
-							should.equal(err, null);
-							Address.should.be.a.Object();
-							Address.should.have.property("street", addr.street);
+            John.getAddress(function (err, Address) {
+              should.equal(err, null);
+              Address.should.be.a.Object();
+              Address.should.have.property("street", addr.street);
 
-							PersonAddress.find({ number: 123 }).count(function (err, c) {
-								should.equal(err, null);
-								c.should.equal(0);
+              PersonAddress.find({ number: 123 }).count(function (err, c) {
+                should.equal(err, null);
+                c.should.equal(0);
 
-								return done();
-							});
-						});
-					});
-				});
-			});
-		});
-	});
+                return done();
+              });
+            });
+          });
+        });
+      });
+    });
+  });
 
-	describe("when calling delAccessor", function () {
-		before(setup());
+  describe("when calling delAccessor", function () {
+    before(setup());
 
-		it("should remove any extension", function (done) {
-			Person.find().first(function (err, John) {
-				should.equal(err, null);
+    it("should remove any extension", function (done) {
+      Person.find().first(function (err, John) {
+        should.equal(err, null);
 
-				PersonAddress.find({ number: 123 }).count(function (err, c) {
-					should.equal(err, null);
-					c.should.equal(1);
+        PersonAddress.find({ number: 123 }).count(function (err, c) {
+          should.equal(err, null);
+          c.should.equal(1);
 
-					var addr = new PersonAddress({
-						street : "4th Ave",
-						number : 4
-					});
+          var addr = new PersonAddress({
+            street : "4th Ave",
+            number : 4
+          });
 
-					John.removeAddress(function (err) {
-						should.equal(err, null);
+          John.removeAddress(function (err) {
+            should.equal(err, null);
 
-						PersonAddress.find({ number: 123 }).count(function (err, c) {
-							should.equal(err, null);
-							c.should.equal(0);
+            PersonAddress.find({ number: 123 }).count(function (err, c) {
+              should.equal(err, null);
+              c.should.equal(0);
 
-							return done();
-						});
-					});
-				});
-			});
-		});
+              return done();
+            });
+          });
+        });
+      });
+    });
 
-		it("should return error if instance not with an ID", function (done) {
-			var Jane = new Person({
-				name: "Jane"
-			});
-			Jane.removeAddress(function (err) {
-				err.should.be.a.Object();
-				err.should.have.property("code", ORM.ErrorCodes.NOT_DEFINED);
+    it("should return error if instance not with an ID", function (done) {
+      var Jane = new Person({
+        name: "Jane"
+      });
+      Jane.removeAddress(function (err) {
+        err.should.be.a.Object();
+        err.should.have.property("code", ORM.ErrorCodes.NOT_DEFINED);
 
-				return done();
-			});
-		});
-	});
+        return done();
+      });
+    });
+  });
 
-	describe("findBy()", function () {
-		before(setup());
+  describe("findBy()", function () {
+    before(setup());
 
-		it("should throw if no conditions passed", function (done) {
-			(function () {
-				Person.findByAddress(function () {});
-			}).should.throw();
+    it("should throw if no conditions passed", function (done) {
+      (function () {
+        Person.findByAddress(function () {});
+      }).should.throw();
 
-			return done();
-		});
+      return done();
+    });
 
-		it("should lookup in Model based on associated model properties", function (done) {
-			Person.findByAddress({
-				number: 123
-			}, function (err, people) {
-				should.equal(err, null);
-				should(Array.isArray(people));
-				should(people.length == 1);
+    it("should lookup in Model based on associated model properties", function (done) {
+      Person.findByAddress({
+        number: 123
+      }, function (err, people) {
+        should.equal(err, null);
+        should(Array.isArray(people));
+        should(people.length == 1);
 
-				return done();
-			});
-		});
+        return done();
+      });
+    });
 
-		it("should return a ChainFind if no callback passed", function (done) {
-			var ChainFind = Person.findByAddress({
-				number: 123
-			});
-			ChainFind.run.should.be.a.Function();
+    it("should return a ChainFind if no callback passed", function (done) {
+      var ChainFind = Person.findByAddress({
+        number: 123
+      });
+      ChainFind.run.should.be.a.Function();
 
-			return done();
-		});
-	});
+      return done();
+    });
+  });
 });

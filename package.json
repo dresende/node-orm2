@@ -1,84 +1,84 @@
 {
-	"author": "Diogo Resende <dresende@thinkdigital.pt>",
-	"name": "orm",
-	"description": "NodeJS Object-relational mapping",
-	"keywords": [
-		"orm",
-		"odm",
-		"database",
-		"mysql",
-		"postgres",
-		"redshift",
-		"sqlite",
-		"mongodb"
-	],
-	"version": "3.2.4",
-	"license": "MIT",
-	"homepage": "http://dresende.github.io/node-orm2",
-	"repository": "http://github.com/dresende/node-orm2.git",
-	"contributors": [
-		{
-			"name": "Bramus Van Damme",
-			"email": "bramus@bram.us"
-		},
-		{
-			"name": "Lorien Gamaroff",
-			"email": "lorien@gamaroff.org"
-		},
-		{
-			"name": "preslavrachev"
-		},
-		{
-			"name": "Chris Cowan",
-			"email": "me@chriscowan.us"
-		},
-		{
-			"name": "Paul Dixon",
-			"email": "paul.dixon@mintbridge.co.uk"
-		},
-		{
-			"name": "David Kosub"
-		},
-		{
-			"name": "Arek W",
-			"email": "arek01@gmail.com"
-		},
-		{
-			"name": "Joseph Gilley",
-			"email": "joe.gilley@gmail.com"
-		},
-		{
-			"name": "Benjamin Pannell",
-			"email": "admin@sierrasoftworks.com"
-		}
-	],
-	"main": "./lib/ORM",
-	"scripts": {
-		"test": "make test"
-	},
-	"engines": {
-		"node": "*"
-	},
-	"analyse": false,
-	"dependencies": {
-		"async": "2.5.0",
-		"enforce": "0.1.7",
-		"hat": "0.0.3",
-		"lodash": "4.17.4",
-		"path-is-absolute": "1.0.1",
-		"sql-query": "0.1.26",
-		"sql-ddl-sync": "0.3.13"
-	},
-	"devDependencies": {
-		"chalk": "2.0.1",
-		"glob": "7.1.2",
-		"mocha": "3.4.2",
-		"mongodb": "1.4.10",
-		"mysql": "2.13.0",
-		"pg": "6.4.1",
-		"semver": "5.3.0",
-		"should": "11.2.1",
-		"sqlite3": "3.1.8"
-	},
-	"optionalDependencies": {}
+  "author": "Diogo Resende <dresende@thinkdigital.pt>",
+  "name": "orm",
+  "description": "NodeJS Object-relational mapping",
+  "keywords": [
+    "orm",
+    "odm",
+    "database",
+    "mysql",
+    "postgres",
+    "redshift",
+    "sqlite",
+    "mongodb"
+  ],
+  "version": "3.2.4",
+  "license": "MIT",
+  "homepage": "http://dresende.github.io/node-orm2",
+  "repository": "http://github.com/dresende/node-orm2.git",
+  "contributors": [
+    {
+      "name": "Bramus Van Damme",
+      "email": "bramus@bram.us"
+    },
+    {
+      "name": "Lorien Gamaroff",
+      "email": "lorien@gamaroff.org"
+    },
+    {
+      "name": "preslavrachev"
+    },
+    {
+      "name": "Chris Cowan",
+      "email": "me@chriscowan.us"
+    },
+    {
+      "name": "Paul Dixon",
+      "email": "paul.dixon@mintbridge.co.uk"
+    },
+    {
+      "name": "David Kosub"
+    },
+    {
+      "name": "Arek W",
+      "email": "arek01@gmail.com"
+    },
+    {
+      "name": "Joseph Gilley",
+      "email": "joe.gilley@gmail.com"
+    },
+    {
+      "name": "Benjamin Pannell",
+      "email": "admin@sierrasoftworks.com"
+    }
+  ],
+  "main": "./lib/ORM",
+  "scripts": {
+    "test": "make test"
+  },
+  "engines": {
+    "node": "*"
+  },
+  "analyse": false,
+  "dependencies": {
+    "async": "2.5.0",
+    "enforce": "0.1.7",
+    "hat": "0.0.3",
+    "lodash": "4.17.4",
+    "path-is-absolute": "1.0.1",
+    "sql-query": "0.1.26",
+    "sql-ddl-sync": "0.3.13"
+  },
+  "devDependencies": {
+    "chalk": "2.0.1",
+    "glob": "7.1.2",
+    "mocha": "3.4.2",
+    "mongodb": "1.4.10",
+    "mysql": "2.13.0",
+    "pg": "6.4.1",
+    "semver": "5.3.0",
+    "should": "11.2.1",
+    "sqlite3": "3.1.8"
+  },
+  "optionalDependencies": {}
 }

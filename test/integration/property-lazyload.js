@@ -3,133 +3,133 @@ var helper   = require('../support/spec_helper');
 var ORM      = require('../../');
 
 describe("LazyLoad properties", function() {
-	var db = null;
-	var Person = null;
-	var PersonPhoto = new Buffer(1024); // fake photo
-	var OtherPersonPhoto = new Buffer(1024); // other fake photo
+  var db = null;
+  var Person = null;
+  var PersonPhoto = new Buffer(1024); // fake photo
+  var OtherPersonPhoto = new Buffer(1024); // other fake photo
 
-	var setup = function () {
-		return function (done) {
-			Person = db.define("person", {
-				name   : String,
-				photo  : { type: "binary", lazyload: true }
-			});
+  var setup = function () {
+    return function (done) {
+      Person = db.define("person", {
+        name   : String,
+        photo  : { type: "binary", lazyload: true }
+      });
 
-			ORM.singleton.clear();
+      ORM.singleton.clear();
 
-			return helper.dropSync(Person, function () {
-				Person.create({
-					name  : "John Doe",
-					photo : PersonPhoto
-				}, done);
-			});
-		};
-	};
+      return helper.dropSync(Person, function () {
+        Person.create({
+          name  : "John Doe",
+          photo : PersonPhoto
+        }, done);
+      });
+    };
+  };
 
-	before(function (done) {
-		helper.connect(function (connection) {
-			db = connection;
+  before(function (done) {
+    helper.connect(function (connection) {
+      db = connection;
 
-			return done();
-		});
-	});
+      return done();
+    });
+  });
 
-	after(function () {
-		return db.close();
-	});
+  after(function () {
+    return db.close();
+  });
 
-	describe("when defined", function () {
-		before(setup());
+  describe("when defined", function () {
+    before(setup());
 
-		it("should not be available when fetching an instance", function (done) {
-			Person.find().first(function (err, John) {
-				should.equal(err, null);
+    it("should not be available when fetching an instance", function (done) {
+      Person.find().first(function (err, John) {
+        should.equal(err, null);
 
-				John.should.be.a.Object();
+        John.should.be.a.Object();
 
-				John.should.have.property("name", "John Doe");
-				John.should.have.property("photo", null);
+        John.should.have.property("name", "John Doe");
+        John.should.have.property("photo", null);
 
-				return done();
-			});
-		});
+        return done();
+      });
+    });
 
-		it("should have apropriate accessors", function (done) {
-			Person.find().first(function (err, John) {
-				should.equal(err, null);
+    it("should have apropriate accessors", function (done) {
+      Person.find().first(function (err, John) {
+        should.equal(err, null);
 
-				John.should.be.a.Object();
-				John.getPhoto.should.be.a.Function();
-				John.setPhoto.should.be.a.Function();
-				John.removePhoto.should.be.a.Function();
+        John.should.be.a.Object();
+        John.getPhoto.should.be.a.Function();
+        John.setPhoto.should.be.a.Function();
+        John.removePhoto.should.be.a.Function();
 
-				return done();
-			});
-		});
+        return done();
+      });
+    });
 
-		it("getAccessor should return property", function (done) {
-			Person.find().first(function (err, John) {
-				should.equal(err, null);
+    it("getAccessor should return property", function (done) {
+      Person.find().first(function (err, John) {
+        should.equal(err, null);
 
-				John.should.be.a.Object();
+        John.should.be.a.Object();
 
-				John.getPhoto(function (err, photo) {
-					should.equal(err, null);
-					photo.toString().should.equal(PersonPhoto.toString());
+        John.getPhoto(function (err, photo) {
+          should.equal(err, null);
+          photo.toString().should.equal(PersonPhoto.toString());
 
-					return done();
-				});
-			});
-		});
+          return done();
+        });
+      });
+    });
 
-		it("setAccessor should change property", function (done) {
-			Person.find().first(function (err, John) {
-				should.equal(err, null);
+    it("setAccessor should change property", function (done) {
+      Person.find().first(function (err, John) {
+        should.equal(err, null);
 
-				John.should.be.a.Object();
+        John.should.be.a.Object();
 
-				John.setPhoto(OtherPersonPhoto, function (err) {
-					should.equal(err, null);
+        John.setPhoto(OtherPersonPhoto, function (err) {
+          should.equal(err, null);
 
-					Person.find().first(function (err, John) {
-						should.equal(err, null);
+          Person.find().first(function (err, John) {
+            should.equal(err, null);
 
-						John.should.be.a.Object();
+            John.should.be.a.Object();
 
-						John.getPhoto(function (err, photo) {
-							should.equal(err, null);
-							photo.toString().should.equal(OtherPersonPhoto.toString());
+            John.getPhoto(function (err, photo) {
+              should.equal(err, null);
+              photo.toString().should.equal(OtherPersonPhoto.toString());
 
-							return done();
-						});
-					});
-				});
-			});
-		});
+              return done();
+            });
+          });
+        });
+      });
+    });
 
-		it("removeAccessor should change property", function (done) {
-			Person.find().first(function (err, John) {
-				should.equal(err, null);
+    it("removeAccessor should change property", function (done) {
+      Person.find().first(function (err, John) {
+        should.equal(err, null);
 
-				John.should.be.a.Object();
+        John.should.be.a.Object();
 
-				John.removePhoto(function (err) {
-					should.equal(err, null);
+        John.removePhoto(function (err) {
+          should.equal(err, null);
 
-					Person.get(John[Person.id], function (err, John) {
-						should.equal(err, null);
+          Person.get(John[Person.id], function (err, John) {
+            should.equal(err, null);
 
-						John.should.be.a.Object();
+            John.should.be.a.Object();
 
-						John.getPhoto(function (err, photo) {
-							should.equal(err, null);
-							should.equal(photo, null);
+            John.getPhoto(function (err, photo) {
+              should.equal(err, null);
+              should.equal(photo, null);
 
-							return done();
-						});
-					});
-				});
-			});
-		});
-	});
+              return done();
+            });
+          });
+        });
+      });
+    });
+  });
 });

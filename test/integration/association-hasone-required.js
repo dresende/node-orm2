@@ -5,85 +5,85 @@ var async  = require('async');
 var _      = require('lodash');
 
 describe("hasOne", function() {
-	var db     = null;
-	var Person = null;
+  var db     = null;
+  var Person = null;
 
-	var setup = function (required) {
-		return function (done) {
-			db.settings.set('instance.identityCache', false);
-			db.settings.set('instance.returnAllErrors', true);
+  var setup = function (required) {
+    return function (done) {
+      db.settings.set('instance.identityCache', false);
+      db.settings.set('instance.returnAllErrors', true);
 
-			Person = db.define('person', {
-				name     : String
-			});
-			Person.hasOne('parent', Person, {
-				required : required,
-				field    : 'parentId'
-			});
+      Person = db.define('person', {
+        name     : String
+      });
+      Person.hasOne('parent', Person, {
+        required : required,
+        field    : 'parentId'
+      });
 
-			return helper.dropSync(Person, done);
-		};
-	};
+      return helper.dropSync(Person, done);
+    };
+  };
 
-	before(function(done) {
-		helper.connect(function (connection) {
-			db = connection;
-			done();
-		});
-	});
+  before(function(done) {
+    helper.connect(function (connection) {
+      db = connection;
+      done();
+    });
+  });
 
-	describe("required", function () {
-		before(setup(true));
+  describe("required", function () {
+    before(setup(true));
 
-		it("should not accept empty association", function (done) {
-			var John = new Person({
-				name     : "John",
-				parentId : null
-			});
-			John.save(function (errors) {
-				should.exist(errors);
-				should.equal(errors.length, 1);
-				should.equal(errors[0].type,     'validation');
-				should.equal(errors[0].msg,      'required');
-				should.equal(errors[0].property, 'parentId');
-				return done();
-			});
-		});
+    it("should not accept empty association", function (done) {
+      var John = new Person({
+        name     : "John",
+        parentId : null
+      });
+      John.save(function (errors) {
+        should.exist(errors);
+        should.equal(errors.length, 1);
+        should.equal(errors[0].type,     'validation');
+        should.equal(errors[0].msg,      'required');
+        should.equal(errors[0].property, 'parentId');
+        return done();
+      });
+    });
 
-		it("should accept association", function (done) {
-			var John = new Person({
-				name     : "John",
-				parentId : 1
-			});
-			John.save(function (err) {
-				should.not.exist(err);
-				return done();
-			});
-		});
-	});
+    it("should accept association", function (done) {
+      var John = new Person({
+        name     : "John",
+        parentId : 1
+      });
+      John.save(function (err) {
+        should.not.exist(err);
+        return done();
+      });
+    });
+  });
 
-	describe("not required", function () {
-		before(setup(false));
+  describe("not required", function () {
+    before(setup(false));
 
-		it("should accept empty association", function (done) {
-			var John = new Person({
-				name : "John"
-			});
-			John.save(function (err) {
-				should.not.exist(err);
-				return done();
-			});
-		});
+    it("should accept empty association", function (done) {
+      var John = new Person({
+        name : "John"
+      });
+      John.save(function (err) {
+        should.not.exist(err);
+        return done();
+      });
+    });
 
-		it("should accept null association", function (done) {
-			var John = new Person({
-				name      : "John",
-				parent_id : null
-			});
-			John.save(function (err) {
-				should.not.exist(err);
-				return done();
-			});
-		});
-	});
+    it("should accept null association", function (done) {
+      var John = new Person({
+        name      : "John",
+        parent_id : null
+      });
+      John.save(function (err) {
+        should.not.exist(err);
+        return done();
+      });
+    });
+  });
 });

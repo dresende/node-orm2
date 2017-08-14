@@ -8,7 +8,7 @@ var logging  = require("./logging");
 var location = path.normalize(path.join(__dirname, "integration", "**", "*.js"));
 var mocha    = new Mocha({
   reporter: "progress",
-  timeout: 5000
+  timeout: 10000
 });
 
 switch (common.hasConfig(common.protocol())) {

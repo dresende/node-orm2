@@ -64,10 +64,6 @@ describe("Hook", function() {
     return db.close();
   });
 
-  // there are a lot of timeouts in this suite and Travis or other test runners can
-  // have hickups that could force this suite to timeout to the default value (2 secs)
-  this.timeout(30000);
-
   describe("after Model creation", function () {
     before(setup({}));
 
@@ -181,8 +177,6 @@ describe("Hook", function() {
       }));
 
       it("should wait for hook to finish", function (done) {
-        this.timeout(800);
-
         Person.create([{ name: "John Doe" }], function () {
           beforeCreate.should.be.true;
 
@@ -200,8 +194,6 @@ describe("Hook", function() {
         }));
 
         it("should trigger error", function (done) {
-          this.timeout(800);
-
           Person.create([{ name: "John Doe" }], function (err) {
             err.should.be.a.Object();
             err.message.should.equal("beforeCreate-error");
@@ -301,8 +293,6 @@ describe("Hook", function() {
       }));
 
       it("should wait for hook to finish", function (done) {
-        this.timeout(800);
-
         Person.create([{ name: "John Doe" }], function () {
           beforeSave.should.be.true;
 
@@ -324,8 +314,6 @@ describe("Hook", function() {
         }));
 
         it("should trigger error when creating", function (done) {
-          this.timeout(800);
-
           Person.create([{ name: "Jane Doe" }], function (err) {
             err.should.be.a.Object();
             err.message.should.equal("beforeSave-error");
@@ -335,8 +323,6 @@ describe("Hook", function() {
         });
 
         it("should trigger error when saving", function (done) {
-          this.timeout(800);
-
           Person.create([{ name: "John Doe" }], function (err, John) {
             should.equal(err, null);
 
@@ -429,7 +415,6 @@ describe("Hook", function() {
 
     describe("if hook method has 1 argument", function () {
       var beforeValidation = false;
-      this.timeout(800);
 
       before(setup({
         beforeValidation : function (next) {
@@ -508,8 +493,6 @@ describe("Hook", function() {
       }));
 
       it("should wait for hook to finish", function (done) {
-        this.timeout(800);
-
         Person.create([{ name: "John Doe" }], function (err, items) {
           afterLoad.should.be.true;
 
@@ -525,8 +508,6 @@ describe("Hook", function() {
         }));
 
         it("should return error", function (done) {
-          this.timeout(800);
-
           Person.create([{ name: "John Doe" }], function (err, items) {
             err.should.exist;
             err.message.should.equal("AFTERLOAD_FAIL");
@@ -569,8 +550,6 @@ describe("Hook", function() {
       }));
 
       it("should wait for hook to finish", function (done) {
-        this.timeout(800);
-
         Person.create([{ name: "John Doe" }], function (err, items) {
           afterAutoFetch.should.be.true;
 
@@ -586,8 +565,6 @@ describe("Hook", function() {
         }));
 
         it("should return error", function (done) {
-          this.timeout(800);
-
           Person.create([{ name: "John Doe" }], function (err, items) {
             err.should.exist;
             err.message.should.equal("AFTERAUTOFETCH_FAIL");
@@ -628,8 +605,6 @@ describe("Hook", function() {
       }));
 
       it("should wait for hook to finish", function (done) {
-        this.timeout(800);
-
         Person.create([{ name: "John Doe" }], function (err, items) {
           items[0].remove(function () {
             beforeRemove.should.be.true;
@@ -650,8 +625,6 @@ describe("Hook", function() {
         }));
 
         it("should trigger error", function (done) {
-          this.timeout(800);
-
           Person.create([{ name: "John Doe" }], function (err, items) {
             items[0].remove(function (err) {
               err.should.be.a.Object();

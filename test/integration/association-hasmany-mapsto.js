@@ -8,7 +8,6 @@ var protocol = common.protocol();
 if (common.protocol() == "mongodb") return;   // Can't do mapsTo testing on mongoDB ()
 
 describe("hasMany with mapsTo", function () {
-  this.timeout(4000);
   var db     = null;
   var Person = null;
   var Pet    = null;

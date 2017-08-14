@@ -3,7 +3,6 @@ var helper   = require('../support/spec_helper');
 var ORM      = require('../../');
 
 describe("Smart types", function () {
-    this.timeout(0);
   var db = null;
   var User = null;
   var Profile = null;

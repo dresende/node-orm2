@@ -6,7 +6,6 @@ var common   = require('../common');
 var protocol = common.protocol();
 
 describe("hasMany", function () {
-  this.timeout(4000);
   var db     = null;
   var Person = null;
   var Pet    = null;

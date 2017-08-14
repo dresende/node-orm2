@@ -6,8 +6,6 @@ describe("Model keys option", function() {
   var db = null;
 
   before(function (done) {
-    this.timeout(4000);
-
     helper.connect(function (connection) {
       db = connection;
 

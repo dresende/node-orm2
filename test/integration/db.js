@@ -18,6 +18,10 @@ describe("db.use()", function () {
     return db.close();
   });
 
+  it.only('~!_!-!!_!~-~_~_-_-', function () {
+    console.log(db.dropAsync);
+  });
+
   it("should be able to register a plugin", function (done) {
     var MyPlugin = require("../support/my_plugin");
     var opts     = {

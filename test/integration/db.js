@@ -1,8 +1,8 @@
 var should = require('should');
 var helper = require('../support/spec_helper');
-var sinon = require('sinon');
+var sinon  = require('sinon');
 var common = require('../common');
-var _ = require('lodash');
+var _      = require('lodash');
 
 describe('DB', function () {
   var db = null;
@@ -37,7 +37,7 @@ describe('DB', function () {
       syncStub.restore();
     });
 
-    it('should return an empty array when no model created', function (done) {
+    it('should return an empty array when no model is created', function (done) {
       db.dropAsync()
         .then(function (data) {
           data.should.be.Array;
@@ -51,7 +51,7 @@ describe('DB', function () {
   });
 
   describe("db.dropAsync()", function () {
-    it('should call drop method from model, and return array with model id', function (done) {
+    it('should call the model drop method and return an array with a model id', function (done) {
       db.define("my_model", {
         property: String
       });

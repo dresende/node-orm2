@@ -54,7 +54,7 @@
   ],
   "main": "./lib/ORM",
   "scripts": {
-    "test": "ORM_PROTOCOL=postgres make test"
+    "test": "make test"
   },
   "engines": {
     "node": "*"

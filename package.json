@@ -62,12 +62,14 @@
   "analyse": false,
   "dependencies": {
     "async": "2.5.0",
+    "bluebird": "^3.5.0",
     "enforce": "0.1.7",
     "hat": "0.0.3",
     "lodash": "4.17.4",
     "path-is-absolute": "1.0.1",
-    "sql-query": "0.1.26",
-    "sql-ddl-sync": "0.3.13"
+    "sinon": "^3.2.1",
+    "sql-ddl-sync": "0.3.13",
+    "sql-query": "0.1.26"
   },
   "devDependencies": {
     "chalk": "2.0.1",

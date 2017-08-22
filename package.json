@@ -67,6 +67,7 @@
     "hat": "0.0.3",
     "lodash": "4.17.4",
     "path-is-absolute": "1.0.1",
+    "sinon": "^3.2.1",
     "sql-ddl-sync": "0.3.13",
     "sql-query": "0.1.26"
   },

@@ -443,6 +443,13 @@ describe("ORM", function() {
           return done();
         });
       });
+
+      it("should be able to pingAsync the server", function (done) {
+        db.pingAsync()
+          .then(function () {
+            return done();
+          });
+      });
     });
 
     describe("if callback is passed", function (done) {

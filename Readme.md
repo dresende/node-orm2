@@ -98,6 +98,11 @@ orm.connect("mysql://username:password@host/database", function (err, db) {
 
 ## Promises
 
+The methods what has Async like a postfix, like example `connectAsync` 
+can apply the same arguments as a original method but return a promise. 
+Exclusion method `sync` they called `syncPromise`.
+More details [wiki](linkToWikiHere). // TODO add link to wiki where described async methods.
+
 You can use the [promise enabled wrapper library](https://github.com/rafaelkaufmann/q-orm).
 
 

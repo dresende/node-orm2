@@ -95,7 +95,7 @@ describe("LazyLoad properties", function() {
             photo.toString().should.equal(PersonPhoto.toString());
             done();
           }).catch(function(err) {
-            if (err) done(err);
+            done(err);
           });
       });
     });
@@ -141,7 +141,7 @@ describe("LazyLoad properties", function() {
                   photo.toString().should.equal(OtherPersonPhoto.toString());
                   done();
                 }).catch(function (err) {
-                  if (err) done(err);
+                  done(err);
                 });
             });
           });
@@ -188,7 +188,7 @@ describe("LazyLoad properties", function() {
                 should.equal(photo, null);
                 done();
               }).catch(function (err) {
-                if (err) done(err);
+                done(err);
               });
           });
         });

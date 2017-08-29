@@ -224,8 +224,7 @@ describe("hasMany", function () {
 
             Jane.hasPets(pets[0], function (err, has_pets) {
               should.equal(err, null);
-              console.log(has_pets)
-              has_pets.should.equal(true);
+              has_pets.should.be.true;
 
               return done();
             });
@@ -241,10 +240,7 @@ describe("hasMany", function () {
             should.equal(err, null);
 
             Jane.hasPetsAsync(pets[0]).then(function (has_pets) {
-              // should.equal(err, null);
-              console.log(has_pets)
-              has_pets.should.equal(true);
-              // console.log(has_pets)
+              has_pets.should.be.true;
               done();
             }).catch(function(err){
               done(err);
@@ -253,15 +249,13 @@ describe("hasMany", function () {
         });
       });
 
-      it.only("should return true if not passing any instance and has associated items", function (done) {
+      it("should return true if not passing any instance and has associated items", function (done) {
         Person.find({ name: "Jane" }).first(function (err, Jane) {
           should.equal(err, null);
 
           Jane.hasPets(function (err, has_pets) {
             should.equal(err, null);
-            console.log('has_pets: ' + has_pets)
             has_pets.should.be.true;
-            // has_pets.should.equal(true);
 
             return done();
           });
@@ -273,7 +267,7 @@ describe("hasMany", function () {
           should.equal(err, null);
 
           Jane.hasPetsAsync().then(function (has_pets) {
-            has_pets.should.equal(true);
+            has_pets.should.be.true;
             done();
           }).catch(function(err){
             done(err);

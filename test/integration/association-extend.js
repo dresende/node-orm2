@@ -350,7 +350,7 @@ describe("Model.extendsTo()", function() {
             number : 4
           });
 
-          John.removeAddressAsync(addr).then(function () {
+          John.removeAddressAsync().then(function () {
 
             PersonAddress.find({ number: 123 }).count(function (err, c) {
               should.equal(err, null);

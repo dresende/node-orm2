@@ -224,7 +224,8 @@ describe("hasMany", function () {
 
             Jane.hasPets(pets[0], function (err, has_pets) {
               should.equal(err, null);
-              has_pets.should.be.true;
+              console.log(has_pets)
+              has_pets.should.equal(true);
 
               return done();
             });
@@ -232,15 +233,50 @@ describe("hasMany", function () {
         });
       });
 
-      it("should return true if not passing any instance and has associated items", function (done) {
+      it("should return true if instance has associated item", function (done) {
+        Pet.find({ name: "Mutt" }, function (err, pets) {
+          should.equal(err, null);
+
+          Person.find({ name: "Jane" }).first(function (err, Jane) {
+            should.equal(err, null);
+
+            Jane.hasPetsAsync(pets[0]).then(function (has_pets) {
+              // should.equal(err, null);
+              console.log(has_pets)
+              has_pets.should.equal(true);
+              // console.log(has_pets)
+              done();
+            }).catch(function(err){
+              done(err);
+            });
+          });
+        });
+      });
+
+      it.only("should return true if not passing any instance and has associated items", function (done) {
         Person.find({ name: "Jane" }).first(function (err, Jane) {
           should.equal(err, null);
 
           Jane.hasPets(function (err, has_pets) {
             should.equal(err, null);
+            console.log('has_pets: ' + has_pets)
             has_pets.should.be.true;
+            // has_pets.should.equal(true);
 
             return done();
+          });
+        });
+      });
+
+      it("should return true if not passing any instance and has associated items (promise-based)", function (done) {
+        Person.find({ name: "Jane" }).first(function (err, Jane) {
+          should.equal(err, null);
+
+          Jane.hasPetsAsync().then(function (has_pets) {
+            has_pets.should.equal(true);
+            done();
+          }).catch(function(err){
+            done(err);
           });
         });
       });

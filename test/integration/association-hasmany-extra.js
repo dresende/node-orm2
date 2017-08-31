@@ -75,4 +75,47 @@ describe("hasMany extra properties", function() {
       });
     });
   });
+
+  describe("if passed to addAccessorAsync", function () {
+    before(setup());
+
+    it("should be added to association", function (done) {
+      Person.create([{
+        name    : "John"
+      }], function (err, people) {
+        Pet.create([{
+          name : "Deco"
+        }, {
+          name : "Mutt"
+        }], function (err, pets) {
+          var data = { adopted: true };
+
+          people[0].addPetsAsync(pets, { since : new Date(), data: data }).then(function () {
+
+            Person.find({ name: "John" }, { autoFetch : true }).first(function (err, John) {
+              should.equal(err, null);
+
+              John.should.have.property("pets");
+              should(Array.isArray(pets));
+
+              John.pets.length.should.equal(2);
+
+              John.pets[0].should.have.property("name");
+              John.pets[0].should.have.property("extra");
+              John.pets[0].extra.should.be.a.Object();
+              John.pets[0].extra.should.have.property("since");
+              should(John.pets[0].extra.since instanceof Date);
+
+              should.equal(typeof John.pets[0].extra.data, 'object');
+              should.equal(JSON.stringify(data), JSON.stringify(John.pets[0].extra.data));
+
+              done();
+            });
+          }).catch(function(err) {
+            done(err);
+          });
+        });
+      });
+    });
+  });
 });

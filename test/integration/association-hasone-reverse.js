@@ -93,6 +93,32 @@ describe("hasOne", function () {
         });
       });
 
+      it("should work (promise-based)", function (done) {
+        Person.find({ name: "John Doe" }).first(function (err, John) {
+          Pet.find({ name: "Deco" }).first(function (err, Deco) {
+            Deco.hasOwnersAsync().then(function (has_owner) {
+              has_owner.should.equal(false);
+
+              Deco.setOwnersAsync(John).then(function () {
+                Deco.getOwnersAsync().then(function (JohnCopy) {
+
+                  should(Array.isArray(JohnCopy));
+                  John.should.eql(JohnCopy[0]);
+
+                  done();
+                }).catch(function(err) {
+                  done(err);
+                });
+              }).catch(function(err) {
+                done(err);
+              });
+            }).catch(function(err) {
+              done(err);
+            });
+          });
+        });
+      });
+
       describe("Chain", function () {
         before(function (done) {
           var petParams = [
@@ -184,6 +210,47 @@ describe("hasOne", function () {
                 return done();
               });
             });
+          });
+        });
+      });
+    });
+
+    it("should be able to set an array of people as the owner (promise-based test)", function (done) {
+      Person.find({ name: ["John Doe", "Jane Doe"] }, function (err, owners) {
+        should.not.exist(err);
+
+        Pet.find({ name: "Fido" }).first(function (err, Fido) {
+          should.not.exist(err);
+
+          Fido.hasOwnersAsync().then(function (has_owner) {
+            has_owner.should.equal(false);
+
+            Fido.setOwnersAsync(owners).then(function () {
+
+              Fido.getOwnersAsync().then(function (ownersCopy) {
+                should(Array.isArray(owners));
+                owners.length.should.equal(2);
+
+                // Don't know which order they'll be in.
+                var idProp = common.protocol() == 'mongodb' ? '_id' : 'id'
+
+                if (owners[0][idProp] == ownersCopy[0][idProp]) {
+                  owners[0].should.eql(ownersCopy[0]);
+                  owners[1].should.eql(ownersCopy[1]);
+                } else {
+                  owners[0].should.eql(ownersCopy[1]);
+                  owners[1].should.eql(ownersCopy[0]);
+                }
+
+                done();
+              }).catch(function(err) {
+                done(err);
+              });
+            }).catch(function(err) {
+              done(err);
+            });
+          }).catch(function(err) {
+            done(err);
           });
         });
       });
@@ -327,6 +394,104 @@ describe("hasOne", function () {
                   done();
                 });
               });
+            });
+          });
+        });
+      }, 3, done);
+    });
+  });
+
+  describe("reverse find (promise-based)", function () {
+    it("should be able to find given an association id", function (done) {
+      common.retry(setup(), function (done) {
+        Person.find({ name: "John Doe" }).first(function (err, John) {
+          should.not.exist(err);
+          should.exist(John);
+          Pet.find({ name: "Deco" }).first(function (err, Deco) {
+            should.not.exist(err);
+            should.exist(Deco);
+            Deco.hasOwnersAsync().then(function (has_owner) {
+              has_owner.should.equal(false);
+
+              Deco.setOwnersAsync(John).then(function () {
+
+                Person.find({ pet_id: Deco[Pet.id[0]] }).first(function (err, owner) {
+                  should.not.exist(err);
+                  should.exist(owner);
+                  should.equal(owner.name, John.name);
+                  done();
+                });
+
+              }).catch(function(err) {
+                done(err);
+              });
+            }).catch(function(err) {
+              done(err);
+            });
+          });
+        });
+      }, 3, done);
+    });
+
+    it("should be able to find given an association instance", function (done) {
+      common.retry(setup(), function (done) {
+        Person.find({ name: "John Doe" }).first(function (err, John) {
+          should.not.exist(err);
+          should.exist(John);
+          Pet.find({ name: "Deco" }).first(function (err, Deco) {
+            should.not.exist(err);
+            should.exist(Deco);
+            Deco.hasOwnersAsync().then(function (has_owner) {
+              has_owner.should.equal(false);
+
+              Deco.setOwnersAsync(John).then(function () {
+
+                Person.find({ pet: Deco }).first(function (err, owner) {
+                  should.not.exist(err);
+                  should.exist(owner);
+                  should.equal(owner.name, John.name);
+                  done();
+                });
+
+              }).catch(function(err) {
+                done(err);
+              });
+            }).done(function(err) {
+              done(err);
+            });
+          });
+        });
+      }, 3, done);
+    });
+
+    it("should be able to find given a number of association instances with a single primary key", function (done) {
+      common.retry(setup(), function (done) {
+        Person.find({ name: "John Doe" }).first(function (err, John) {
+          should.not.exist(err);
+          should.exist(John);
+          Pet.all(function (err, pets) {
+            should.not.exist(err);
+            should.exist(pets);
+            should.equal(pets.length, 2);
+
+            pets[0].hasOwnersAsync().then(function (has_owner) {
+              has_owner.should.equal(false);
+
+              pets[0].setOwnersAsync(John).then(function () {
+
+                Person.find({ pet: pets }, function (err, owners) {
+                  should.not.exist(err);
+                  should.exist(owners);
+                  owners.length.should.equal(1);
+
+                  should.equal(owners[0].name, John.name);
+                  done();
+                });
+              }).catch(function(err) {
+                done(err);
+              });
+            }).catch(function(err) {
+              done(err);
             });
           });
         });

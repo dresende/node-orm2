@@ -122,4 +122,98 @@ describe("hasMany hooks", function() {
       });
     });
   });
+
+  describe("beforeSaveAsync", function () {
+    var had_extra = false;
+
+    before(setup({
+      born : Date
+    }, {
+      hooks : {
+        beforeSave: function (extra, next) {
+          had_extra = (typeof extra == "object");
+          return next();
+        }
+      }
+    }));
+
+    it("should pass extra data to hook if extra defined", function (done) {
+      Person.create({
+        name    : "John"
+      }, function (err, John) {
+        Pet.create({
+          name : "Deco"
+        }, function (err, Deco) {
+          John.addPetsAsync(Deco).then(function () {
+            should.not.exist(err);
+
+            had_extra.should.equal(true);
+
+            done();
+          }).catch(function(err) {
+            done(err);
+          });
+        });
+      });
+    });
+  });
+
+  describe("beforeSaveAsync", function () {
+    var had_extra = false;
+
+    before(setup({}, {
+      hooks : {
+        beforeSave: function (next) {
+          next.should.be.a.Function();
+          return next();
+        }
+      }
+    }));
+
+    it("should not pass extra data to hook if extra defined", function (done) {
+      Person.create({
+        name    : "John"
+      }, function (err, John) {
+        Pet.create({
+          name : "Deco"
+        }, function (err, Deco) {
+          John.addPetsAsync(Deco).then(function () {
+            done();
+          }).catch(function(err) {
+            done(err);
+          });
+        });
+      });
+    });
+  });
+
+  describe("beforeSaveAsync", function () {
+    var had_extra = false;
+
+    before(setup({}, {
+      hooks : {
+        beforeSave: function (next) {
+          setTimeout(function () {
+            return next(new Error('blocked'));
+          }, 100);
+        }
+      }
+    }));
+
+    it("should block if error returned", function (done) {
+      Person.create({
+        name    : "John"
+      }, function (err, John) {
+        Pet.create({
+          name : "Deco"
+        }, function (err, Deco) {
+          John.addPetsAsync(Deco).catch(function(err) {
+            should.exist(err);
+            err.message.should.equal('blocked');
+            done()
+          });
+        });
+      });
+    });
+  });
 });

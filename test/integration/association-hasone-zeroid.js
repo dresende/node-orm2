@@ -126,7 +126,36 @@ describe("hasOne", function() {
       });
     });
 
-    it("should work for zero ownerID ", function (done) {
+    it("should work for non-zero ownerID (promise-based)", function (done) {
+      Pet.find({petName: "Muttley"}, function(err, pets) {
+        should.not.exist(err);
+
+        pets[0].petName.should.equal("Muttley");
+        pets[0].should.have.property("id");
+        pets[0].id.should.equal(10);
+        pets[0].ownerID.should.equal(12);
+
+        pets[0].should.not.have.property("owner");
+
+        // But we should be able to see if its there
+        pets[0].hasOwnerAsync().then(function(result) {
+          should.equal(result, true);
+
+          // ...and then get it
+          pets[0].getOwnerAsync().then(function(result) {
+            result.firstName.should.equal("Stuey");
+
+            done()
+          }).catch(function(err) {
+            done(err);
+          });
+        }).catch(function(err) {
+          done(err);
+        });
+      });
+    });
+
+    it("should work for zero ownerID (promise-based)", function (done) {
       Pet.find({petName: "Snagglepuss"}, function(err, pets) {
         should.not.exist(err);
 
@@ -138,17 +167,20 @@ describe("hasOne", function() {
         pets[0].should.not.have.property("owner");
 
         // But we should be able to see if its there
-        pets[0].hasOwner(function(err, result) {
-          should.not.exist(err);
+        pets[0].hasOwnerAsync().then(function(result) {
           should.equal(result, true);
 
           // ...and then get it
-          pets[0].getOwner(function(err, result) {
+          pets[0].getOwnerAsync().then(function(result) {
             should.not.exist(err);
             result.firstName.should.equal("John");
 
-            return done()
+            done()
+          }).catch(function(err) {
+            done(err);
           });
+        }).catch(function(err) {
+          done(err);
         });
       });
     });

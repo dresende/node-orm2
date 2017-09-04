@@ -19,60 +19,48 @@ describe('DB', function () {
   });
 
   describe('db.syncPromise()', function () {
-    it('should return array with model id', function (done) {
+    it('should call sync for each model', function (done) {
       db.define("my_model", {
         property: String
       });
+      db.define("my_model2", {
+        property: String
+      });
+      var syncStub = sinon.stub(db.models['my_model'], 'sync').callsFake(function (cb) { cb(null, {}) });
+      var syncStub2 = sinon.stub(db.models['my_model2'], 'sync').callsFake(function (cb) { cb(null, {}) });
       db.syncPromise()
-        .then(function (data) {
-          data.should.be.Array;
-          should.equal(data[0], 'my_model');
+        .then(function () {
+          should.equal(syncStub.calledOnce, true);
+          should.equal(syncStub2.calledOnce, true);
           done();
         })
         .catch(function (err) {
           done(err)
         });
-    });
-
-    it('should return an empty array when no model is created', function (done) {
-      db.syncPromise()
-        .then(function (data) {
-          data.should.be.Array;
-          should.equal(_.isEmpty(data), true);
-          done()
-        })
-        .catch(function (err) {
-          done(err)
-        })
     });
   });
 
   describe("db.dropAsync()", function () {
-    it('should return an array with a model id', function (done) {
+    it('should should call drop for each model', function (done) {
       db.define("my_model", {
         property: String
       });
+
+      db.define("my_model2", {
+        property: String
+      });
+
+      var dropStub = sinon.stub(db.models['my_model'], 'drop').callsFake(function (cb) { cb(null, {}) });
+      var dropStub2 = sinon.stub(db.models['my_model2'], 'drop').callsFake(function (cb) { cb(null, {}) });
       db.dropAsync()
-        .then(function (data) {
-          data.should.be.Array;
-          should.equal(data[0], 'my_model');
+        .then(function () {
+          should.equal(dropStub.calledOnce, true);
+          should.equal(dropStub2.calledOnce, true);
           done();
         })
         .catch(function (err) {
           done(err)
         });
-    });
-
-    it('should return an empty array when no model created', function (done) {
-      db.dropAsync()
-        .then(function (data) {
-          data.should.be.Array;
-          should.equal(_.isEmpty(data), true);
-          done()
-        })
-        .catch(function (err) {
-          done(err)
-        })
     });
   });
 

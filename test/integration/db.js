@@ -25,8 +25,12 @@ describe('DB', function () {
       db.define("my_model2", {
         property: String
       });
-      var syncStub = sinon.stub(db.models['my_model'], 'sync').callsFake(function (cb) { cb(null, {}) });
-      var syncStub2 = sinon.stub(db.models['my_model2'], 'sync').callsFake(function (cb) { cb(null, {}) });
+      var syncStub = sinon.stub(db.models['my_model'], 'sync').callsFake(function (cb) {
+        cb(null, {})
+      });
+      var syncStub2 = sinon.stub(db.models['my_model2'], 'sync').callsFake(function (cb) {
+        cb(null, {})
+      });
       db.syncPromise()
         .then(function () {
           should.equal(syncStub.calledOnce, true);
@@ -49,8 +53,12 @@ describe('DB', function () {
         property: String
       });
 
-      var dropStub = sinon.stub(db.models['my_model'], 'drop').callsFake(function (cb) { cb(null, {}) });
-      var dropStub2 = sinon.stub(db.models['my_model2'], 'drop').callsFake(function (cb) { cb(null, {}) });
+      var dropStub = sinon.stub(db.models['my_model'], 'drop').callsFake(function (cb) {
+        cb(null, {})
+      });
+      var dropStub2 = sinon.stub(db.models['my_model2'], 'drop').callsFake(function (cb) {
+        cb(null, {})
+      });
       db.dropAsync()
         .then(function () {
           should.equal(dropStub.calledOnce, true);
@@ -244,6 +252,109 @@ describe('DB', function () {
     describe("query", function () {
       it("should be available", function () {
         should.exist(db.driver.query);
+      });
+
+      describe('#execQueryAsync', function () {
+        it('should execute sql queries', function (done) {
+          db.driver.execQueryAsync('SELECT id FROM log')
+            .then(function (data) {
+              should(JSON.stringify(data) == JSON.stringify([{ id: 1 }, { id: 2 }, { id: 3 }]));
+              done()
+            })
+            .catch(function (err) {
+              done(err);
+            });
+        });
+
+        it("should escape sql queries", function (done) {
+          var query = "SELECT log.?? FROM log WHERE log.?? LIKE ? AND log.?? > ?";
+          var args = ['what', 'who', 'jane', 'when', new Date('2013/04/07 12:40:00')];
+          db.driver.execQueryAsync(query, args)
+            .then(function (data) {
+              should(JSON.stringify(data) == JSON.stringify([{ "what": "user login" }]));
+              done();
+            })
+            .catch(function (err) {
+              done(err);
+            });
+        });
+      });
+
+      describe('#eagerQuery', function () {
+        var fixture = {
+          association: {
+            model: {
+              table: 'dog'
+            },
+            field: {
+              dog_id: {
+                type: 'serial',
+                key: true,
+                required: false,
+                klass: 'primary',
+                enumerable: true,
+                mapsTo: 'dog_id',
+                name: 'dog_id'
+              }
+            },
+            mergeAssocId: {
+              family_id: {
+                type: 'integer',
+                required: true,
+                klass: 'primary',
+                enumerable: true,
+                mapsTo: 'family_id',
+                name: 'family_id'
+              }
+            },
+            mergeTable: 'dog_family',
+          },
+          opts: {
+            only: ['name', 'id'],
+            keys: ['id'],
+          },
+          expectedQuery: 'SELECT "t1"."name", "t1"."id", "t2"."dog_id" AS "$p" FROM "dog" "t1" JOIN "dog_family" "t2" ON "t2"."family_id" = "t1"."id" WHERE "t2"."dog_id" IN (1, 5)'
+        };
+
+        describe('cb', function () {
+          it('should build correct query', function (done) {
+            var execSimpleQueryStub = sinon.stub(db.driver, 'execSimpleQuery')
+              .callsFake(function (q, cb) {
+                cb();
+              });
+
+            db.driver.eagerQuery(fixture.association, fixture.opts, [ 1, 5 ], function (err, data) {
+              if (err) {
+                execSimpleQueryStub.restore();
+                done(err);
+              }
+              should.equal(execSimpleQueryStub.calledOnce, true);
+              should.equal(execSimpleQueryStub.calledWith(fixture.expectedQuery), true);
+              execSimpleQueryStub.restore();
+              done();
+            });
+          });
+        });
+
+        describe('async', function () {
+          it('should build correct query', function (done) {
+            var execSimpleQueryStub = sinon.stub(db.driver, 'execSimpleQuery')
+              .callsFake(function (q, cb) {
+                cb();
+              });
+            db.driver.eagerQueryAsync(fixture.association, fixture.opts, [ 1, 5 ])
+              .then(function () {
+                should.equal(execSimpleQueryStub.calledOnce, true);
+                should.equal(execSimpleQueryStub.calledWith(fixture.expectedQuery), true);
+                execSimpleQueryStub.restore();
+                done();
+              })
+              .catch(function (err) {
+                execSimpleQueryStub.restore();
+                done(err);
+              });
+          });
+        });
       });
 
       describe("#execQuery", function () {

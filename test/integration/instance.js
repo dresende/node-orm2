@@ -375,12 +375,12 @@ describe("Model instance", function() {
   describe("properties", function () {
     describe("Number", function () {
       it("should be saved for valid numbers, using both save & create", function (done) {
-        var person1 = new Person({height: 190});
+        var person1 = new Person({ height: 190 });
 
         person1.save(function (err) {
           should.not.exist(err);
 
-          Person.create({height: 170}, function (err, person2) {
+          Person.create({ height: 170 }, function (err, person2) {
             should.not.exist(err);
 
             Person.get(person1[Person.id], function (err, item) {

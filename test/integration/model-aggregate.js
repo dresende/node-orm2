@@ -55,7 +55,25 @@ describe("Model.aggregate()", function() {
     });
   });
 
-  describe("with call()", function () {
+
+
+  describe("with multiple methods using getAsync", function () {
+    before(setup());
+
+    it("should return value for everyone of them with getAsync", function (done) {
+      Person.aggregate().count('id').min('id').max('id').getAsync()
+        .then(function(results) {
+
+          results[0].should.equal(3);
+          results[1].should.equal(1);
+          results[2].should.equal(3);
+
+          return done();
+        });
+    });
+  });
+
+    describe("with call()", function () {
     before(setup());
 
     it("should accept a function", function (done) {
@@ -100,7 +118,8 @@ describe("Model.aggregate()", function() {
 
     it("should accept a function", function (done) {
       Person.aggregate().call('COUNT').getAsync()
-        .then(function (count) {
+        .then(function (results) {
+          var count  = results[0];
           count.should.equal(3);
           return done();
         })
@@ -111,7 +130,8 @@ describe("Model.aggregate()", function() {
 
     it("should accept arguments to the function as an Array", function (done) {
       Person.aggregate().call('COUNT', [ 'id' ]).getAsync()
-        .then(function (count) {
+        .then(function (results) {
+          var count = results[0];
           count.should.equal(3);
           return done();
         })
@@ -123,7 +143,8 @@ describe("Model.aggregate()", function() {
     describe("if function is DISTINCT", function () {
       it("should work as calling .distinct() directly", function (done) {
         Person.aggregate().call('DISTINCT', [ 'name' ]).as('name').order('name').getAsync()
-          .then(function (rows) {
+          .then(function (results) {
+            var rows = results[0];
             should(Array.isArray(rows));
             rows.length.should.equal(2);
 
@@ -197,8 +218,8 @@ describe("Model.aggregate()", function() {
 
     it("should use them as properties if 1st argument is Array", function (done) {
       Person.aggregate().select([ 'id' ]).count('id').groupBy('id').getAsync()
-        .then(function (people) {
-
+        .then(function (results) {
+          var people = results[0];
           should(Array.isArray(people));
           people.length.should.be.above(0);
 
@@ -215,8 +236,8 @@ describe("Model.aggregate()", function() {
 
     it("should use them as properties", function (done) {
       Person.aggregate().select('id').count().groupBy('id').getAsync()
-        .then(function (people) {
-
+        .then(function (results) {
+          var people = results[0];
           should(Array.isArray(people));
           people.length.should.be.above(0);
 
@@ -313,8 +334,8 @@ describe("Model.aggregate()", function() {
 
     it("should return a list of distinct properties", function (done) {
       Person.aggregate().distinct('name').getAsync()
-        .then(function (names) {
-
+        .then(function (results) {
+          var names = results[0];
           names.should.be.a.Object();
           names.should.have.property("length", 2);
 
@@ -328,7 +349,8 @@ describe("Model.aggregate()", function() {
     describe("with limit(1)", function () {
       it("should return only one value", function (done) {
         Person.aggregate().distinct('name').limit(1).order("name").getAsync()
-          .then(function (names) {
+          .then(function (results) {
+            var names = results[0];
             names.should.be.a.Object();
             names.should.have.property("length", 1);
             names[0].should.equal("Jane Doe");
@@ -337,14 +359,15 @@ describe("Model.aggregate()", function() {
           })
           .catch(function(err) {
             done(err);
-          })
+          });
       });
     });
 
     describe("with limit(1, 1)", function () {
       it("should return only one value", function (done) {
         Person.aggregate().distinct('name').limit(1, 1).order("name").getAsync()
-          .then(function (names) {
+          .then(function (results) {
+            var names = results[0];
             names.should.be.a.Object();
             names.should.have.property("length", 1);
             names[0].should.equal("John Doe");
@@ -353,7 +376,7 @@ describe("Model.aggregate()", function() {
           })
           .catch(function(err) {
             done(err);
-          })
+          });
       });
     });
   });
@@ -398,8 +421,8 @@ describe("Model.aggregate()", function() {
 
     it("should return items grouped by property", function (done) {
       Person.aggregate().count().groupBy('name').getAsync()
-        .then(function (rows) {
-
+        .then(function (results) {
+          var rows = results[0];
           rows.should.be.a.Object();
           rows.should.have.property("length", 2);
 
@@ -417,8 +440,8 @@ describe("Model.aggregate()", function() {
 
       it("should order items", function (done) {
         Person.aggregate().count().groupBy('name').order('-count').getAsync()
-          .then(function (rows) {
-
+          .then(function (results) {
+            var rows = results[0];
             rows.should.be.a.Object();
             rows.should.have.property("length", 2);
 
@@ -429,7 +452,7 @@ describe("Model.aggregate()", function() {
           })
           .catch(function(err) {
             done(err);
-          })
+          });
       });
     });
   });
@@ -465,8 +488,8 @@ describe("Model.aggregate()", function() {
 
     it("should use as an alias", function (done) {
       Person.aggregate().count().as('total').groupBy('name').getAsync()
-        .then(function (people) {
-
+        .then(function (results) {
+          var people = results[0];
           should(Array.isArray(people));
           people.length.should.be.above(0);
 
@@ -477,7 +500,7 @@ describe("Model.aggregate()", function() {
         })
         .catch(function (err) {
           done(err);
-        })
+        });
     });
 
   });

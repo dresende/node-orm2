@@ -19,14 +19,12 @@ describe('DB', function () {
   });
 
   describe('db.syncPromise()', function () {
-    it('should call sync method from model, and return array with model id', function (done) {
+    it('should return array with model id', function (done) {
       db.define("my_model", {
         property: String
       });
-      var syncStub = sinon.stub(db.models['my_model'], 'sync').callsFake(function (cb) { cb(null, {}) });
-      db.dropAsync()
+      db.syncPromise()
         .then(function (data) {
-          syncStub.calledOnce.should.be.true;
           data.should.be.Array;
           should.equal(data[0], 'my_model');
           done();
@@ -34,11 +32,10 @@ describe('DB', function () {
         .catch(function (err) {
           done(err)
         });
-      syncStub.restore();
     });
 
     it('should return an empty array when no model is created', function (done) {
-      db.dropAsync()
+      db.syncPromise()
         .then(function (data) {
           data.should.be.Array;
           should.equal(_.isEmpty(data), true);
@@ -51,14 +48,12 @@ describe('DB', function () {
   });
 
   describe("db.dropAsync()", function () {
-    it('should call the model drop method and return an array with a model id', function (done) {
+    it('should return an array with a model id', function (done) {
       db.define("my_model", {
         property: String
       });
-      var dropStub = sinon.stub(db.models['my_model'], 'drop').callsFake(function (cb) { cb(null, {}) });
       db.dropAsync()
         .then(function (data) {
-          dropStub.calledOnce.should.be.true;
           data.should.be.Array;
           should.equal(data[0], 'my_model');
           done();
@@ -66,7 +61,6 @@ describe('DB', function () {
         .catch(function (err) {
           done(err)
         });
-      dropStub.restore();
     });
 
     it('should return an empty array when no model created', function (done) {

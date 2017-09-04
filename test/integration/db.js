@@ -2,7 +2,6 @@ var should = require('should');
 var helper = require('../support/spec_helper');
 var sinon  = require('sinon');
 var common = require('../common');
-var _      = require('lodash');
 
 describe('DB', function () {
   var db = null;

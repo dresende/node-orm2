@@ -95,6 +95,49 @@ describe("Model.aggregate()", function() {
     });
   });
 
+  describe("with call() (using getAsync)", function () {
+    before(setup());
+
+    it("should accept a function", function (done) {
+      Person.aggregate().call('COUNT').getAsync()
+        .then(function (count) {
+          count.should.equal(3);
+          return done();
+        })
+        .catch(function(err) {
+          done(err);
+        })
+    });
+
+    it("should accept arguments to the function as an Array", function (done) {
+      Person.aggregate().call('COUNT', [ 'id' ]).getAsync()
+        .then(function (count) {
+          count.should.equal(3);
+          return done();
+        })
+        .catch(function(err) {
+          done(err);
+        });
+    });
+
+    describe("if function is DISTINCT", function () {
+      it("should work as calling .distinct() directly", function (done) {
+        Person.aggregate().call('DISTINCT', [ 'name' ]).as('name').order('name').getAsync()
+          .then(function (rows) {
+            should(Array.isArray(rows));
+            rows.length.should.equal(2);
+
+            rows[0].should.equal('Jane Doe');
+            rows[1].should.equal('John Doe');
+
+            return done();
+          }).catch(function(err) {
+            done(err);
+          });
+      });
+    });
+  });
+
   describe("with as() without previous aggregates", function () {
     before(setup());
 
@@ -149,6 +192,46 @@ describe("Model.aggregate()", function() {
     });
   });
 
+  describe("with select() with arguments (using getAsync)", function () {
+    before(setup());
+
+    it("should use them as properties if 1st argument is Array", function (done) {
+      Person.aggregate().select([ 'id' ]).count('id').groupBy('id').getAsync()
+        .then(function (people) {
+
+          should(Array.isArray(people));
+          people.length.should.be.above(0);
+
+          people[0].should.be.a.Object();
+          people[0].should.have.property("id");
+          people[0].should.not.have.property("name");
+
+          return done();
+        })
+        .catch(function(err) {
+          done(err);
+        });
+    });
+
+    it("should use them as properties", function (done) {
+      Person.aggregate().select('id').count().groupBy('id').getAsync()
+        .then(function (people) {
+
+          should(Array.isArray(people));
+          people.length.should.be.above(0);
+
+          people[0].should.be.a.Object();
+          people[0].should.have.property("id");
+          people[0].should.not.have.property("name");
+
+          return done();
+        })
+        .catch(function(err) {
+          done(err);
+        });
+    });
+  });
+
   describe("with get() without callback", function () {
     before(setup());
 
@@ -168,6 +251,17 @@ describe("Model.aggregate()", function() {
       }).should.throw();
 
       return done();
+    });
+  });
+
+  describe("with getAsync() without aggregates", function () {
+    before(setup());
+
+    it("should reject", function (done) {
+        Person.aggregate().getAsync().catch(function(err) {
+           should.ok(err);
+           done();
+        });
     });
   });
 
@@ -214,6 +308,56 @@ describe("Model.aggregate()", function() {
     });
   });
 
+  describe("with distinct() (using getAsync)", function () {
+    before(setup());
+
+    it("should return a list of distinct properties", function (done) {
+      Person.aggregate().distinct('name').getAsync()
+        .then(function (names) {
+
+          names.should.be.a.Object();
+          names.should.have.property("length", 2);
+
+          return done();
+        })
+        .catch(function(err) {
+          done(err);
+        });
+    });
+
+    describe("with limit(1)", function () {
+      it("should return only one value", function (done) {
+        Person.aggregate().distinct('name').limit(1).order("name").getAsync()
+          .then(function (names) {
+            names.should.be.a.Object();
+            names.should.have.property("length", 1);
+            names[0].should.equal("Jane Doe");
+
+            return done();
+          })
+          .catch(function(err) {
+            done(err);
+          })
+      });
+    });
+
+    describe("with limit(1, 1)", function () {
+      it("should return only one value", function (done) {
+        Person.aggregate().distinct('name').limit(1, 1).order("name").getAsync()
+          .then(function (names) {
+            names.should.be.a.Object();
+            names.should.have.property("length", 1);
+            names[0].should.equal("John Doe");
+
+            return done();
+          })
+          .catch(function(err) {
+            done(err);
+          })
+      });
+    });
+  });
+
   describe("with groupBy()", function () {
     before(setup());
 
@@ -249,6 +393,47 @@ describe("Model.aggregate()", function() {
     });
   });
 
+  describe("with groupBy() (using getAsync)", function () {
+    before(setup());
+
+    it("should return items grouped by property", function (done) {
+      Person.aggregate().count().groupBy('name').getAsync()
+        .then(function (rows) {
+
+          rows.should.be.a.Object();
+          rows.should.have.property("length", 2);
+
+          (rows[0].count + rows[1].count).should.equal(3); // 1 + 2
+
+          return done();
+        })
+        .catch(function(err) {
+          done(err);
+        });
+    });
+
+    describe("with order()", function () {
+      before(setup());
+
+      it("should order items", function (done) {
+        Person.aggregate().count().groupBy('name').order('-count').getAsync()
+          .then(function (rows) {
+
+            rows.should.be.a.Object();
+            rows.should.have.property("length", 2);
+
+            rows[0].count.should.equal(2);
+            rows[1].count.should.equal(1);
+
+            return done();
+          })
+          .catch(function(err) {
+            done(err);
+          })
+      });
+    });
+  });
+
   describe("using as()", function () {
     before(setup());
 
@@ -274,4 +459,27 @@ describe("Model.aggregate()", function() {
       return done();
     });
   });
+
+  describe("using as() (with getAsync)", function () {
+    before(setup());
+
+    it("should use as an alias", function (done) {
+      Person.aggregate().count().as('total').groupBy('name').getAsync()
+        .then(function (people) {
+
+          should(Array.isArray(people));
+          people.length.should.be.above(0);
+
+          people[0].should.be.a.Object();
+          people[0].should.have.property("total");
+
+          return done();
+        })
+        .catch(function (err) {
+          done(err);
+        })
+    });
+
+  });
+
 });

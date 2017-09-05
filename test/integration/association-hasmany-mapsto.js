@@ -1005,7 +1005,7 @@ describe("hasMany with mapsTo", function () {
       });
 
       it("should accept array as list of associations", function (done) {
-        Pet.create([{ petName: 'Ruff' }, { petName: 'Spotty' }],function (err, pets) {
+        Pet.createAsync([{ petName: 'Ruff' }, { petName: 'Spotty' }]).then(function (pets) {
           Person.find({ firstName: "Justin" }).first(function (err, Justin) {
             should.equal(err, null);
 
@@ -1031,6 +1031,8 @@ describe("hasMany with mapsTo", function () {
               done(err);
             });
           });
+        }).catch(function(err) {
+          done(err);
         });
       });
 
@@ -1159,15 +1161,13 @@ describe("hasMany with mapsTo", function () {
           should.not.exist(err);
           should.equal(pets.length, 2);
 
-          Person.create({ firstName: 'Paul' }, function (err, paul) {
-            should.not.exist(err);
+          Person.createAsync({ firstName: 'Paul' }).then(function (paul) {
 
             Person.one({ firstName: 'Paul' }, function (err, paul2) {
               should.not.exist(err);
               should.equal(paul2.pets.length, 0);
 
               paul.setPetsAsync(pets).then(function () {
-                should.not.exist(err);
 
                 // reload paul to make sure we have 2 pets
                 Person.one({ firstName: 'Paul' }, function (err, paul) {
@@ -1176,9 +1176,7 @@ describe("hasMany with mapsTo", function () {
 
                   // Saving paul2 should NOT auto save associations and hence delete
                   // the associations we just created.
-                  paul2.save(function (err) {
-                    should.not.exist(err);
-
+                  paul2.saveAsync().then(function () {
                     // let's check paul - pets should still be associated
                     Person.one({ firstName: 'Paul' }, function (err, paul) {
                       should.not.exist(err);
@@ -1186,13 +1184,17 @@ describe("hasMany with mapsTo", function () {
 
                       done();
                     });
+                  }).catch(function(err) {
+                    done(err);
                   });
                 });
               }).catch(function(err) {
                 done(err);
               });
             });
-          });
+          }).catch(function(err) {
+            done(err);
+          });;
         });
       });
 

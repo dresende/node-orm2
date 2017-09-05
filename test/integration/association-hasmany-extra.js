@@ -80,14 +80,14 @@ describe("hasMany extra properties", function() {
     before(setup());
 
     it("should be added to association", function (done) {
-      Person.create([{
+      Person.createAsync([{
         name    : "John"
-      }], function (err, people) {
-        Pet.create([{
+      }]).then(function (people) {
+        Pet.createAsync([{
           name : "Deco"
         }, {
           name : "Mutt"
-        }], function (err, pets) {
+        }]).then(function (pets) {
           var data = { adopted: true };
 
           people[0].addPetsAsync(pets, { since : new Date(), data: data }).then(function () {
@@ -114,7 +114,11 @@ describe("hasMany extra properties", function() {
           }).catch(function(err) {
             done(err);
           });
+        }).catch(function(err) {
+          done(err);
         });
+      }).catch(function(err) {
+        done(err);
       });
     });
   });

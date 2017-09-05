@@ -596,17 +596,18 @@ describe("hasOne", function() {
   });
 
   if (protocol != "mongodb") {
-    describe("mapsTo (promise-based tests)", function () {
+    describe("mapsTo Async (promise-based tests)", function () {
       describe("with `mapsTo` set via `hasOne`", function () {
         var leaf = null;
 
         before(setup());
 
         before(function (done) {
-          Leaf.create({ size: 444, stalkId: stalkId, holeId: holeId }, function (err, lf) {
-            should.not.exist(err);
+          Leaf.createAsync({ size: 444, stalkId: stalkId, holeId: holeId }).then(function (lf) {
             leaf = lf;
             done();
+          }).catch(function(err) {
+            done(err);
           });
         });
 
@@ -629,10 +630,11 @@ describe("hasOne", function() {
         before(setup());
 
         before(function (done) {
-          Leaf.create({ size: 444, stalkId: stalkId, holeId: holeId }, function (err, lf) {
-            should.not.exist(err);
+          Leaf.createAsync({ size: 444, stalkId: stalkId, holeId: holeId }).then(function (lf) {
             leaf = lf;
             done();
+          }).catch(function(err) {
+            done(err);
           });
         });
 

@@ -317,12 +317,10 @@ describe("hasMany", function () {
               John.hasPetsAsync(pets).then(function (hasPets) {
                 should.equal(hasPets, true);
 
-                db.driver.execQuery(
+                db.driver.execQueryAsync(
                   "INSERT INTO person_pets (person_id, pets_id) VALUES (?,?), (?,?)",
-                  [John.id, pets[0].id, John.id, pets[1].id],
-                  function (err) {
-                    should.not.exist(err);
-
+                  [John.id, pets[0].id, John.id, pets[1].id]).then(
+                  function () {
                     John.hasPetsAsync(pets).then(function (hasPets) {
                       should.equal(hasPets, true);
                       done();
@@ -330,7 +328,9 @@ describe("hasMany", function () {
                       done(err);
                     });
                   }
-                );
+                ).catch(function(err) {
+                  done(err);
+                });
               }).catch(function(err){
                 done(err);
               });
@@ -847,11 +847,10 @@ describe("hasMany", function () {
               John.hasPetsAsync(pets).then(function (hasPets) {
                 should.equal(hasPets, true);
 
-                db.driver.execQuery(
+                db.driver.execQueryAsync(
                   "INSERT INTO person_pets (person_id, pets_id) VALUES (?,?), (?,?)",
-                  [John.id, pets[0].id, John.id, pets[1].id],
-                  function (err) {
-                    should.not.exist(err);
+                  [John.id, pets[0].id, John.id, pets[1].id]).then(
+                  function () {
 
                     John.hasPetsAsync(pets).then(function (hasPets) {
                       should.equal(hasPets, true);
@@ -860,7 +859,9 @@ describe("hasMany", function () {
                       done(err);
                     });
                   }
-                );
+                ).catch(function(err){
+                  done(err);
+                });
               }).catch(function(err){
                 done(err);
               });
@@ -1023,7 +1024,7 @@ describe("hasMany", function () {
       });
 
       it("should accept array as list of associations (promise-based)", function (done) {
-        Pet.create([{ name: 'Ruff' }, { name: 'Spotty' }],function (err, pets) {
+        Pet.createAsync([{ name: 'Ruff' }, { name: 'Spotty' }]).then(function (pets) {
           Person.find({ name: "Justin" }).first(function (err, Justin) {
             should.equal(err, null);
 
@@ -1048,6 +1049,8 @@ describe("hasMany", function () {
               done(err);
             });
           });
+        }).catch(function(err) {
+          done(err);
         });
       });
     });

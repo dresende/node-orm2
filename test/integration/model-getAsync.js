@@ -25,15 +25,15 @@ describe("Model.getAsync()", function () {
       ORM.singleton.clear(); // clear identityCache cache
 
       return helper.dropSync(Person, function () {
-        Person.create([{
+        Person.createAsync([{
           name: "John Doe"
         }, {
           name: "Jane Doe"
-        }], function (err, people) {
-          if (err) done(err);
+        }]).then(function (people) {
           John = people[0];
-
-          return done();
+          done();
+        }).catch(function(err) {
+          done(err);
         });
       });
     };

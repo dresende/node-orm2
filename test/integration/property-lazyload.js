@@ -122,7 +122,7 @@ describe("LazyLoad properties", function() {
       });
     });
 
-    it("promise-based setAccessor should change property", function (done) {
+    it("promise-based setAccessor should change property (promise-based)", function (done) {
       Person.find().first(function (err, John) {
         should.equal(err, null);
         John.should.be.a.Object();
@@ -171,15 +171,13 @@ describe("LazyLoad properties", function() {
         });
     });
 
-    it("promise-based removeAccessor should change property", function (done) {
+    it("removeAccessor should change property (promise-based)", function (done) {
       Person.find().first(function (err, John) {
         should.equal(err, null);
         John.should.be.a.Object();
 
         John.removePhotoAsync().then(function () {
-          should.equal(err, null);
-          Person.get(John[Person.id], function (err, John) {
-            should.equal(err, null);
+          Person.getAsync(John[Person.id]).then(function (John) {
             John.should.be.a.Object();
 
             John.getPhotoAsync()
@@ -190,7 +188,11 @@ describe("LazyLoad properties", function() {
               }).catch(function (err) {
                 done(err);
               });
+          }).catch(function(err) {
+            done(err);
           });
+        }).catch(function(err) {
+          done(err);
         });
       });
     });

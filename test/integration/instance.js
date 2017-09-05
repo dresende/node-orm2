@@ -402,20 +402,21 @@ describe("Model instance", function() {
 
         person1.saveAsync().then(function () {
 
-          Person.create({ height: 170 }, function (err, person2) {
-            should.not.exist(err);
-
-            Person.get(person1[Person.id], function (err, item) {
-              should.not.exist(err);
+          Person.createAsync({ height: 170 }).then(function (person2) {
+            Person.getAsync(person1[Person.id]).then(function (item) {
               should.equal(item.height, 190);
-
-              Person.get(person2[Person.id], function (err, item) {
-                should.not.exist(err);
+              Person.getAsync(person2[Person.id]).then(function (item) {
                 should.equal(item.height, 170);
 
                 done();
+              }).catch(function(err) {
+                done(err);
               });
+            }).catch(function(err) {
+              done(err);
             });
+          }).catch(function(err) {
+            done(err);
           });
         }).catch(function(err) {
           done(err);
@@ -515,10 +516,11 @@ describe("Model instance", function() {
 
             should.equal(err.message, msg);
 
-            Person.create({ height: 'bugz' }, function (err, instance) {
+            Person.createAsync({ height: 'bugz' }).then(function () {
+              done(new Error('Function should catch an error instead of finish'));
+            }).catch(function(err) {
               should.exist(err);
               should.equal(err.message, msg);
-
               done();
             });
           });
@@ -556,20 +558,22 @@ describe("Model instance", function() {
 
           person.saveAsync().then(function () {
 
-            Person.get(person[Person.id], function (err, person) {
-              should.not.exist(err);
+            Person.getAsync(person[Person.id]).then(function (person) {
               should(isNaN(person.weight));
 
               person.saveAsync({ weight: Infinity, name: 'black hole' }).then(function () {
-                Person.get(person[Person.id], function (err, person) {
-                  should.not.exist(err);
+                Person.getAsync(person[Person.id]).then(function (person) {
                   should.strictEqual(person.weight, Infinity);
 
                   done();
+                }).catch(function(err) {
+                  done(err);
                 });
               }).catch(function(err) {
                 done(err);
               });
+            }).catch(function(err) {
+              done(err);
             });
           }).catch(function(err) {
             done(err);

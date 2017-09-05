@@ -73,7 +73,7 @@ describe("Model.aggregate()", function() {
     });
   });
 
-    describe("with call()", function () {
+  describe("with call()", function () {
     before(setup());
 
     it("should accept a function", function (done) {

@@ -1,16 +1,16 @@
-var _        = require('lodash');
-var should   = require('should');
-var helper   = require('../support/spec_helper');
-var async    = require('async');
-var ORM      = require('../../');
+var should = require('should');
+var helper = require('../support/spec_helper');
+var async = require('async');
 
-describe("Hook", function() {
+describe("Hook", function () {
   var db = null;
   var Person = null;
   var triggeredHooks = {};
   var getTimestamp; // Calling it 'getTime' causes strangeness.
 
-  getTimestamp = function () { return Date.now(); };
+  getTimestamp = function () {
+    return Date.now();
+  };
   // this next lines are failing...
   // if (process.hrtime) {
   //   getTimestamp = function () { return parseFloat(process.hrtime().join('.')); };
@@ -29,21 +29,21 @@ describe("Hook", function() {
   var setup = function (hooks) {
     if (typeof hooks == "undefined") {
       hooks = {
-        afterCreate      : checkHook("afterCreate"),
-        beforeCreate     : checkHook("beforeCreate"),
-        afterSave        : checkHook("afterSave"),
-        beforeSave       : checkHook("beforeSave"),
-        beforeValidation : checkHook("beforeValidation"),
-        beforeRemove     : checkHook("beforeRemove"),
-        afterRemove      : checkHook("afterRemove")
+        afterCreate: checkHook("afterCreate"),
+        beforeCreate: checkHook("beforeCreate"),
+        afterSave: checkHook("afterSave"),
+        beforeSave: checkHook("beforeSave"),
+        beforeValidation: checkHook("beforeValidation"),
+        beforeRemove: checkHook("beforeRemove"),
+        afterRemove: checkHook("afterRemove")
       };
     }
 
     return function (done) {
       Person = db.define("person", {
-        name   : String
+        name: String
       }, {
-        hooks  : hooks
+        hooks: hooks
       });
 
       Person.settings.set("instance.returnAllErrors", false);
@@ -65,7 +65,7 @@ describe("Hook", function() {
   });
 
   describe("after Model creation", function () {
-    before(setup({}));
+    before(setup());
 
     it("can be changed", function (done) {
       var triggered = false;
@@ -73,9 +73,9 @@ describe("Hook", function() {
       Person.afterCreate(function () {
         triggered = true;
       });
+
       Person.create([{ name: "John Doe" }], function () {
         triggered.should.be.true;
-
         return done();
       });
     });
@@ -116,36 +116,36 @@ describe("Hook", function() {
     });
 
     it("should allow modification of instance", function (done) {
-        Person.beforeCreate(function (next) {
-            this.name = "Hook Worked";
-            next();
+      Person.beforeCreate(function (next) {
+        this.name = "Hook Worked";
+        next();
+      });
+
+      Person.create([{}], function (err, people) {
+        should.not.exist(err);
+        should.exist(people);
+        should.equal(people.length, 1);
+        should.equal(people[0].name, "Hook Worked");
+
+        // garantee it was correctly saved on database
+        Person.one({ name: "Hook Worked" }, function (err, person) {
+          should.not.exist(err);
+          should.exist(person);
+
+          return done();
         });
-
-        Person.create([{ }], function (err, people) {
-            should.not.exist(err);
-            should.exist(people);
-            should.equal(people.length, 1);
-            should.equal(people[0].name, "Hook Worked");
-
-            // garantee it was correctly saved on database
-            Person.one({ name: "Hook Worked" }, function (err, person) {
-              should.not.exist(err);
-              should.exist(person);
-
-              return done();
-            });
-        });
+      });
     });
 
     describe("when setting properties", function () {
       before(setup({
-        beforeCreate : function () {
+        beforeCreate: function () {
           this.name = "Jane Doe";
         }
       }));
 
       it("should not be discarded", function (done) {
-        Person.create([{ }], function (err, items) {
+        Person.create([{}], function (err, items) {
           should.equal(err, null);
 
           items.should.be.a.Object();
@@ -167,7 +167,7 @@ describe("Hook", function() {
       var beforeCreate = false;
 
       before(setup({
-        beforeCreate : function (next) {
+        beforeCreate: function (next) {
           setTimeout(function () {
             beforeCreate = true;
 
@@ -186,7 +186,7 @@ describe("Hook", function() {
 
       describe("if hook triggers error", function () {
         before(setup({
-          beforeCreate : function (next) {
+          beforeCreate: function (next) {
             setTimeout(function () {
               return next(new Error('beforeCreate-error'));
             }, 200);
@@ -233,15 +233,15 @@ describe("Hook", function() {
     });
 
     it("should allow modification of instance", function (done) {
-        Person.beforeSave(function () {
-            this.name = "Hook Worked";
-        });
+      Person.beforeSave(function () {
+        this.name = "Hook Worked";
+      });
 
-        Person.create([{ name: "John Doe" }], function (err, people) {
-            should.not.exist(err);
-            should.exist(people);
-            should.equal(people.length, 1);
-            should.equal(people[0].name, "Hook Worked");
+      Person.create([{ name: "John Doe" }], function (err, people) {
+        should.not.exist(err);
+        should.exist(people);
+        should.equal(people.length, 1);
+        should.equal(people[0].name, "Hook Worked");
 
         // garantee it was correctly saved on database
         Person.find({ name: "Hook Worked" }, { identityCache: false }, 1, function (err, people) {
@@ -250,18 +250,18 @@ describe("Hook", function() {
 
           return done();
         });
-        });
+      });
     });
 
     describe("when setting properties", function () {
       before(setup({
-        beforeSave : function () {
+        beforeSave: function () {
           this.name = "Jane Doe";
         }
       }));
 
       it("should not be discarded", function (done) {
-        Person.create([{ }], function (err, items) {
+        Person.create([{}], function (err, items) {
           should.equal(err, null);
 
           items.should.be.a.Object();
@@ -283,7 +283,7 @@ describe("Hook", function() {
       var beforeSave = false;
 
       before(setup({
-        beforeSave : function (next) {
+        beforeSave: function (next) {
           setTimeout(function () {
             beforeSave = true;
 
@@ -303,7 +303,7 @@ describe("Hook", function() {
 
       describe("if hook triggers error", function () {
         before(setup({
-          beforeSave : function (next) {
+          beforeSave: function (next) {
             if (this.name == "John Doe") {
               return next();
             }
@@ -400,24 +400,24 @@ describe("Hook", function() {
 
 
     it("should allow modification of instance", function (done) {
-        Person.beforeValidation(function () {
-            this.name = "Hook Worked";
-        });
+      Person.beforeValidation(function () {
+        this.name = "Hook Worked";
+      });
 
-        Person.create([{ name: "John Doe" }], function (err, people) {
-            should.not.exist(err);
-            should.exist(people);
-            should.equal(people.length, 1);
-            should.equal(people[0].name, "Hook Worked");
-            done();
-        });
+      Person.create([{ name: "John Doe" }], function (err, people) {
+        should.not.exist(err);
+        should.exist(people);
+        should.equal(people.length, 1);
+        should.equal(people[0].name, "Hook Worked");
+        done();
+      });
     });
 
     describe("if hook method has 1 argument", function () {
       var beforeValidation = false;
 
       before(setup({
-        beforeValidation : function (next) {
+        beforeValidation: function (next) {
           setTimeout(function () {
             beforeValidation = true;
 
@@ -483,7 +483,7 @@ describe("Hook", function() {
       var afterLoad = false;
 
       before(setup({
-        afterLoad : function (next) {
+        afterLoad: function (next) {
           setTimeout(function () {
             afterLoad = true;
 
@@ -502,7 +502,7 @@ describe("Hook", function() {
 
       describe("if hook returns an error", function () {
         before(setup({
-          afterLoad : function (next) {
+          afterLoad: function (next) {
             return next(new Error("AFTERLOAD_FAIL"));
           }
         }));
@@ -540,7 +540,7 @@ describe("Hook", function() {
       var afterAutoFetch = false;
 
       before(setup({
-        afterAutoFetch : function (next) {
+        afterAutoFetch: function (next) {
           setTimeout(function () {
             afterAutoFetch = true;
 
@@ -559,7 +559,7 @@ describe("Hook", function() {
 
       describe("if hook returns an error", function () {
         before(setup({
-          afterAutoFetch : function (next) {
+          afterAutoFetch: function (next) {
             return next(new Error("AFTERAUTOFETCH_FAIL"));
           }
         }));
@@ -595,7 +595,7 @@ describe("Hook", function() {
       var beforeRemove = false;
 
       before(setup({
-        beforeRemove : function (next) {
+        beforeRemove: function (next) {
           setTimeout(function () {
             beforeRemove = true;
 
@@ -617,7 +617,7 @@ describe("Hook", function() {
 
       describe("if hook triggers error", function () {
         before(setup({
-          beforeRemove : function (next) {
+          beforeRemove: function (next) {
             setTimeout(function () {
               return next(new Error('beforeRemove-error'));
             }, 200);
@@ -657,12 +657,12 @@ describe("Hook", function() {
   describe("if model has autoSave", function () {
     before(function (done) {
       Person = db.define("person", {
-        name    : String,
-        surname : String
+        name: String,
+        surname: String
       }, {
-        autoSave  : true,
-        hooks     : {
-          afterSave : checkHook("afterSave")
+        autoSave: true,
+        hooks: {
+          afterSave: checkHook("afterSave")
         }
       });
 
@@ -672,7 +672,7 @@ describe("Hook", function() {
     });
 
     it("should trigger for single property changes", function (done) {
-      Person.create({ name : "John", surname : "Doe" }, function (err, John) {
+      Person.create({ name: "John", surname: "Doe" }, function (err, John) {
         should.equal(err, null);
 
         triggeredHooks.afterSave.should.be.a.Number();
@@ -690,29 +690,29 @@ describe("Hook", function() {
   });
 
   describe("instance modifications", function () {
-      before(setup({
-          beforeValidation: function () {
-              should.equal(this.name, "John Doe");
-              this.name = "beforeValidation";
-          },
-          beforeCreate: function () {
-              should.equal(this.name, "beforeValidation");
-              this.name = "beforeCreate";
-          },
-          beforeSave: function () {
-              should.equal(this.name, "beforeCreate");
-              this.name = "beforeSave";
-          }
-      }));
+    before(setup({
+      beforeValidation: function () {
+        should.equal(this.name, "John Doe");
+        this.name = "beforeValidation";
+      },
+      beforeCreate: function () {
+        should.equal(this.name, "beforeValidation");
+        this.name = "beforeCreate";
+      },
+      beforeSave: function () {
+        should.equal(this.name, "beforeCreate");
+        this.name = "beforeSave";
+      }
+    }));
 
-      it("should propagate down hooks", function (done) {
-          Person.create([{ name: "John Doe" }], function (err, people) {
-              should.not.exist(err);
-              should.exist(people);
-              should.equal(people.length, 1);
-              should.equal(people[0].name, "beforeSave");
-              done();
-          });
+    it("should propagate down hooks", function (done) {
+      Person.create([{ name: "John Doe" }], function (err, people) {
+        should.not.exist(err);
+        should.exist(people);
+        should.equal(people.length, 1);
+        should.equal(people[0].name, "beforeSave");
+        done();
       });
+    });
   });
 });

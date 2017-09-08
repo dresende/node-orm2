@@ -71,10 +71,12 @@ describe("HookPromise", function() {
         });
       });
 
-      Person.create([{ name: "John Doe" }], function () {
-        triggered.should.be.true;
-        return done();
-      });
+      Person.createAsync([{ name: "John Doe" }])
+        .then(function () {
+          triggered.should.be.true;
+          done();
+        })
+        .catch(done);
     });
   });
 
@@ -91,18 +93,19 @@ describe("HookPromise", function() {
         });
       });
 
-      Person.create([{ }], function (err, people) {
-        should.not.exist(err);
-        should.exist(people);
-        should.equal(people.length, 1);
-        should.equal(people[0].name, "Hook Worked");
-        // garantee it was correctly saved on database
-        Person.one({ name: "Hook Worked" }, function (err, person) {
-          should.not.exist(err);
-          should.exist(person);
-        });
-        done();
-      });
+      Person.createAsync([{ }])
+        .then(function (people) {
+          should.exist(people);
+          should.equal(people.length, 1);
+          should.equal(people[0].name, "Hook Worked");
+          // garantee it was correctly saved on database
+          Person.one({ name: "Hook Worked" }, function (err, person) {
+            should.not.exist(err);
+            should.exist(person);
+          });
+          done();
+        })
+        .catch(done);
     });
 
     it("should trigger error", function (done) {
@@ -148,7 +151,7 @@ describe("HookPromise", function() {
         });
     });
 
-    it("should trigger error when saving", function (done) {
+    it("should trigger error", function (done) {
       Person.beforeSave(function () {
         return new Promise(function (_, reject) {
           setTimeout(function () {
@@ -187,9 +190,7 @@ describe("HookPromise", function() {
           should.equal(John.name, 'John Doe');
           done();
         })
-        .catch(function (err) {
-          done(err);
-        });
+        .catch(done);
     });
   });
 
@@ -215,9 +216,7 @@ describe("HookPromise", function() {
           triggered.should.be.true;
           done();
         })
-        .catch(function (err) {
-          done(err);
-        });
+        .catch(done);
     });
   });
 
@@ -239,9 +238,7 @@ describe("HookPromise", function() {
           should.equal(Jhon[0].name, "John Snow");
           done();
         })
-        .catch(function (err) {
-          done(err);
-        });
+        .catch(done);
     });
 
     it("should throw error", function (done) {
@@ -284,13 +281,10 @@ describe("HookPromise", function() {
           afterLoad.should.be.true;
           done();
         })
-        .catch(function (err) {
-          console.log('hererere');
-          done(err);
-        });
+        .catch(done);
     });
 
-    it("should trigger and wait", function (done) {
+    it("should throw error", function (done) {
       var afterLoad = false;
       Person.afterLoad(function () {
         return new Promise(function (_, reject) {
@@ -332,12 +326,10 @@ describe("HookPromise", function() {
           afterAutoFetch.should.be.true;
           done();
         })
-        .catch(function (err) {
-          done(err);
-        });
+        .catch(done);
     });
 
-    it("should trigger and wait", function (done) {
+    it("should throw error", function (done) {
       var afterAutoFetch = false;
       Person.afterAutoFetch(function () {
         return new Promise(function (_, reject) {
@@ -379,9 +371,7 @@ describe("HookPromise", function() {
           beforeRemove.should.be.true;
           done();
         })
-        .catch(function (err) {
-          done(err);
-        });
+        .catch(done);
     });
 
     it("should throw error", function (done) {
@@ -449,9 +439,7 @@ describe("HookPromise", function() {
           should.equal(people[0].name, "beforeSave");
           done();
         })
-        .catch(function (err) {
-          done(err);
-        });
+        .catch(done);
     });
   });
 });

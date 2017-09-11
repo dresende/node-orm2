@@ -12,7 +12,9 @@ describe("ORM", function() {
     it("should expose .express(), .use() and .connect()", function (done) {
       ORM.express.should.be.a.Function();
       ORM.use.should.be.a.Function();
+      ORM.useAsync.should.be.a.Function();
       ORM.connect.should.be.a.Function();
+      ORM.connectAsync.should.be.a.Function();
 
       return done();
     });
@@ -54,7 +56,7 @@ describe("ORM", function() {
     });
 
     it('should throw error with correct message when protocol not supported', function (done) {
-      ORM.connectAsync("pg://127.0.0.6")
+      ORM.connectAsync("bd://127.0.0.6")
         .then(function () {
           done('Fail.');
         })
@@ -597,6 +599,41 @@ describe("ORM", function() {
 
         return done();
       });
+    });
+  });
+
+  describe("ORM.useAsync()", function () {
+    it("should be able to use an established connection", function (done) {
+      var db = new sqlite.Database(':memory:');
+
+      ORM.useAsync(db, "sqlite")
+        .then(function () {
+          done();
+        })
+        .catch(done);
+    });
+
+    it("should be accept protocol alias", function (done) {
+      var db = new pg.Client();
+
+      ORM.useAsync(db, "pg")
+        .then(function () {
+          done();
+        })
+        .catch(done);
+    });
+
+    it("should throw an error in callback if protocol not supported", function (done) {
+      var db = new pg.Client();
+
+      ORM.useAsync(db, "unknowndriver")
+        .then(function () {
+          done(new Error('Should throw'));
+        })
+        .catch(function (err) {
+          should.exist(err);
+          done();
+        });
     });
   });
 });

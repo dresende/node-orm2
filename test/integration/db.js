@@ -107,74 +107,48 @@ describe("db.define()", function() {
 describe("db.load()", function () {
   var db = null;
 
-  before(function (done) {
+  beforeEach(function (done) {
     helper.connect(function (connection) {
       db = connection;
 
-      return done();
+      done();
     });
   });
 
-  after(function () {
-    return db.close();
+  afterEach(function () {
+    db.close();
   });
 
   it("should require a file based on relative path", function (done) {
-    db.load("../support/spec_load", function () {
+    db.load("../support/spec_load", function (err) {
+      should.not.exist(err);
+
       db.models.should.have.property("person");
       db.models.should.have.property("pet");
 
-      return done();
+      done();
     });
-  });
-});
-
-describe("db.load()", function () {
-  var db = null;
-
-  before(function (done) {
-    helper.connect(function (connection) {
-      db = connection;
-
-      return done();
-    });
-  });
-
-  after(function () {
-    return db.close();
   });
 
   it("should be able to load more than one file", function (done) {
-    db.load("../support/spec_load_second", "../support/spec_load_third", function () {
+    db.load("../support/spec_load_second", "../support/spec_load_third", function (err) {
+      should.not.exist(err);
+
       db.models.should.have.property("person");
       db.models.should.have.property("pet");
 
-      return done();
+      done();
     });
-  });
-});
-
-describe("db.load()", function () {
-  var db = null;
-
-  before(function (done) {
-    helper.connect(function (connection) {
-      db = connection;
-
-      return done();
-    });
-  });
-
-  after(function () {
-    return db.close();
   });
 
   it("should be able to load more than one file passed as Array", function (done) {
-    db.load([ "../support/spec_load_second", "../support/spec_load_third" ], function () {
+    db.load([ "../support/spec_load_second", "../support/spec_load_third" ], function (err) {
+      should.not.exist(err);
+
       db.models.should.have.property("person");
       db.models.should.have.property("pet");
 
-      return done();
+      done();
     });
   });
 });

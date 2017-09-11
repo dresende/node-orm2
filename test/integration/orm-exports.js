@@ -53,12 +53,12 @@ describe("ORM", function() {
       ORM.connectAsync.should.be.a.Function()
     });
 
-    it('should throw error with correct message when protocol not supported', function () {
+    it('should throw error with correct message when protocol not supported', function (done) {
       ORM.connectAsync("pg://127.0.0.6")
         .then(function () {
           done('Fail.');
         })
-        .catch(function () {
+        .catch(function (err) {
           should.exist(err);
           err.message.should.not.equal("CONNECTION_PROTOCOL_NOT_SUPPORTED");
           done();

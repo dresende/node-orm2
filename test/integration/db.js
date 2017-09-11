@@ -313,7 +313,11 @@ describe('DB', function () {
             only: ['name', 'id'],
             keys: ['id'],
           },
-          expectedQuery: 'SELECT "t1"."name", "t1"."id", "t2"."dog_id" AS "$p" FROM "dog" "t1" JOIN "dog_family" "t2" ON "t2"."family_id" = "t1"."id" WHERE "t2"."dog_id" IN (1, 5)'
+          expectedQuery: {
+            postgres: 'SELECT "t1"."name", "t1"."id", "t2"."dog_id" AS "$p" FROM "dog" "t1" JOIN "dog_family" "t2" ON "t2"."family_id" = "t1"."id" WHERE "t2"."dog_id" IN (1, 5)',
+            mysql:    'SELECT `t1`.`name`, `t1`.`id`, `t2`.`dog_id` AS `$p` FROM `dog` `t1` JOIN `dog_family` `t2` ON `t2`.`family_id` = `t1`.`id` WHERE `t2`.`dog_id` IN (1, 5)',
+            sqlite:   'SELECT `t1`.`name`, `t1`.`id`, `t2`.`dog_id` AS `$p` FROM `dog` `t1` JOIN `dog_family` `t2` ON `t2`.`family_id` = `t1`.`id` WHERE `t2`.`dog_id` IN (1, 5)'
+          }
         };
 
         describe('cb', function () {
@@ -329,7 +333,7 @@ describe('DB', function () {
                 done(err);
               }
               should.equal(execSimpleQueryStub.calledOnce, true);
-              should.equal(execSimpleQueryStub.calledWith(fixture.expectedQuery), true);
+              should.equal(execSimpleQueryStub.lastCall.args[0], fixture.expectedQuery[common.protocol()]);
               execSimpleQueryStub.restore();
               done();
             });
@@ -345,7 +349,7 @@ describe('DB', function () {
             db.driver.eagerQueryAsync(fixture.association, fixture.opts, [ 1, 5 ])
               .then(function () {
                 should.equal(execSimpleQueryStub.calledOnce, true);
-                should.equal(execSimpleQueryStub.calledWith(fixture.expectedQuery), true);
+                should.equal(execSimpleQueryStub.lastCall.args[0], fixture.expectedQuery[common.protocol()]);
                 execSimpleQueryStub.restore();
                 done();
               })

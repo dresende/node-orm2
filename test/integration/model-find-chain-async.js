@@ -132,20 +132,16 @@ describe("Model.find() chaining", function() {
     it("should not change find if no arguments", function () {
       return Person.find()
         .findAsync()
-        .then(function(Person) {
-          should.equal(Person.length, 3);
+        .then(function(person) {
+          should.equal(person.length, 3);
         });
     });
 
-    it("should restrict conditions if passed", function (done) {
-      Person.find()
+    it("should restrict conditions if passed", function () {
+      return Person.find()
         .findAsync({ age: 18 })
-        .then(function(Person) {
-          should.equal(Person.length, 2);
-          done();
-        })
-        .catch(function(err) {
-          done(err);
+        .then(function(person) {
+          should.equal(person.length, 2);
         });
     });
 
@@ -164,30 +160,25 @@ describe("Model.find() chaining", function() {
       }
     }));
 
-    it("should have no problems if no results found", function (done) {
-      Person.find({ age: 22 })
+    it("should have no problems if no results found", function () {
+      return Person.find({ age: 22 })
         .removeAsync()
         .then(function () {
-          Person.find(function(err, data) {
-            should.equal(data.length, 3);
-            done();
-          });
-        }).catch(function(err) {
-          done(err);
+          return Person.find().findAsync();
+        }).then(function(person) {
+          should.equal(person.length, 3);
         });
     });
 
-    it("should remove results without calling hooks", function (done) {
-      Person.find({ age: 20 })
+    it("should remove results without calling hooks", function () {
+      return Person.find({ age: 20 })
         .removeAsync()
         .then(function () {
           should.equal(hookFired, false);
-          Person.find(function (err, data) {
-            should.equal(data.length, 2);
-            done();
-          });
-        }).catch(function(err) {
-          done(err);
+          return Person.find().findAsync();
+        })
+        .then(function(person) {
+          should.equal(person.length, 2);
         });
     });
   });

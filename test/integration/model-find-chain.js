@@ -822,32 +822,4 @@ describe("Model.find() chaining", function() {
       });
     });
   });
-
-  describe(".success()", function () {
-    before(setup());
-
-    it("should return a Promise with .fail() method", function (done) {
-      Person.find().success(function (people) {
-        should(Array.isArray(people));
-
-        return done();
-      }).fail(function (err) {
-        // never called..
-      });
-    });
-  });
-
-  describe(".fail()", function () {
-    before(setup());
-
-    it("should return a Promise with .success() method", function (done) {
-      Person.find().fail(function (err) {
-        // never called..
-      }).success(function (people) {
-        should(Array.isArray(people));
-
-        return done();
-      });
-    });
-  });
 });

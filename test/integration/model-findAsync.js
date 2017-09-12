@@ -61,232 +61,194 @@ describe("Model.findAsync()", function() {
   describe("without arguments", function () {
     before(setup());
 
-    it("should return all items", function (done) {
-      Person.findAsync()
+    it("should return all items", function () {
+      return Person.findAsync()
         .then(function (people) {
           people.should.be.a.Object();
           people.should.have.property("length", 5);
-
-          return done();
-        })
-        .catch(done);
+        });
     });
   });
 
   describe("with a number as argument", function () {
     before(setup());
 
-    it("should use it as limit", function (done) {
-      Person.findAsync(2)
+    it("should use it as limit", function () {
+      return Person.findAsync(2)
         .then(function (people) {
           people.should.be.a.Object();
           people.should.have.property("length", 2);
-
-          return done();
-        })
-        .catch(done);
+        });
     });
   });
 
   describe("with a string argument", function () {
     before(setup());
 
-    it("should use it as property ascending order", function (done) {
-      Person.findAsync("age")
+    it("should use it as property ascending order", function () {
+      return Person.findAsync("age")
         .then(function (people) {
           people.should.be.a.Object();
           people.should.have.property("length", 5);
           people[0].age.should.equal(16);
           people[4].age.should.equal(20);
-
-          return done();
-        })
-        .catch(done);
+        });
     });
 
-    it("should use it as property descending order if starting with '-'", function (done) {
-      Person.findAsync("-age")
+    it("should use it as property descending order if starting with '-'", function () {
+      return Person.findAsync("-age")
         .then(function (people) {
           people.should.be.a.Object();
           people.should.have.property("length", 5);
           people[0].age.should.equal(20);
           people[4].age.should.equal(16);
-
-          return done();
-        })
-        .catch(done);
+        });
     });
   });
 
   describe("with an Array as argument", function () {
     before(setup());
 
-    it("should use it as property ascending order", function (done) {
-      Person.findAsync([ "age" ])
+    it("should use it as property ascending order", function () {
+      return Person.findAsync([ "age" ])
         .then(function (people) {
           people.should.be.a.Object();
           people.should.have.property("length", 5);
           people[0].age.should.equal(16);
           people[4].age.should.equal(20);
-
-          return done();
-      })
-        .catch(done);
+      });
     });
 
-    it("should use it as property descending order if starting with '-'", function (done) {
-      Person.findAsync([ "-age" ])
+    it("should use it as property descending order if starting with '-'", function () {
+      return Person.findAsync([ "-age" ])
         .then(function (people) {
           people.should.be.a.Object();
           people.should.have.property("length", 5);
           people[0].age.should.equal(20);
           people[4].age.should.equal(16);
-
-          return done();
-      })
-        .catch(done);
+      });
     });
 
-    it("should use it as property descending order if element is 'Z'", function (done) {
-      Person.findAsync([ "age", "Z" ])
+    it("should use it as property descending order if element is 'Z'", function () {
+      return Person.findAsync([ "age", "Z" ])
         .then(function (people) {
           people.should.be.a.Object();
           people.should.have.property("length", 5);
           people[0].age.should.equal(20);
           people[4].age.should.equal(16);
-
-          return done();
-      })
-        .catch(done);
+      });
     });
 
-    it("should accept multiple ordering", function (done) {
-      Person.findAsync([ "age", "name", "Z" ])
+    it("should accept multiple ordering", function () {
+      return Person.findAsync([ "age", "name", "Z" ])
         .then(function (people) {
           people.should.be.a.Object();
           people.should.have.property("length", 5);
           people[0].age.should.equal(16);
           people[4].age.should.equal(20);
-
-          return done();
-      })
-        .catch(done);
+      });
     });
 
-    it("should accept multiple ordering using '-' instead of 'Z'", function (done) {
-      Person.findAsync([ "age", "-name" ])
+    it("should accept multiple ordering using '-' instead of 'Z'", function () {
+      return Person.findAsync([ "age", "-name" ])
         .then(function (people) {
           people.should.be.a.Object();
           people.should.have.property("length", 5);
           people[0].age.should.equal(16);
           people[4].age.should.equal(20);
-
-          return done();
-      })
-        .catch(done);
+      });
     });
   });
 
   describe("with an Object as argument", function () {
     before(setup());
 
-    it("should use it as conditions", function (done) {
-      Person.findAsync({ age: 16 })
+    it("should use it as conditions", function () {
+      return Person.findAsync({ age: 16 })
         .then(function (people) {
           people.should.be.a.Object();
           people.should.have.property("length", 1);
           people[0].age.should.equal(16);
-
-          return done();
-        })
-        .catch(done);
+        });
     });
 
-    it("should accept comparison objects", function (done) {
-      Person.findAsync({ age: ORM.gt(18) })
+    it("should accept comparison objects", function () {
+      return Person.findAsync({ age: ORM.gt(18) })
         .then(function (people) {
           people.should.be.a.Object();
           people.should.have.property("length", 2);
           people[0].age.should.equal(20);
           people[1].age.should.equal(20);
-
-          return done();
-        })
-        .catch(done);
+        });
     });
 
     describe("with another Object as argument", function () {
       before(setup());
 
-      it("should use it as options", function (done) {
-        Person.findAsync({ age: 18 }, 1, { cache: false })
+      it("should use it as options", function () {
+        return Person.findAsync({ age: 18 }, 1, { cache: false })
           .then(function (people) {
             people.should.be.a.Object();
             people.should.have.property("length", 1);
             people[0].age.should.equal(18);
 
-            return done();
-          })
-          .catch(done);
+
+          });
       });
 
       describe("if a limit is passed", function () {
         before(setup());
 
-        it("should use it", function (done) {
-          Person.findAsync({ age: 18 }, { limit: 1 })
+        it("should use it", function () {
+          return Person.findAsync({ age: 18 }, { limit: 1 })
             .then(function (people) {
               people.should.be.a.Object();
               people.should.have.property("length", 1);
               people[0].age.should.equal(18);
 
-              return done();
-            })
-            .catch(done);
+
+            });
         });
       });
 
       describe("if an offset is passed", function () {
         before(setup());
 
-        it("should use it", function (done) {
-          Person.findAsync({}, { offset: 1 }, "age")
+        it("should use it", function () {
+          return Person.findAsync({}, { offset: 1 }, "age")
             .then(function (people) {
               people.should.be.a.Object();
               people.should.have.property("length", 4);
               people[0].age.should.equal(18);
 
-              return done();
-            })
-            .catch(done);
+
+            });
         });
       });
 
       describe("if an order is passed", function () {
         before(setup());
 
-        it("should use it", function (done) {
-          Person.findAsync({ surname: "Doe" }, { order: "age" })
+        it("should use it", function () {
+          return Person.findAsync({ surname: "Doe" }, { order: "age" })
             .then(function (people) {
               people.should.be.a.Object();
               people.should.have.property("length", 3);
               people[0].age.should.equal(16);
 
-              return done();
-            })
-            .catch(done);
+
+            });
         });
 
-        it("should use it and ignore previously defined order", function (done) {
-          Person.findAsync({ surname: "Doe" }, "-age", { order: "age" })
+        it("should use it and ignore previously defined order", function () {
+          return Person.findAsync({ surname: "Doe" }, "-age", { order: "age" })
             .then(function (people) {
               people.should.be.a.Object();
               people.should.have.property("length", 3);
               people[0].age.should.equal(16);
 
-              return done();
-            })
-            .catch(done);
+
+            });
         });
       });
     });
@@ -294,8 +256,8 @@ describe("Model.findAsync()", function() {
 
   describe("with identityCache disabled", function () {
     before(setup());
-    it("should not return singletons", function (done) {
-      Person.findAsync({ name: "Jasmine" }, { identityCache: false })
+    it("should not return singletons", function () {
+      return Person.findAsync({ name: "Jasmine" }, { identityCache: false })
         .then(function (people) {
           people.should.be.a.Object();
           people.should.have.property("length", 1);
@@ -311,42 +273,33 @@ describe("Model.findAsync()", function() {
           people.should.have.property("length", 1);
           people[0].name.should.equal("Jasmine");
           people[0].surname.should.equal("Doe");
-
-          return done();
-        })
-        .catch(done);
+        });
     });
   });
 
   describe("when using Model.allAsync()", function () {
     before(setup());
-    it("should work exactly the same", function (done) {
-      Person.allAsync({ surname: "Doe" }, "-age", 1)
+    it("should work exactly the same", function () {
+      return Person.allAsync({ surname: "Doe" }, "-age", 1)
         .then(function (people) {
           people.should.be.a.Object();
           people.should.have.property("length", 1);
           people[0].name.should.equal("Jasmine");
           people[0].surname.should.equal("Doe");
-
-          return done();
-        })
-        .catch(done);
+        });
     });
   });
 
   describe("when using Model.whereAsync()", function () {
     before(setup());
-    it("should work exactly the same", function (done) {
-      Person.whereAsync({ surname: "Doe" }, "-age", 1)
+    it("should work exactly the same", function () {
+      return Person.whereAsync({ surname: "Doe" }, "-age", 1)
         .then(function (people) {
           people.should.be.a.Object();
           people.should.have.property("length", 1);
           people[0].name.should.equal("Jasmine");
           people[0].surname.should.equal("Doe");
-
-          return done();
-        })
-        .catch(done);
+        });
     });
   });
 });

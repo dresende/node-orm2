@@ -1,7 +1,7 @@
 var should   = require('should');
 var helper   = require('../support/spec_helper');
 
-describe("Model.count()", function() {
+describe("Model.countAsync()", function() {
   var db = null;
   var Person = null;
 
@@ -41,28 +41,22 @@ describe("Model.count()", function() {
   describe("without conditions", function () {
     before(setup());
 
-    it("should return all items in model", function (done) {
-      Person.countAsync()
+    it("should return all items in model", function () {
+      return Person.countAsync()
         .then(function (count) {
           count.should.equal(3);
-
-          return done();
-        })
-        .catch(done);
+        });
     });
   });
 
   describe("with conditions", function () {
     before(setup());
 
-    it("should return only matching items", function (done) {
-      Person.countAsync({ name: "John Doe" })
+    it("should return only matching items", function () {
+      return Person.countAsync({ name: "John Doe" })
         .then(function (count) {
           count.should.equal(2);
-
-          return done();
-        })
-        .catch(done);
+        });
     });
   });
 });

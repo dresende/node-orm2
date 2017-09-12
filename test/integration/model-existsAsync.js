@@ -1,7 +1,7 @@
 var should   = require('should');
 var helper   = require('../support/spec_helper');
 
-describe("Model.exists()", function() {
+describe("Model.existsAsync()", function() {
   var db     = null;
   var Person = null;
   var good_id, bad_id;
@@ -51,72 +51,54 @@ describe("Model.exists()", function() {
   describe("with an id", function () {
     before(setup());
 
-    it("should return true if found", function (done) {
-      Person.existsAsync(good_id)
+    it("should return true if found", function () {
+      return Person.existsAsync(good_id)
         .then(function (exists) {
           exists.should.be.true;
-
-          return done();
-        })
-        .catch(done);
+        });
     });
 
-    it("should return false if not found", function (done) {
-      Person.existsAsync(bad_id)
+    it("should return false if not found", function () {
+      return Person.existsAsync(bad_id)
         .then(function (exists) {
           exists.should.be.false;
-
-          return done();
-        })
-        .catch(done);
+        });
     });
   });
 
   describe("with a list of ids", function () {
     before(setup());
 
-    it("should return true if found", function (done) {
-      Person.existsAsync([ good_id ])
+    it("should return true if found", function () {
+      return Person.existsAsync([ good_id ])
         .then(function (exists) {
           exists.should.be.true;
-
-          return done();
-        })
-        .catch(done);
+        });
     });
 
-    it("should return false if not found", function (done) {
-      Person.exists([ bad_id ], function (err, exists) {
-        should.equal(err, null);
-
-        exists.should.be.false;
-
-        return done();
-      });
+    it("should return false if not found", function () {
+      return Person.existsAsync([ bad_id ])
+        .then(function (exists) {
+          exists.should.be.false;
+        });
     });
   });
 
   describe("with a conditions object", function () {
     before(setup());
 
-    it("should return true if found", function (done) {
-      Person.existsAsync({ name: "John Doe" })
+    it("should return true if found", function () {
+      return Person.existsAsync({ name: "John Doe" })
         .then(function (exists) {
           exists.should.be.true;
-
-          return done();
-        })
-        .catch(done);
+        });
     });
 
-    it("should return false if not found", function (done) {
-      Person.existsAsync({ name: "Jack Doe" })
+    it("should return false if not found", function () {
+      return Person.existsAsync({ name: "Jack Doe" })
         .then(function (exists) {
           exists.should.be.false;
-
-          return done();
-        })
-        .catch(done);
+        });
     });
   });
 });

@@ -163,8 +163,8 @@ describe("ORM", function() {
         });
     });
 
-    it("should pass successful when opts is OK!", function (done) {
-      ORM.connectAsync(common.getConnectionString())
+    it("should pass successful when opts is OK!", function () {
+      return ORM.connectAsync(common.getConnectionString())
         .then(function (db) {
           should.exist(db);
 
@@ -172,12 +172,7 @@ describe("ORM", function() {
           db.define.should.be.a.Function();
           db.sync.should.be.a.Function();
           db.load.should.be.a.Function();
-
-          done();
         })
-        .catch(function (err) {
-          done(err);
-        });
     });
 
     describe('POOL via connectAsync', function () {
@@ -192,59 +187,43 @@ describe("ORM", function() {
       });
 
       if (protocol !== 'mongodb') {
-        it("should understand pool `'false'` from query string", function (done) {
+        it("should understand pool `'false'` from query string", function () {
           var connString = connStr + "debug=false&pool=false";
-          ORM.connectAsync(connString)
+          return ORM.connectAsync(connString)
             .then(function (db) {
               should.strictEqual(db.driver.opts.pool,  false);
               should.strictEqual(db.driver.opts.debug, false);
-              done();
             })
-            .catch(function (err) {
-              done(err);
-            });
         });
 
-        it("should understand pool `'0'` from query string", function (done) {
+        it("should understand pool `'0'` from query string", function () {
           var connString = connStr + "debug=0&pool=0";
-          ORM.connectAsync(connString)
+          return ORM.connectAsync(connString)
             .then(function (db) {
               should.strictEqual(db.driver.opts.pool,  false);
               should.strictEqual(db.driver.opts.debug, false);
-              done();
-            })
-            .catch(function (err) {
-              done(err);
             });
         });
 
-        it("should understand pool `'true'` from query string", function (done) {
+        it("should understand pool `'true'` from query string", function () {
           var connString = connStr + "debug=true&pool=true";
-          ORM.connectAsync(connString)
+          return ORM.connectAsync(connString)
             .then(function (db) {
               should.strictEqual(db.driver.opts.pool,  true);
               should.strictEqual(db.driver.opts.debug, true);
-              done();
-            })
-            .catch(function (err) {
-              done(err);
             });
         });
 
-        it("should understand pool `'true'` from query string", function (done) {
+        it("should understand pool `'true'` from query string", function () {
           var connString = connStr + "debug=1&pool=1";
-          ORM.connectAsync(connString)
+          return ORM.connectAsync(connString)
             .then(function (db) {
               should.strictEqual(db.driver.opts.pool,  true);
               should.strictEqual(db.driver.opts.debug, true);
-              done();
-            })
-            .catch(function (err) {
-              done(err);
             });
         });
 
-        it("should understand pool `'true'` from query string", function (done) {
+        it("should understand pool `'true'` from query string", function () {
           var connCopy = _.cloneDeep(common.getConfig());
           var connOpts = _.extend(connCopy, {
             protocol: common.protocol(),
@@ -252,18 +231,15 @@ describe("ORM", function() {
               pool: true, debug: true
             }
           });
-          ORM.connectAsync(connOpts)
+
+          return ORM.connectAsync(connOpts)
             .then(function (db) {
               should.strictEqual(db.driver.opts.pool,  true);
               should.strictEqual(db.driver.opts.debug, true);
-              done();
-            })
-            .catch(function (err) {
-              done(err);
             });
         });
 
-        it("should understand pool `false` from query options", function (done) {
+        it("should understand pool `false` from query options", function () {
           var connCopy = _.cloneDeep(common.getConfig());
           var connOpts = _.extend(connCopy, {
             protocol: common.protocol(),
@@ -271,14 +247,11 @@ describe("ORM", function() {
               pool: false, debug: false
             }
           });
-          ORM.connectAsync(connOpts)
+
+          return ORM.connectAsync(connOpts)
             .then(function (db) {
               should.strictEqual(db.driver.opts.pool,  false);
               should.strictEqual(db.driver.opts.debug, false);
-              done();
-            })
-            .catch(function (err) {
-              done(err);
             });
         });
       }
@@ -446,15 +419,12 @@ describe("ORM", function() {
         });
       });
 
-      it("should be able to pingAsync the server", function (done) {
-        db.pingAsync()
-          .then(function () {
-            return done();
-          });
+      it("should be able to pingAsync the server", function () {
+        return db.pingAsync();
       });
     });
 
-    describe("if callback is passed", function (done) {
+    describe("if callback is passed", function () {
       it("should return an error if empty url is passed", function (done) {
         ORM.connect("", function (err) {
           err.message.should.equal("CONNECTION_URL_EMPTY");
@@ -603,24 +573,16 @@ describe("ORM", function() {
   });
 
   describe("ORM.useAsync()", function () {
-    it("should be able to use an established connection", function (done) {
+    it("should be able to use an established connection", function () {
       var db = new sqlite.Database(':memory:');
 
-      ORM.useAsync(db, "sqlite")
-        .then(function () {
-          done();
-        })
-        .catch(done);
+      return ORM.useAsync(db, "sqlite");
     });
 
-    it("should be accept protocol alias", function (done) {
+    it("should be accept protocol alias", function () {
       var db = new pg.Client();
 
-      ORM.useAsync(db, "pg")
-        .then(function () {
-          done();
-        })
-        .catch(done);
+      return ORM.useAsync(db, "pg")
     });
 
     it("should throw an error in callback if protocol not supported", function (done) {

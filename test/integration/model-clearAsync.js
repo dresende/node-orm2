@@ -39,14 +39,11 @@ describe("Model.clearAsync()", function() {
   describe("with callback", function () {
     before(setup());
 
-    it("should call when done", function (done) {
-      Person.clearAsync()
-        .then(function () {
-          Person.find().count(function (err, count) {
-            count.should.equal(0);
-
-            return done();
-          });
+    it("should call when done", function () {
+      return Person.clearAsync()
+        .then(Person.countAsync)
+        .then(function (count) {
+          count.should.equal(0);
         });
     });
   });
@@ -54,16 +51,12 @@ describe("Model.clearAsync()", function() {
   describe("without callback", function () {
     before(setup());
 
-    it("should still remove", function (done) {
-      Person.clearAsync();
-
-      setTimeout(function () {
-        Person.find().count(function (err, count) {
+    it("should still remove", function () {
+      return Person.clearAsync()
+        .then(Person.countAsync)
+        .then(function (count) {
           count.should.equal(0);
-
-          return done();
         });
-      }, 200);
     });
   });
 });

@@ -41,55 +41,43 @@ describe("Model.oneAsync()", function() {
   describe("without arguments", function () {
     before(setup());
 
-    it("should return first item in model", function (done) {
-      Person.oneAsync()
+    it("should return first item in model", function () {
+      return Person.oneAsync()
         .then(function (person) {
           person.name.should.equal("Jeremy Doe");
-
-          return done();
-        })
-        .catch(done);
+        });
     });
   });
 
   describe("with order", function () {
     before(setup());
 
-    it("should return first item in model based on order", function (done) {
-      Person.oneAsync("-name")
+    it("should return first item in model based on order", function () {
+      return Person.oneAsync("-name")
         .then(function (person) {
           person.name.should.equal("John Doe");
-
-          return done();
-        })
-        .catch(done);
+        });
     });
   });
 
   describe("with conditions", function () {
     before(setup());
 
-    it("should return first item in model based on conditions", function (done) {
-      Person.oneAsync({ name: "Jane Doe" })
+    it("should return first item in model based on conditions", function () {
+      return Person.oneAsync({ name: "Jane Doe" })
         .then(function (person) {
           person.name.should.equal("Jane Doe");
-
-          return done();
-        })
-        .catch(done);
+        });
     });
 
     describe("if no match", function () {
       before(setup());
 
-      it("should return null", function (done) {
-        Person.oneAsync({ name: "Jack Doe" })
+      it("should return null", function () {
+        return Person.oneAsync({ name: "Jack Doe" })
           .then(function (person) {
             should.equal(person, null);
-
-            return done();
-          })
-          .catch(done);
+          });
       });
     });
   });

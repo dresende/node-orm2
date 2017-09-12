@@ -57,32 +57,9 @@ describe("HookPromise", function() {
     return db.close();
   });
 
-  describe('afterCreate', function () {
-    beforeEach(setup());
-    it("should trigger after model creation", function (done) {
-      var triggered = false;
-
-      Person.afterCreate(function () {
-        return new Promise(function (resolve) {
-          setTimeout(function () {
-            triggered = true;
-            resolve();
-          }, 700);
-        });
-      });
-
-      Person.createAsync([{ name: "John Doe" }])
-        .then(function () {
-          triggered.should.be.true;
-          done();
-        })
-        .catch(done);
-    });
-  });
-
   describe("beforeCreate", function () {
     beforeEach(setup());
-    it("should allow modification of instance", function (done) {
+    it("should allow modification of instance", function () {
       Person.beforeCreate(function () {
         var self = this;
         return new Promise(function (resolve) {
@@ -93,7 +70,7 @@ describe("HookPromise", function() {
         });
       });
 
-      Person.createAsync([{ }])
+      return Person.createAsync([{ }])
         .then(function (people) {
           should.exist(people);
           should.equal(people.length, 1);
@@ -103,9 +80,7 @@ describe("HookPromise", function() {
             should.not.exist(err);
             should.exist(person);
           });
-          done();
-        })
-        .catch(done);
+        });
     });
 
     it("should trigger error", function (done) {
@@ -123,7 +98,7 @@ describe("HookPromise", function() {
         })
         .catch(function (err) {
           err.should.be.a.Object();
-          err.message.should.equal("beforeCreate-error");
+          should.equal(err.message, "beforeCreate-error");
           done();
         });
     });
@@ -146,7 +121,7 @@ describe("HookPromise", function() {
         })
         .catch(function (err) {
           err.should.be.a.Object();
-          err.message.should.equal("beforeSave-error");
+          should.equal(err.message, "beforeSave-error");
           return done();
         });
     });
@@ -166,12 +141,12 @@ describe("HookPromise", function() {
         })
         .catch(function (err) {
           err.should.be.a.Object();
-          err.message.should.equal("beforeSave-error");
+          should.equal("beforeSave-error", err.message);
           return done();
         });
     });
 
-    it("should trigger and wait", function (done) {
+    it("should trigger and wait", function () {
       Person.beforeSave(function () {
         var self = this;
         return new Promise(function (resolve) {
@@ -182,47 +157,19 @@ describe("HookPromise", function() {
         });
       });
 
-      Person.createAsync([{ name: "Jane Doe" }])
+      return Person.createAsync([{ name: "Jane Doe" }])
         .then(function (John) {
           return John[0].saveAsync();
         })
         .then(function (John) {
           should.equal(John.name, 'John Doe');
-          done();
-        })
-        .catch(done);
-    });
-  });
-
-  describe("afterSave", function () {
-    beforeEach(setup());
-    it("should call and wait after save hook", function (done) {
-      var triggered = false;
-
-      Person.afterSave(function () {
-        return new Promise(function (resolve) {
-          setTimeout(function () {
-            triggered = true;
-            resolve();
-          }, 700);
         });
-      });
-
-      Person.createAsync([{ name: "John Doe" }])
-        .then(function (Jhon) {
-          return Jhon[0].saveAsync();
-        })
-        .then(function () {
-          triggered.should.be.true;
-          done();
-        })
-        .catch(done);
     });
   });
 
   describe("beforeValidation", function () {
     beforeEach(setup());
-    it("should trigger and wait", function (done) {
+    it("should trigger and wait", function () {
       Person.beforeValidation(function () {
         var self = this;
         return new Promise(function (resolve) {
@@ -233,12 +180,10 @@ describe("HookPromise", function() {
         });
       });
 
-      Person.createAsync([{ name: "John Doe" }])
+      return Person.createAsync([{ name: "John Doe" }])
         .then(function (Jhon) {
           should.equal(Jhon[0].name, "John Snow");
-          done();
-        })
-        .catch(done);
+        });
     });
 
     it("should throw error", function (done) {
@@ -265,7 +210,7 @@ describe("HookPromise", function() {
 
   describe("afterLoad", function () {
     beforeEach(setup());
-    it("should trigger and wait", function (done) {
+    it("should trigger and wait", function () {
       var afterLoad = false;
       Person.afterLoad(function () {
         return new Promise(function (resolve) {
@@ -276,12 +221,10 @@ describe("HookPromise", function() {
         });
       });
 
-      Person.createAsync([{ name: "John Doe" }])
+      return Person.createAsync([{ name: "John Doe" }])
         .then(function () {
-          afterLoad.should.be.true;
-          done();
-        })
-        .catch(done);
+          should.equal(afterLoad, true);
+        });
     });
 
     it("should throw error", function (done) {
@@ -302,7 +245,7 @@ describe("HookPromise", function() {
         })
         .catch(function (err) {
           err.should.exist;
-          err.message.should.equal("afterLoad-error");
+          should.equal("afterLoad-error", err.message);
           done();
         });
     });
@@ -310,23 +253,21 @@ describe("HookPromise", function() {
 
   describe("afterAutoFetch", function () {
     beforeEach(setup());
-    it("should trigger and wait", function (done) {
+    it("should trigger and wait", function () {
       var afterAutoFetch = false;
       Person.afterAutoFetch(function () {
         return new Promise(function (resolve) {
           setTimeout(function () {
             afterAutoFetch = true;
             resolve();
-          }, 500);
+          }, 1000);
         });
       });
 
-      Person.createAsync({ name: "John" })
+      return Person.createAsync({ name: "John" })
         .then(function () {
-          afterAutoFetch.should.be.true;
-          done();
-        })
-        .catch(done);
+          should.equal(afterAutoFetch, true);
+        });
     });
 
     it("should throw error", function (done) {
@@ -354,7 +295,7 @@ describe("HookPromise", function() {
   describe("beforeRemove", function () {
     before(setup());
 
-    it("should trigger and wait", function (done) {
+    it("should trigger and wait", function () {
       var beforeRemove = false;
       Person.beforeRemove(function () {
         return new Promise(function (resolve) {
@@ -363,15 +304,13 @@ describe("HookPromise", function() {
         });
       });
 
-      Person.createAsync([{ name: "John Doe" }])
+      return Person.createAsync([{ name: "John Doe" }])
         .then(function (items) {
           return items[0].removeAsync();
         })
         .then(function () {
-          beforeRemove.should.be.true;
-          done();
-        })
-        .catch(done);
+          should.equal(beforeRemove, true);
+        });
     });
 
     it("should throw error", function (done) {
@@ -431,15 +370,13 @@ describe("HookPromise", function() {
       }
     }));
 
-    it("should propagate down hooks", function (done) {
-      Person.createAsync([{ name: "John Doe" }])
+    it("should propagate down hooks", function () {
+      return Person.createAsync([{ name: "John Doe" }])
         .then(function (people) {
           should.exist(people);
           should.equal(people.length, 1);
           should.equal(people[0].name, "beforeSave");
-          done();
-        })
-        .catch(done);
+        });
     });
   });
 });

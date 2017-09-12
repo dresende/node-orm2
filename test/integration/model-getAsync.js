@@ -64,17 +64,13 @@ describe("Model.getAsync()", function () {
         });
     });
 
-    it("should accept and try to fetch if passed an Array with ids", function (done) {
-      Person.getAsync([ John[Person.id] ])
+    it("should accept and try to fetch if passed an Array with ids", function () {
+      return Person.getAsync([ John[Person.id] ])
         .then(function (John) {
           John.should.be.a.Object();
           John.should.have.property(Person.id, John[Person.id]);
           John.should.have.property("name", "John Doe");
-          done();
         })
-        .catch(function (err) {
-          done(err);
-        });
     });
 
     it("should throw err", function (done) {
@@ -89,45 +85,31 @@ describe("Model.getAsync()", function () {
         });
     });
 
-    it("should return item with id 1", function (done) {
-      Person.getAsync(John[Person.id])
+    it("should return item with id 1", function () {
+      return Person.getAsync(John[Person.id])
         .then(function (John) {
           John.should.be.a.Object();
           John.should.have.property(Person.id, John[Person.id]);
           John.should.have.property("name", "John Doe");
-
-          done();
         })
-        .catch(function (err) {
-          done(err);
-        });
     });
 
-    it("should have an UID method", function (done) {
-      Person.getAsync(John[Person.id])
+    it("should have an UID method", function () {
+      return Person.getAsync(John[Person.id])
         .then(function (John) {
           John.UID.should.be.a.Function();
           John.UID().should.equal(John[Person.id]);
-
-          done();
         })
-        .catch(function (err) {
-          done(err)
-        });
     });
 
-    it("should return the original object with unchanged name", function (done) {
-      Person.getAsync(John[Person.id])
+    it("should return the original object with unchanged name", function () {
+      return Person.getAsync(John[Person.id])
         .then(function (John1) {
           John1.name = "James";
           return Person.getAsync(John[Person.id]);
         })
         .then(function (John2) {
           should.equal(John2.name, "John Doe");
-          done();
-        })
-        .catch(function (err) {
-          done(err);
         });
     });
 
@@ -136,8 +118,8 @@ describe("Model.getAsync()", function () {
         Person.settings.set("instance.identityCacheSaveCheck", false);
       });
 
-      it("should return the same object with the changed name", function (done) {
-        Person.getAsync(John[Person.id])
+      it("should return the same object with the changed name", function () {
+        return Person.getAsync(John[Person.id])
           .then(function (John1) {
             John1.name = "James";
             return [John1, Person.getAsync(John[Person.id])];
@@ -145,11 +127,6 @@ describe("Model.getAsync()", function () {
           .spread(function (John1, John2) {
             John1[Person.id].should.equal(John2[Person.id]);
             John2.name.should.equal("James");
-
-            done();
-          })
-          .catch(function (err) {
-            done(err);
           });
       });
     });
@@ -158,19 +135,14 @@ describe("Model.getAsync()", function () {
   describe("with no identityCache cache", function () {
     before(setup(false));
 
-    it("should return different objects", function (done) {
-      Person.getAsync(John[Person.id])
+    it("should return different objects", function () {
+      return Person.getAsync(John[Person.id])
         .then(function (John1) {
           return [John1, Person.getAsync(John[Person.id])];
         })
         .spread(function (John1, John2) {
           John1[Person.id].should.equal(John2[Person.id]);
           John1.should.not.equal(John2);
-
-          done();
-        })
-        .catch(function (err) {
-          done(err);
         });
     });
   });
@@ -178,8 +150,8 @@ describe("Model.getAsync()", function () {
   describe("with identityCache cache = 0.5 secs", function () {
     before(setup(0.5));
 
-    it("should return same objects after 0.2 sec", function (done) {
-      Person.getAsync(John[Person.id])
+    it("should return same objects after 0.2 sec", function () {
+      return Person.getAsync(John[Person.id])
         .then(function (John1) {
           return [John1, Promise.delay(200)];
         })
@@ -189,15 +161,11 @@ describe("Model.getAsync()", function () {
         .spread(function (John1, John2) {
           John1[Person.id].should.equal(John2[Person.id]);
           John1.should.equal(John2);
-          done();
-        })
-        .catch(function (err) {
-          done(err);
         });
     });
 
-    it("should return different objects after 0.7 sec", function (done) {
-      Person.getAsync(John[Person.id])
+    it("should return different objects after 0.7 sec", function () {
+      return Person.getAsync(John[Person.id])
         .then(function (John1) {
           return [John1, Promise.delay(700)];
         })
@@ -206,10 +174,6 @@ describe("Model.getAsync()", function () {
         })
         .spread(function (John1, John2) {
           John1.should.not.equal(John2);
-          done();
-        })
-        .catch(function (err) {
-          done(err);
         });
     });
   });
@@ -231,18 +195,17 @@ describe("Model.getAsync()", function () {
       });
     });
 
-    it("should search by key name and not 'id'", function (done) {
+    it("should search by key name and not 'id'", function () {
       db.settings.set('properties.primary_key', 'name');
 
       var OtherPerson = db.define("person", {
         id : Number
       });
 
-      OtherPerson.getAsync("Jane Doe")
+      return OtherPerson.getAsync("Jane Doe")
         .then(function (person) {
           person.name.should.equal("Jane Doe");
           db.settings.set('properties.primary_key', 'id');
-          done();
         });
     });
   });
@@ -250,16 +213,12 @@ describe("Model.getAsync()", function () {
   describe("with empty object as options", function () {
     before(setup());
 
-    it("should return item with id 1 like previously", function (done) {
-      Person.getAsync(John[Person.id], {})
+    it("should return item with id 1 like previously", function () {
+      return Person.getAsync(John[Person.id], {})
         .then(function (John) {
           John.should.be.a.Object();
           John.should.have.property(Person.id, John[Person.id]);
           John.should.have.property("name", "John Doe");
-          done();
-        })
-        .catch(function (err) {
-          done(err);
         });
     });
   });

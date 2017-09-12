@@ -87,7 +87,7 @@ describe("Model.createAsync()", function() {
 
           John.pets[0].should.have.property("name", "Deco");
           John.pets[0].should.have.property(Pet.id);
-          John.pets[0].saved().should.be.true;
+          should.equal(John.pets[0].saved(), true);
           done();
         })
         .catch(function (err) {
@@ -107,7 +107,7 @@ describe("Model.createAsync()", function() {
 
           John.pets[0].should.have.property("name", "Deco");
           John.pets[0].should.have.property(Pet.id);
-          John.pets[0].saved().should.be.true;
+          should.equal(John.pets[0].saved(), true);
           done();
         })
         .catch(function (err) {

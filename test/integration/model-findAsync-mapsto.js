@@ -1,7 +1,7 @@
 var should   = require('should');
 var helper   = require('../support/spec_helper');
 
-describe("Model.pkMapTo.find()", function() {
+describe("Model.pkMapTo.findAsync()", function() {
   var db = null;
   var Person = null;
 
@@ -73,25 +73,22 @@ describe("Model.pkMapTo.find()", function() {
   describe("Cache should work with mapped key field", function () {
     before(setup());
 
-    it("1st find should work", function (done) {
-      Person.find({ surname: "Dean" }, function (err, people) {
-        should.not.exist(err);
-        people.should.be.a.Object();
-        people.should.have.property("length", 2);
-        people[0].surname.should.equal("Dean");
-
-        return done();
-      });
+    it("1st find should work", function () {
+      Person.findAsync({ surname: "Dean" })
+        .then(function (people) {
+          people.should.be.a.Object();
+          people.should.have.property("length", 2);
+          people[0].surname.should.equal("Dean");
+        });
     });
-    it("2nd find should should also work", function (done) {
-      Person.find({ surname: "Doe" }, function (err, people) {
-        should.not.exist(err);
-        people.should.be.a.Object();
-        people.should.have.property("length", 3);
-        people[0].surname.should.equal("Doe");
-
-        return done();
-      });
+    it("2nd find should should also work", function () {
+      Person.findAsync({ surname: "Doe" })
+        .then(function (people) {
+          people.should.be.a.Object();
+          people.should.have.property("length", 3);
+          people[0].surname.should.equal("Doe");
+        });
     });
   });
 });
+

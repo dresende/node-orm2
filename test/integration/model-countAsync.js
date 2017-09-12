@@ -1,8 +1,7 @@
 var should   = require('should');
 var helper   = require('../support/spec_helper');
-var ORM      = require('../../');
 
-describe("Model.clearAsync()", function() {
+describe("Model.countAsync()", function() {
   var db = null;
   var Person = null;
 
@@ -12,13 +11,16 @@ describe("Model.clearAsync()", function() {
         name   : String
       });
 
-      ORM.singleton.clear();
-
       return helper.dropSync(Person, function () {
         Person.create([{
+          id  : 1,
           name: "John Doe"
         }, {
+          id  : 2,
           name: "Jane Doe"
+        }, {
+          id  : 3,
+          name: "John Doe"
         }], done);
       });
     };
@@ -36,26 +38,24 @@ describe("Model.clearAsync()", function() {
     return db.close();
   });
 
-  describe("with callback", function () {
+  describe("without conditions", function () {
     before(setup());
 
-    it("should call when done", function () {
-      return Person.clearAsync()
-        .then(Person.countAsync)
+    it("should return all items in model", function () {
+      return Person.countAsync()
         .then(function (count) {
-          should.equal(count, 0);
+          should.equal(count, 3);
         });
     });
   });
 
-  describe("without callback", function () {
+  describe("with conditions", function () {
     before(setup());
 
-    it("should still remove", function () {
-      return Person.clearAsync()
-        .then(Person.countAsync)
+    it("should return only matching items", function () {
+      return Person.countAsync({ name: "John Doe" })
         .then(function (count) {
-          should.equal(count, 0);
+          should.equal(count, 2);
         });
     });
   });

@@ -43,7 +43,7 @@ describe("Model.clearAsync()", function() {
       return Person.clearAsync()
         .then(Person.countAsync)
         .then(function (count) {
-          count.should.equal(0);
+          should.equal(count, 0);
         });
     });
   });
@@ -55,7 +55,7 @@ describe("Model.clearAsync()", function() {
       return Person.clearAsync()
         .then(Person.countAsync)
         .then(function (count) {
-          count.should.equal(0);
+          should.equal(count, 0);
         });
     });
   });

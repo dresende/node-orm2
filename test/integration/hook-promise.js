@@ -57,27 +57,6 @@ describe("HookPromise", function() {
     return db.close();
   });
 
-  describe('afterCreate', function () {
-    beforeEach(setup());
-    it("should trigger after model creation", function () {
-      var triggered = false;
-
-      Person.afterCreate(function () {
-        return new Promise(function (resolve) {
-          setTimeout(function () {
-            triggered = true;
-            resolve();
-          }, 700);
-        });
-      });
-
-      return Person.createAsync([{ name: "John Doe" }])
-        .then(function () {
-          triggered.should.be.true;
-        });
-    });
-  });
-
   describe("beforeCreate", function () {
     beforeEach(setup());
     it("should allow modification of instance", function () {
@@ -91,7 +70,7 @@ describe("HookPromise", function() {
         });
       });
 
-      Person.createAsync([{ }])
+      return Person.createAsync([{ }])
         .then(function (people) {
           should.exist(people);
           should.equal(people.length, 1);
@@ -119,7 +98,7 @@ describe("HookPromise", function() {
         })
         .catch(function (err) {
           err.should.be.a.Object();
-          err.message.should.equal("beforeCreate-error");
+          should.equal(err.message, "beforeCreate-error");
           done();
         });
     });
@@ -142,7 +121,7 @@ describe("HookPromise", function() {
         })
         .catch(function (err) {
           err.should.be.a.Object();
-          err.message.should.equal("beforeSave-error");
+          should.equal(err.message, "beforeSave-error");
           return done();
         });
     });
@@ -162,7 +141,7 @@ describe("HookPromise", function() {
         })
         .catch(function (err) {
           err.should.be.a.Object();
-          err.message.should.equal("beforeSave-error");
+          should.equal("beforeSave-error", err.message);
           return done();
         });
     });
@@ -184,30 +163,6 @@ describe("HookPromise", function() {
         })
         .then(function (John) {
           should.equal(John.name, 'John Doe');
-        });
-    });
-  });
-
-  describe("afterSave", function () {
-    beforeEach(setup());
-    it("should call and wait after save hook", function () {
-      var triggered = false;
-
-      Person.afterSave(function () {
-        return new Promise(function (resolve) {
-          setTimeout(function () {
-            triggered = true;
-            resolve();
-          }, 700);
-        });
-      });
-
-      return Person.createAsync([{ name: "John Doe" }])
-        .then(function (Jhon) {
-          return Jhon[0].saveAsync();
-        })
-        .then(function () {
-          triggered.should.be.true;
         });
     });
   });
@@ -268,7 +223,7 @@ describe("HookPromise", function() {
 
       return Person.createAsync([{ name: "John Doe" }])
         .then(function () {
-          afterLoad.should.be.true;
+          should.equal(afterLoad, true);
         });
     });
 
@@ -290,7 +245,7 @@ describe("HookPromise", function() {
         })
         .catch(function (err) {
           err.should.exist;
-          err.message.should.equal("afterLoad-error");
+          should.equal("afterLoad-error", err.message);
           done();
         });
     });
@@ -305,13 +260,13 @@ describe("HookPromise", function() {
           setTimeout(function () {
             afterAutoFetch = true;
             resolve();
-          }, 500);
+          }, 1000);
         });
       });
 
       return Person.createAsync({ name: "John" })
         .then(function () {
-          afterAutoFetch.should.be.true;
+          should.equal(afterAutoFetch, true);
         });
     });
 
@@ -354,7 +309,7 @@ describe("HookPromise", function() {
           return items[0].removeAsync();
         })
         .then(function () {
-          beforeRemove.should.be.true;
+          should.equal(beforeRemove, true);
         });
     });
 

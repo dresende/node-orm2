@@ -44,7 +44,7 @@ describe("Model.countAsync()", function() {
     it("should return all items in model", function () {
       return Person.countAsync()
         .then(function (count) {
-          count.should.equal(3);
+          should.equal(count, 3);
         });
     });
   });
@@ -55,7 +55,7 @@ describe("Model.countAsync()", function() {
     it("should return only matching items", function () {
       return Person.countAsync({ name: "John Doe" })
         .then(function (count) {
-          count.should.equal(2);
+          should.equal(count, 2);
         });
     });
   });

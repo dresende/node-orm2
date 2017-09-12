@@ -54,14 +54,14 @@ describe("Model.existsAsync()", function() {
     it("should return true if found", function () {
       return Person.existsAsync(good_id)
         .then(function (exists) {
-          exists.should.be.true;
+          exists.should.be.true();
         });
     });
 
     it("should return false if not found", function () {
       return Person.existsAsync(bad_id)
         .then(function (exists) {
-          exists.should.be.false;
+          exists.should.be.false();
         });
     });
   });
@@ -72,14 +72,14 @@ describe("Model.existsAsync()", function() {
     it("should return true if found", function () {
       return Person.existsAsync([ good_id ])
         .then(function (exists) {
-          exists.should.be.true;
+          exists.should.be.true();
         });
     });
 
     it("should return false if not found", function () {
       return Person.existsAsync([ bad_id ])
         .then(function (exists) {
-          exists.should.be.false;
+          exists.should.be.false();
         });
     });
   });
@@ -90,14 +90,14 @@ describe("Model.existsAsync()", function() {
     it("should return true if found", function () {
       return Person.existsAsync({ name: "John Doe" })
         .then(function (exists) {
-          exists.should.be.true;
+          exists.should.be.true();
         });
     });
 
     it("should return false if not found", function () {
       return Person.existsAsync({ name: "Jack Doe" })
         .then(function (exists) {
-          exists.should.be.false;
+          exists.should.be.false();
         });
     });
   });

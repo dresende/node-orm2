@@ -1,6 +1,5 @@
 var should   = require('should');
 var helper   = require('../support/spec_helper');
-var ORM      = require('../../');
 
 describe("Model.pkMapTo.find()", function() {
   var db = null;
@@ -75,24 +74,26 @@ describe("Model.pkMapTo.find()", function() {
     before(setup());
 
     it("1st find should work", function (done) {
-      Person.find({ surname: "Dean" }, function (err, people) {
-        should.not.exist(err);
-        people.should.be.a.Object();
-        people.should.have.property("length", 2);
-        people[0].surname.should.equal("Dean");
+      Person.findAsync({ surname: "Dean" })
+        .then(function (people) {
+          people.should.be.a.Object();
+          people.should.have.property("length", 2);
+          people[0].surname.should.equal("Dean");
 
-        return done();
-      });
+          return done();
+        })
+        .catch(done);
     });
     it("2nd find should should also work", function (done) {
-      Person.find({ surname: "Doe" }, function (err, people) {
-        should.not.exist(err);
-        people.should.be.a.Object();
-        people.should.have.property("length", 3);
-        people[0].surname.should.equal("Doe");
+      Person.findAsync({ surname: "Doe" })
+        .then(function (people) {
+          people.should.be.a.Object();
+          people.should.have.property("length", 3);
+          people[0].surname.should.equal("Doe");
 
-        return done();
-      });
+          return done();
+        })
+        .catch(done);
     });
   });
 });

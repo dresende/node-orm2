@@ -1,7 +1,7 @@
 var should   = require('should');
 var helper   = require('../support/spec_helper');
 
-describe("Model.one()", function() {
+describe("Model.oneAsync()", function() {
   var db = null;
   var Person = null;
 
@@ -42,23 +42,13 @@ describe("Model.one()", function() {
     before(setup());
 
     it("should return first item in model", function (done) {
-      Person.one(function (err, person) {
-        should.equal(err, null);
+      Person.oneAsync()
+        .then(function (person) {
+          person.name.should.equal("Jeremy Doe");
 
-        person.name.should.equal("Jeremy Doe");
-
-        return done();
-      });
-    });
-  });
-
-  describe("without callback", function () {
-    before(setup());
-
-    it("should throw", function (done) {
-      Person.one.should.throw();
-
-      return done();
+          return done();
+        })
+        .catch(done);
     });
   });
 
@@ -66,13 +56,13 @@ describe("Model.one()", function() {
     before(setup());
 
     it("should return first item in model based on order", function (done) {
-      Person.one("-name", function (err, person) {
-        should.equal(err, null);
+      Person.oneAsync("-name")
+        .then(function (person) {
+          person.name.should.equal("John Doe");
 
-        person.name.should.equal("John Doe");
-
-        return done();
-      });
+          return done();
+        })
+        .catch(done);
     });
   });
 
@@ -80,25 +70,26 @@ describe("Model.one()", function() {
     before(setup());
 
     it("should return first item in model based on conditions", function (done) {
-      Person.one({ name: "Jane Doe" }, function (err, person) {
-        should.equal(err, null);
+      Person.oneAsync({ name: "Jane Doe" })
+        .then(function (person) {
+          person.name.should.equal("Jane Doe");
 
-        person.name.should.equal("Jane Doe");
-
-        return done();
-      });
+          return done();
+        })
+        .catch(done);
     });
 
     describe("if no match", function () {
       before(setup());
 
       it("should return null", function (done) {
-        Person.one({ name: "Jack Doe" }, function (err, person) {
-          should.equal(err, null);
-          should.equal(person, null);
+        Person.oneAsync({ name: "Jack Doe" })
+          .then(function (person) {
+            should.equal(person, null);
 
-          return done();
-        });
+            return done();
+          })
+          .catch(done);
       });
     });
   });

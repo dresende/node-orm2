@@ -123,70 +123,55 @@ describe("Model.extendsTo()", function() {
   describe("when calling setAccessorAsync", function () {
     before(setup());
 
-    it("should remove any previous extension", function (done) { // TODO: fix Model.find to async
-      Person.find().first(function (err, John) {
-        should.equal(err, null);
-
-        PersonAddress.find({ number: 123 }).count(function (err, c) {
-          should.equal(err, null);
-          c.should.equal(1);
+    it("should remove any previous extension", function () { // TODO: fix Model.find to async
+      return Person.find().firstAsync()
+        .then(function (John) {
+          return [John, PersonAddress.find({ number: 123 }).countAsync()];
+        })
+        .spread(function (John, count) {
+          count.should.equal(1);
 
           var addr = new PersonAddress({
             street : "4th Ave",
             number : 4
           });
 
-          John.setAddressAsync(addr)
-            .then(function () {
-              return John.getAddressAsync();
-            })
-            .then(function (Address) {
-              Address.should.be.a.Object();
-              should.equal(Array.isArray(Address), false);
-              Address.should.have.property("street", addr.street);
-              PersonAddress.find({ number: 123 })
-                .count(function (err, c) {
-                  should.equal(err, null);
-                  c.should.equal(0);
-                  done();
-                });
-            }).catch(function(err) {
-              done(err);
-            });
+          return [John, addr, John.setAddressAsync(addr)];
+        })
+        .spread(function (John, addr) {
+          return [addr, John.getAddressAsync()];
+        })
+        .spread(function (addr, Address) {
+          Address.should.be.a.Object();
+          should.equal(Array.isArray(Address), false);
+          Address.should.have.property("street", addr.street);
+          return PersonAddress.findAsync({ number: 123 });
+        })
+        .then(function (addres) {
+          addres.length.should.equal(0);
         });
-      });
     });
   });
 
   describe("when calling delAccessor + Async", function () { // TODO: fix .find to async
     before(setup());
 
-    it("should remove any extension", function (done) {
-      Person.find().first(function (err, John) {
-        should.equal(err, null);
+    it("should remove any extension", function () {
+      return Person.find().firstAsync()
+        .then(function (John) {
+          return [John, PersonAddress.find({ number: 123 }).countAsync()];
+        })
+        .spread(function (John, count) {
+          count.should.equal(1);
 
-        PersonAddress.find({ number: 123 }).count(function (err, c) {
-          should.equal(err, null);
-          c.should.equal(1);
-
-          var addr = new PersonAddress({
-            street : "4th Ave",
-            number : 4
-          });
-
-          John.removeAddressAsync()
-            .then(function () {
-              PersonAddress.find({ number: 123 }).count(function (err, c) {
-                should.equal(err, null);
-                c.should.equal(0);
-
-                done();
-              });
-            }).catch(function(err) {
-              done(err);
-            });
+          return John.removeAddressAsync();
+        })
+        .then(function () {
+          return PersonAddress.findAsync({ number: 123 });
+        })
+        .then(function (addres) {
+          addres.length.should.equal(0);
         });
-      });
     });
 
     it("should return error if instance not with an ID", function (done) {

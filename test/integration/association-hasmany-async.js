@@ -1,7 +1,5 @@
-var _        = require('lodash');
 var should   = require('should');
 var helper   = require('../support/spec_helper');
-var ORM      = require('../../');
 var common   = require('../common');
 var protocol = common.protocol();
 
@@ -92,245 +90,170 @@ describe("hasMany", function () {
     describe("getAccessorAsync", function () {
       before(setup());
 
-      it("should allow to specify order as string", function (done) {
-        Person.find({ name: "John" }, function (err, people) {
-          should.equal(err, null);
-
-          people[0].getPetsAsync("-name").then(function (pets) {
-
-            should(Array.isArray(pets));
-            pets.length.should.equal(2);
-            pets[0].model().should.equal(Pet);
-            pets[0].name.should.equal("Mutt");
-            pets[1].name.should.equal("Deco");
-
-            done();
-          }).catch(function(err) {
-            done(err);
-          });
-        });
-      });
-
-      it ("should return proper instance model", function(done){
-        Person.find({ name: "John" }, function (err, people) {
-          people[0].getPetsAsync("-name").then(function (pets) {
-            pets[0].model().should.equal(Pet);
-            done();
-          }).catch(function(err) {
-            done(err);
+      it("should allow to specify order as string", function () {
+        return Person.findAsync({ name: "John" })
+          .then(function (people) {
+            return people[0].getPetsAsync("-name");
           })
-        });
+          .then(function (pets) {
+            should(Array.isArray(pets));
+            pets.length.should.equal(2);
+            pets[0].model().should.equal(Pet);
+            pets[0].name.should.equal("Mutt");
+            pets[1].name.should.equal("Deco");
+          });
       });
 
-      it("should allow to specify order as Array", function (done) {
-        Person.find({ name: "John" }, function (err, people) {
-          should.equal(err, null);
+      it("should return proper instance model", function(){
+        return Person.findAsync({ name: "John" })
+          .then(function (people) {
+            return people[0].getPetsAsync("-name");
+          })
+          .then(function (pets) {
+            pets[0].model().should.equal(Pet);
+          });
+      });
 
-          people[0].getPetsAsync([ "name", "Z" ]).then(function (pets) {
-
+      it("should allow to specify order as Array", function () {
+        return Person.findAsync({ name: "John" })
+          .then(function (people) {
+            return people[0].getPetsAsync([ "name", "Z" ]);
+          })
+          .then(function (pets) {
             should(Array.isArray(pets));
             pets.length.should.equal(2);
             pets[0].name.should.equal("Mutt");
             pets[1].name.should.equal("Deco");
-
-            done();
-          }).catch(function(err) {
-            done(err);
           });
-        });
       });
 
-      it("should allow to specify a limit", function (done) {
-        Person.find({ name: "John" }).first(function (err, John) {
-          should.equal(err, null);
-
-          John.getPetsAsync(1).then(function (pets) {
+      it("should allow to specify a limit", function () {
+        return Person.find({ name: "John" })
+          .firstAsync()
+          .then(function (John) {
+            return John.getPetsAsync(1)
+            })
+          .then(function (pets) {
             should(Array.isArray(pets));
             pets.length.should.equal(1);
-
-            done();
-          }).catch(function(err) {
-            done(err);
           });
-        });
       });
 
-      it("should allow to specify conditions", function (done) {
-        Person.find({ name: "John" }).first(function (err, John) {
-          should.equal(err, null);
-
-          John.getPetsAsync({ name: "Mutt" }).then(function (pets) {
-
+      it("should allow to specify conditions", function () {
+        return Person.find({ name: "John" }).firstAsync()
+          .then(function (John) {
+            return John.getPetsAsync({ name: "Mutt" });
+          })
+          .then(function (pets) {
             should(Array.isArray(pets));
             pets.length.should.equal(1);
             pets[0].name.should.equal("Mutt");
-
-            done();
-          }).catch(function(err) {
-            done(err);
           });
-        });
       });
 
       if (common.protocol() == "mongodb") return;
 
-      it("should allow chaining count()", function (done) {
-        Person.find({}, function (err, people) {
-          should.equal(err, null);
-
-          people[1].getPetsAsync().then(function (count) {
-            should.strictEqual(count.length, 2);
-
-            people[2].getPetsAsync().then(function (count) {
-
-              should.strictEqual(count.length, 1);
-
-              people[3].getPetsAsync().then(function (count) {
-
-                should.strictEqual(count.length, 0);
-
-                done();
-              }).catch(function(err) {
-                done(err);
-              });
-            }).catch(function(err) {
-              done(err);
-            });
-          }).catch(function(err){
-            done(err);
+      it("should allow chaining count()", function () {
+        return Person.findAsync({})
+          .then(function (people) {
+            return [people[1].getPetsAsync(), people[2].getPetsAsync(), people[3].getPetsAsync()];
+          })
+          .spread(function (count1, count2, count3) {
+            should.strictEqual(count1.length, 2);
+            should.strictEqual(count2.length, 1);
+            should.strictEqual(count3.length, 0);
           });
-        });
       });
     });
 
     describe("hasAccessorAsync", function () {
       before(setup());
 
-      it("should return true if instance has associated item", function (done) {
-        Pet.find({ name: "Mutt" }, function (err, pets) {
-          should.equal(err, null);
-
-          Person.find({ name: "Jane" }).first(function (err, Jane) {
-            should.equal(err, null);
-
-            Jane.hasPetsAsync(pets[0]).then(function (has_pets) {
-              has_pets.should.be.true;
-              done();
-            }).catch(function(err){
-              done(err);
-            });
+      it("should return true if instance has associated item", function () {
+        return Pet.findAsync({ name: "Mutt" })
+          .then(function (pets) {
+            return [pets, Person.find({ name: "Jane" }).firstAsync()];
+          })
+          .spread(function (pets, Jane) {
+            return Jane.hasPetsAsync(pets[0]);
+          })
+          .then(function (has_pets) {
+            has_pets.should.be.true();
           });
-        });
       });
 
-      it("should return true if not passing any instance and has associated items", function (done) {
-        Person.find({ name: "Jane" }).first(function (err, Jane) {
-          should.equal(err, null);
-
-          Jane.hasPetsAsync().then(function (has_pets) {
-            has_pets.should.be.true;
-            done();
-          }).catch(function(err){
-            done(err);
+      it("should return false if any passed instances are not associated", function () {
+        return Pet.findAsync()
+          .then(function (pets) {
+            return [pets, Person.find({ name: "Jane" }).firstAsync()];
+          })
+          .spread(function (pets, Jane) {
+            return Jane.hasPetsAsync(pets);
+          })
+          .then(function (has_pets) {
+            has_pets.should.be.false();
           });
-        });
-      });
-
-      it("should return true if all passed instances are associated", function (done) {
-        Pet.find(function (err, pets) {
-          Person.find({ name: "John" }).first(function (err, John) {
-            should.equal(err, null);
-
-            John.hasPetsAsync(pets).then(function (has_pets) {
-              should.equal(err, null);
-              has_pets.should.be.true;
-              done();
-            }).catch(function(err){
-              done(err);
-            });
-          });
-        });
-      });
-
-      it("should return false if any passed instances are not associated", function (done) {
-        Pet.find(function (err, pets) {
-          Person.find({ name: "Jane" }).first(function (err, Jane) {
-            should.equal(err, null);
-
-            Jane.hasPetsAsync(pets).then(function (has_pets) {
-              should.equal(err, null);
-              has_pets.should.be.false;
-
-              done();
-            }).catch(function(err) {
-              done(err);
-            });
-          });
-        });
       });
 
       if (common.protocol() != "mongodb") {
-        it("should return true if join table has duplicate entries", function (done) {
-          Pet.find({ name: ["Mutt", "Deco"] }, function (err, pets) {
-            should.not.exist(err);
-            should.equal(pets.length, 2);
+        it("should return true if join table has duplicate entries", function () {
+          return Pet.findAsync({ name: ["Mutt", "Deco"] })
+            .then(function (pets) {
+              should.equal(pets.length, 2);
 
-            Person.find({ name: "John" }).first(function (err, John) {
-              should.not.exist(err);
+              return [pets, Person.find({ name: "John" }).firstAsync()];
+            })
+            .spread(function (pets, John) {
+              return [John, pets, John.hasPetsAsync(pets)];
+            })
+            .spread(function (John, pets, hasPets) {
+              should.equal(hasPets, true);
 
-              John.hasPets(pets, function (err, hasPets) {
-                should.equal(err, null);
-                should.equal(hasPets, true);
-
-                db.driver.execQuery(
-                  "INSERT INTO person_pets (person_id, pets_id) VALUES (?,?), (?,?)",
-                  [John.id, pets[0].id, John.id, pets[1].id],
-                  function (err) {
-                    should.not.exist(err);
-
-                    John.hasPets(pets, function (err, hasPets) {
-                      should.equal(err, null);
-                      should.equal(hasPets, true);
-
-                      done()
-                    });
-                  }
-                );
-              });
-            });
-          });
-        });
-        it("should return true if join table has duplicate entries (promise-based)", function (done) {
-          Pet.find({ name: ["Mutt", "Deco"] }, function (err, pets) {
-            should.not.exist(err);
-            should.equal(pets.length, 2);
-
-            Person.find({ name: "John" }).first(function (err, John) {
-              should.not.exist(err);
-
-              John.hasPetsAsync(pets).then(function (hasPets) {
-                should.equal(hasPets, true);
-
+              return [
+                John,
+                pets,
                 db.driver.execQueryAsync(
                   "INSERT INTO person_pets (person_id, pets_id) VALUES (?,?), (?,?)",
-                  [John.id, pets[0].id, John.id, pets[1].id]).then(
-                  function () {
-
-                    John.hasPetsAsync(pets).then(function (hasPets) {
-                      should.equal(hasPets, true);
-                      done();
-                    }).catch(function(err){
-                      done(err);
-                    });
-                  }
-                ).catch(function(err){
-                  done(err);
-                });
-              }).catch(function(err){
-                done(err);
-              });
+                  [John.id, pets[0].id, John.id, pets[1].id]
+                )
+              ];
+            })
+            .spread(function (John, pets) {
+              return John.hasPetsAsync(pets);
+            })
+            .then(function (hasPets) {
+              should.equal(hasPets, true);
             });
-          });
+        });
+
+        it("should return true if join table has duplicate entries (promise-based)", function () {
+          return Pet.findAsync({ name: ["Mutt", "Deco"] })
+            .then(function (pets) {
+              should.equal(pets.length, 2);
+
+              return [pets, Person.find({ name: "John" }).firstAsync()];
+            })
+            .spread(function (pets, John) {
+              return [ John, pets, John.hasPetsAsync(pets)];
+            })
+            .spread(function (John, pets, hasPets) {
+              should.equal(hasPets, true);
+
+              return [
+                John,
+                pets,
+                db.driver.execQueryAsync(
+                  "INSERT INTO person_pets (person_id, pets_id) VALUES (?,?), (?,?)",
+                  [John.id, pets[0].id, John.id, pets[1].id]
+                )
+              ];
+            })
+            .spread(function (John, pets) {
+              return John.hasPetsAsync(pets);
+            })
+            .then(function (hasPets) {
+              should.equal(hasPets, true);
+            });
         });
       }
     });
@@ -338,69 +261,54 @@ describe("hasMany", function () {
     describe("delAccessorAsync", function () {
       before(setup());
 
-      it("should accept arguments in different orders", function (done) {
-        Pet.find({ name: "Mutt" }, function (err, pets) {
-          Person.find({ name: "John" }, function (err, people) {
-            should.equal(err, null);
-
-            people[0].removePetsAsync(pets[0]).then(function () {
-              people[0].getPetsAsync().then(function (pets) {
-
-                should(Array.isArray(pets));
-                pets.length.should.equal(1);
-                pets[0].name.should.equal("Deco");
-
-                return done();
-              }).catch(function(err) {
-                done(err);
-              });
-            }).catch(function(err) {
-              done(err);
-            });
+      it("should accept arguments in different orders", function () {
+        return Pet.findAsync({ name: "Mutt" })
+          .then(function (pets) {
+            return [pets, Person.findAsync({ name: "John" })];
+          })
+          .spread(function (pets, people) {
+            return [people, people[0].removePetsAsync(pets[0])];
+          })
+          .spread(function (people) {
+            return people[0].getPetsAsync();
+          })
+          .then(function (pets) {
+            should(Array.isArray(pets));
+            pets.length.should.equal(1);
+            pets[0].name.should.equal("Deco");
           });
-        });
       });
 
-      it("should remove specific associations if passed", function (done) {
-        Pet.find({ name: "Mutt" }, function (err, pets) {
-          Person.find({ name: "John" }, function (err, people) {
-            should.equal(err, null);
-
-            people[0].removePetsAsync(pets[0]).then(function () {
-              people[0].getPetsAsync().then(function (pets) {
-                should(Array.isArray(pets));
-                pets.length.should.equal(1);
-                pets[0].name.should.equal("Deco");
-
-                done();
-              }).catch(function(err) {
-                done(err);
-              });
-            }).catch(function(err) {
-              done(err);
-            });
+      it("should remove specific associations if passed", function () {
+        return Pet.findAsync({ name: "Mutt" })
+          .then(function (pets) {
+            return [pets, Person.findAsync({ name: "John" })];
+          })
+          .spread(function (pets, people) {
+            return [people, people[0].removePetsAsync(pets[0])];
+          })
+          .spread(function (people) {
+            return people[0].getPetsAsync();
+          })
+          .then(function (pets) {
+            should(Array.isArray(pets));
+            pets.length.should.equal(1);
+            pets[0].name.should.equal("Deco");
           });
-        });
       });
 
-      it("should remove all associations if none passed", function (done) {
-        Person.find({ name: "John" }).first(function (err, John) {
-          should.equal(err, null);
-
-          John.removePetsAsync().then(function () {
-            John.getPetsAsync().then(function (pets) {
-
-              should(Array.isArray(pets));
-              pets.length.should.equal(0);
-
-              done();
-            }).catch(function(err) {
-              done(err);
-            });
-          }).catch(function(err){
-            done(err);
+      it("should remove all associations if none passed", function () {
+        return Person.find({ name: "John" }).firstAsync()
+          .then(function (John) {
+            return [John, John.removePetsAsync()];
+          })
+          .spread(function (John) {
+            return John.getPetsAsync();
+          })
+          .then(function (pets) {
+            should(Array.isArray(pets));
+            pets.length.should.equal(0);
           });
-        });
       });
     });
 
@@ -409,219 +317,171 @@ describe("hasMany", function () {
 
       if (common.protocol() != "mongodb") {
 
-        it("might add duplicates (promise-based)", function (done) {
-          Pet.find({ name: "Mutt" }, function (err, pets) {
-            Person.find({ name: "Jane" }, function (err, people) {
-              should.equal(err, null);
-
-              people[0].addPetsAsync(pets[0]).then(function () {
-                people[0].getPetsAsync("name").then(function (pets) {
-
-                  should(Array.isArray(pets));
-                  pets.length.should.equal(2);
-                  pets[0].name.should.equal("Mutt");
-                  pets[1].name.should.equal("Mutt");
-
-                  done();
-                }).catch(function(err){
-                  done(err);
-                });
-              }).catch(function(err){
-                done(err);
-              });
+        it("might add duplicates (promise-based)", function () {
+          return Pet.findAsync({ name: "Mutt" })
+            .then(function (pets) {
+              return [pets, Person.findAsync({ name: "Jane" })];
+            })
+            .spread(function (pets, people) {
+              return [people, people[0].addPetsAsync(pets[0])];
+            })
+            .spread(function (people) {
+              return people[0].getPetsAsync("name");
+            })
+            .then(function (pets) {
+              should(Array.isArray(pets));
+              pets.length.should.equal(2);
+              pets[0].name.should.equal("Mutt");
+              pets[1].name.should.equal("Mutt");
             });
-          });
         });
       }
 
-      it("should keep associations and add new ones", function (done) {
-        Pet.find({ name: "Deco" }).first(function (err, Deco) {
-          Person.find({ name: "Jane" }).first(function (err, Jane) {
-            should.equal(err, null);
+      it("should keep associations and add new ones", function () {
+        return Pet.find({ name: "Deco" }).firstAsync()
+          .then(function (Deco) {
+            return [Deco, Person.find({ name: "Jane" }).firstAsync()];
+          })
+          .spread(function (Deco, Jane) {
+            return [Jane, Deco, Jane.getPetsAsync()]
+          })
+          .spread(function (Jane, Deco, janesPets) {
+            var petsAtStart = janesPets.length;
 
-            Jane.getPetsAsync().then(function (janesPets) {
-              should.not.exist(err);
-
-              var petsAtStart = janesPets.length;
-
-              Jane.addPetsAsync(Deco).then(function () {
-                Jane.getPetsAsync("name").then(function (pets) {
-                  should(Array.isArray(pets));
-                  pets.length.should.equal(petsAtStart + 1);
-                  pets[0].name.should.equal("Deco");
-                  pets[1].name.should.equal("Mutt");
-
-                  done();
-                }).catch(function(err) {
-                  done(err);
-                });
-              }).catch(function(err) {
-                done(err);
-              });
-            }).catch(function(err){
-              done(err);
-            });
+            return [petsAtStart, Jane, Jane.addPetsAsync(Deco)];
+          })
+          .spread(function (petsAtStart, Jane) {
+            return [petsAtStart, Jane.getPetsAsync("name")];
+          })
+          .spread(function (petsAtStart, pets) {
+            should(Array.isArray(pets));
+            pets.length.should.equal(petsAtStart + 1);
+            pets[0].name.should.equal("Deco");
+            pets[1].name.should.equal("Mutt");
           });
-        });
       });
 
-      it("should accept several arguments as associations (promise-based)", function (done) {
-        Pet.find(function (err, pets) {
-          Person.find({ name: "Justin" }).first(function (err, Justin) {
-            should.equal(err, null);
-
-            Justin.addPetsAsync(pets[0], pets[1]).then(function () {
-              Justin.getPetsAsync().then(function (pets) {
-
-                should(Array.isArray(pets));
-                pets.length.should.equal(2);
-
-                done();
-              }).catch(function(err){
-                done(err);
-              });
-            }).catch(function(err){
-              done(err);
-            });
+      it("should accept several arguments as associations (promise-based)", function () {
+        return Pet.findAsync()
+          .then(function (pets) {
+            return [pets, Person.find({ name: "Justin" }).firstAsync()];
+          })
+          .spread(function (pets, Justin) {
+            return [Justin, Justin.addPetsAsync(pets[0], pets[1])];
+          })
+          .spread(function (Justin) {
+            return Justin.getPetsAsync();
+          })
+          .then(function (pets) {
+            should(Array.isArray(pets));
+            pets.length.should.equal(2);
           });
-        });
       });
 
-      it("should accept array as list of associations (promise-based)", function (done) {
-        Pet.createAsync([{ name: 'Ruff' }, { name: 'Spotty' }]).then(function (pets) {
-          Person.find({ name: "Justin" }).first(function (err, Justin) {
-            should.equal(err, null);
+      it("should accept array as list of associations (promise-based)", function () {
+        return Pet.createAsync([{ name: 'Ruff' }, { name: 'Spotty' }])
+          .then(function (pets) {
+            return [pets, Person.find({ name: "Justin" }).firstAsync()];
+          })
+          .spread(function (pets, Justin) {
+            return [pets, Justin, Justin.getPetsAsync()];
+          })
+          .spread(function (pets, Justin, justinsPets) {
+            var petCount = justinsPets.length;
 
-            Justin.getPetsAsync().then(function (justinsPets) {
-
-              var petCount = justinsPets.length;
-
-              Justin.addPetsAsync(pets).then(function () {
-
-                Justin.getPetsAsync().then(function (justinsPets) {
-
-                  should(Array.isArray(justinsPets));
-                  // Mongo doesn't like adding duplicates here, so we add new ones.
-                  should.equal(justinsPets.length, petCount + 2);
-
-                  done();
-                });
-              }).catch(function(err){
-                done(err);
-              });
-            }).catch(function(err) {
-              done(err);
-            });
+            return [Justin, petCount, Justin.addPetsAsync(pets)];
+          })
+          .spread(function (Justin, petCount) {
+            return [petCount, Justin.getPetsAsync()];
+          })
+          .spread(function (petCount, justinsPets) {
+            should(Array.isArray(justinsPets));
+            // Mongo doesn't like adding duplicates here, so we add new ones.
+            should.equal(justinsPets.length, petCount + 2);
           });
-        }).catch(function(err) {
-          done(err);
-        });
       });
     });
 
     describe("setAccessorAsync", function () {
       before(setup());
 
-      it("should accept several arguments as associations", function (done) {
-        Pet.find(function (err, pets) {
-          Person.find({ name: "Justin" }).first(function (err, Justin) {
-            should.equal(err, null);
-
-            Justin.setPetsAsync(pets[0], pets[1]).then(function () {
-              Justin.getPetsAsync().then(function (pets) {
-
-                should(Array.isArray(pets));
-                pets.length.should.equal(2);
-
-                done();
-              }).catch(function(err) {
-                done(err);
-              });
-            }).catch(function (err) {
-              done(err);
-            });
+      it("should accept several arguments as associations", function () {
+        return Pet.findAsync()
+          .then(function (pets) {
+            return [pets, Person.find({ name: "Justin" }).firstAsync()];
+          })
+          .spread(function (pets, Justin) {
+            return [Justin, Justin.setPetsAsync(pets[0], pets[1])]
+          })
+          .spread(function (Justin) {
+            return Justin.getPetsAsync();
+          })
+          .then(function (pets) {
+            should(Array.isArray(pets));
+            pets.length.should.equal(2);
           });
-        });
       });
 
-      it("should accept an array of associations", function (done) {
-        Pet.find(function (err, pets) {
-          Person.find({ name: "Justin" }).first(function (err, Justin) {
-            should.equal(err, null);
-
-            Justin.setPetsAsync(pets).then(function () {
-              Justin.getPetsAsync().then(function (all_pets) {
-                should(Array.isArray(all_pets));
-                all_pets.length.should.equal(pets.length);
-
-                done();
-              }).catch(function(err) {
-                done(err);
-              });
-            }).catch(function(err) {
-              done(err);
-            });
+      it("should accept an array of associations", function () {
+        return Pet.findAsync()
+          .then(function (pets) {
+            return [pets, Person.find({ name: "Justin" }).firstAsync()];
+          })
+          .spread(function (pets, Justin) {
+            return [pets, Justin, Justin.setPetsAsync(pets)];
+          })
+          .spread(function (pets, Justin) {
+            return [pets, Justin.getPetsAsync()];
+          })
+          .spread(function (pets, all_pets) {
+            should(Array.isArray(all_pets));
+            all_pets.length.should.equal(pets.length);
           });
-        });
       });
 
-      it("should remove all associations if an empty array is passed", function (done) {
-        Person.find({ name: "Justin" }).first(function (err, Justin) {
-          should.equal(err, null);
-          Justin.getPetsAsync().then(function (pets) {
+      it("should remove all associations if an empty array is passed", function () {
+        return Person.find({ name: "Justin" }).firstAsync()
+          .then(function (Justin) {
+            return [Justin, Justin.getPetsAsync()];
+          })
+          .spread(function (Justin, pets) {
             should.equal(pets.length, 4);
 
-            Justin.setPetsAsync([]).then(function () {
-
-              Justin.getPetsAsync().then(function (pets) {
-                should.equal(pets.length, 0);
-
-                done();
-              }).catch(function(err) {
-                done(err);
-              });
-            }).catch(function(err) {
-              done(err);
-            });
-          }).catch(function(err) {
-            done(err);
+            return [Justin, Justin.setPetsAsync([])];
+          })
+          .spread(function (Justin) {
+            return Justin.getPetsAsync();
+          })
+          .then(function (pets) {
+            should.equal(pets.length, 0);
           });
-        });
       });
 
-      it("clears current associations", function (done) {
-        Pet.find({ name: "Deco" }, function (err, pets) {
-          var Deco = pets[0];
+      it("clears current associations", function () {
+        return Pet.findAsync({ name: "Deco" })
+          .then(function (pets) {
+            var Deco = pets[0];
 
-          Person.find({ name: "Jane" }).first(function (err, Jane) {
-            should.equal(err, null);
+            return [Deco, Person.find({ name: "Jane" }).firstAsync()];
+          })
+          .spread(function (Deco, Jane) {
+            return [Jane, Deco, Jane.getPetsAsync()];
+          })
+          .spread(function (Jane, Deco, pets) {
+            should(Array.isArray(pets));
+            pets.length.should.equal(1);
+            pets[0].name.should.equal("Mutt");
 
-            Jane.getPetsAsync().then(function (pets) {
-
-              should(Array.isArray(pets));
-              pets.length.should.equal(1);
-              pets[0].name.should.equal("Mutt");
-
-              Jane.setPetsAsync(Deco).then(function () {
-
-                Jane.getPetsAsync().then(function (pets) {
-
-                  should(Array.isArray(pets));
-                  pets.length.should.equal(1);
-                  pets[0].name.should.equal(Deco.name);
-
-                  done();
-                }).catch(function(err) {
-                  done(err);
-                });
-              }).catch(function(err) {
-                done(err);
-              });
-            }).catch(function(err) {
-              done(err);
-            });
+            return [Jane, Deco, Jane.setPetsAsync(Deco)];
+          })
+          .spread(function (Jane, Deco) {
+            return [Deco, Jane.getPetsAsync()];
+          })
+          .spread(function (Deco, pets) {
+            should(Array.isArray(pets));
+            pets.length.should.equal(1);
+            pets[0].name.should.equal(Deco.name);
           });
-        });
       });
     });
 
@@ -630,95 +490,81 @@ describe("hasMany", function () {
         autoFetchPets : true
       }));
 
-      it("should fetch associations", function (done) {
-        Person.find({ name: "John" }).first(function (err, John) {
-          should.equal(err, null);
-
-          John.should.have.property("pets");
-          should(Array.isArray(John.pets));
-          John.pets.length.should.equal(2);
-
-          return done();
-        });
+      it("should fetch associations", function () {
+        return Person.find({ name: "John" }).firstAsync()
+          .then(function (John) {
+            John.should.have.property("pets");
+            should(Array.isArray(John.pets));
+            John.pets.length.should.equal(2);
+          });
       });
 
-      it("should save existing", function (done) {
-        Person.create({ name: 'Bishan' }, function (err) {
-          should.not.exist(err);
-
-          Person.one({ name: 'Bishan' }, function (err, person) {
-            should.not.exist(err);
-
+      it("should save existing", function () {
+        return Person.createAsync({ name: 'Bishan' })
+          .then(function () {
+            return Person.oneAsync({ name: 'Bishan' });
+          })
+          .then(function (person) {
             person.surname = 'Dominar';
 
-            person.save(function (err) {
-              should.not.exist(err);
-
-              done();
-            });
+            return person.saveAsync();
+          })
+          .then(function (person) {
+            should.equal(person.surname, 'Dominar');
           });
-        });
       });
 
-      it("should not auto save associations which were autofetched", function (done) {
-        Pet.all(function (err, pets) {
-          should.not.exist(err);
-          should.equal(pets.length, 4);
+      it("should not auto save associations which were autofetched", function () {
+        return Pet.allAsync()
+          .then(function (pets) {
+            should.equal(pets.length, 4);
 
-          Person.create({ name: 'Paul' }, function (err, paul) {
-            should.not.exist(err);
+            return [pets, Person.createAsync({ name: 'Paul' })];
+          })
+          .spread(function (pets) {
+            return [pets, Person.oneAsync({ name: 'Paul' })];
+          })
+          .spread(function (pets, paul) {
+            should.equal(paul.pets.length, 0);
 
-            Person.one({ name: 'Paul' }, function (err, paul2) {
-              should.not.exist(err);
-              should.equal(paul2.pets.length, 0);
+            return paul.setPetsAsync(pets);
+          })
+          .then(function () {
+            // reload paul to make sure we have 2 pets
+            return Person.oneAsync({ name: 'Paul' });
+          })
+          .then(function (paul) {
+            should.equal(paul.pets.length, 4);
 
-              paul.setPets(pets, function (err) {
-                should.not.exist(err);
-
-                // reload paul to make sure we have 2 pets
-                Person.one({ name: 'Paul' }, function (err, paul) {
-                  should.not.exist(err);
-                  should.equal(paul.pets.length, 4);
-
-                  // Saving paul2 should NOT auto save associations and hence delete
-                  // the associations we just created.
-                  paul2.save(function (err) {
-                    should.not.exist(err);
-
-                    // let's check paul - pets should still be associated
-                    Person.one({ name: 'Paul' }, function (err, paul) {
-                      should.not.exist(err);
-                      should.equal(paul.pets.length, 4);
-
-                      done();
-                    });
-                  });
-                });
-              });
-            });
+            // Saving paul2 should NOT auto save associations and hence delete
+            // the associations we just created.
+            return paul.saveAsync();
+          })
+          .then(function () {
+            // let's check paul - pets should still be associated
+            return Person.oneAsync({ name: 'Paul' });
+          })
+          .then(function (paul) {
+            should.equal(paul.pets.length, 4);
           });
-        });
       });
 
-      it("should save associations set by the user", function (done) {
-        Person.one({ name: 'John' }, function (err, john) {
-          should.not.exist(err);
-          should.equal(john.pets.length, 2);
+      it("should save associations set by the user", function () {
+        return Person.oneAsync({ name: 'John' })
+          .then(function (john) {
+            should.equal(john.pets.length, 2);
 
-          john.pets = [];
+            john.pets = [];
 
-          john.save(function (err) {
-            should.not.exist(err);
-
+            return john.saveAsync();
+          })
+          .then(function () {
             // reload john to make sure pets were deleted
-            Person.one({ name: 'John' }, function (err, john) {
-              should.not.exist(err);
-              should.equal(john.pets.length, 0);
-
-              done();
-            });
+            return Person.oneAsync({ name: 'John' });
+          })
+          .then(function (john) {
+            should.equal(john.pets.length, 0);
           });
-        });
       });
 
     });

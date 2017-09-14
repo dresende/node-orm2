@@ -52,95 +52,67 @@ describe("ORM", function() {
   });
   describe('ORM.connectAsync()', function () {
     it('should be a function', function () {
-      ORM.connectAsync.should.be.a.Function()
+      return ORM.connectAsync.should.be.a.Function()
     });
 
-    it('should throw error with correct message when protocol not supported', function (done) {
-      ORM.connectAsync("bd://127.0.0.6")
-        .then(function () {
-          done('Fail.');
-        })
+    it('should throw error with correct message when protocol not supported', function () {
+      return ORM.connectAsync("bd://127.0.0.6")
         .catch(function (err) {
           should.exist(err);
           err.message.should.not.equal("CONNECTION_PROTOCOL_NOT_SUPPORTED");
-          done();
         });
     });
 
-    it('should throw error with correct message when connection URL doesn\'t exist', function (done) {
+    it('should throw error with correct message when connection URL doesn\'t exist', function () {
       ORM.connectAsync()
-        .then(function () {
-          done('Fail')
-        })
         .catch(function (err) {
           err.message.should.equal("CONNECTION_URL_EMPTY");
-          done();
         });
     });
 
-    it("should throw error when passed empty string like connection URL", function (done) {
-      ORM.connectAsync("")
-        .then(function () {
-          done('Fail');
-        })
+    it("should throw error when passed empty string like connection URL", function () {
+      return ORM.connectAsync("")
         .catch(function (err) {
           err.message.should.equal("CONNECTION_URL_EMPTY");
-          done()
         });
     });
 
-    it("should throw error when passed string with spaces only", function (done) {
-      ORM.connectAsync("    ")
-        .then(function () {
-          done('Fail');
-        })
+    it("should throw error when passed string with spaces only", function () {
+      return ORM.connectAsync("    ")
         .catch(function (err) {
           err.message.should.equal("CONNECTION_URL_EMPTY");
-          done()
         });
     });
 
-    it("should throw error when passed invalid protocol", function (done) {
-      ORM.connectAsync("user@db")
-        .then(function () {
-          done('Fail');
-        })
+    it("should throw error when passed invalid protocol", function () {
+      return ORM.connectAsync("user@db")
         .catch(function (err) {
           err.message.should.equal("CONNECTION_URL_NO_PROTOCOL");
-          done()
         });
     });
 
-    it("should throw error when passed unknown protocol", function (done) {
-      ORM.connectAsync("unknown://db")
-        .then(function () {
-          done('Fail');
-        })
+    it("should throw error when passed unknown protocol", function () {
+      return ORM.connectAsync("unknown://db")
         .catch(function (err) {
           should.equal(err.literalCode, 'NO_SUPPORT');
           should.equal(
             err.message,
             "Connection protocol not supported - have you installed the database driver for unknown?"
           );
-          done()
         });
     });
 
-    it("should throw error when passed invalid connection db link", function (done) {
-      ORM.connectAsync("mysql://fakeuser:nopassword@127.0.0.1/unknowndb")
-        .then(function () {
-          done('Fail');
-        })
+    it("should throw error when passed invalid connection db link", function () {
+      return ORM.connectAsync("mysql://fakeuser:nopassword@127.0.0.1/unknowndb")
         .catch(function (err) {
           should.exist(err);
           should.equal(err.message.indexOf("Connection protocol not supported"), -1);
           err.message.should.not.equal("CONNECTION_URL_NO_PROTOCOL");
           err.message.should.not.equal("CONNECTION_URL_EMPTY");
-          done()
         });
     });
 
-    it("should do not mutate opts", function (done) {
+    it("should do not mutate opts", function () {
       var opts = {
         protocol : 'mysql',
         user     : 'notauser',
@@ -150,16 +122,12 @@ describe("ORM", function() {
 
       var expected = JSON.stringify(opts);
 
-      ORM.connectAsync(opts)
-        .then(function () {
-          done('Fail');
-        })
+      return ORM.connectAsync(opts)
         .catch(function () {
           should.equal(
             JSON.stringify(opts),
             expected
           );
-          done();
         });
     });
 
@@ -585,16 +553,12 @@ describe("ORM", function() {
       return ORM.useAsync(db, "pg")
     });
 
-    it("should throw an error in callback if protocol not supported", function (done) {
+    it("should throw an error in callback if protocol not supported", function () {
       var db = new pg.Client();
 
-      ORM.useAsync(db, "unknowndriver")
-        .then(function () {
-          done(new Error('Should throw'));
-        })
+      return ORM.useAsync(db, "unknowndriver")
         .catch(function (err) {
           should.exist(err);
-          done();
         });
     });
   });

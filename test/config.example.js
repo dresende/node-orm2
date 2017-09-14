@@ -13,8 +13,8 @@ exports.mysql = {
   database : "test"
 };
 exports.postgres = {
-  user     : "postgres",
-  password : "1111",
+  user     : "root",
+  password : "",
   database : "test"
 };
 exports.redshift = {

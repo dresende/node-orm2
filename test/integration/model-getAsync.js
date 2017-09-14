@@ -54,13 +54,10 @@ describe("Model.getAsync()", function () {
   describe('with identityCache cache', function () {
     before(setup(true));
 
-    it("should throw if passed a wrong number of ids", function (done) {
-      Person.getAsync(1, 2)
-        .then(function () {
-          done(new Error('Fail'));
-        })
-        .catch(function () {
-          done();
+    it("should throw if passed a wrong number of ids", function () {
+      return Person.getAsync(1, 2)
+        .catch(function (err) {
+          err.should.be.an.Object();
         });
     });
 
@@ -73,15 +70,11 @@ describe("Model.getAsync()", function () {
         })
     });
 
-    it("should throw err", function (done) {
-      Person.getAsync(999)
-        .then(function () {
-          done(new Error('Fail!'));
-        })
+    it("should throw err", function () {
+      return Person.getAsync(999)
         .catch(function (err) {
           err.should.be.a.Object();
           err.message.should.equal("Not found");
-          done();
         });
     });
 

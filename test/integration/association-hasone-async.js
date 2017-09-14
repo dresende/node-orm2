@@ -73,8 +73,8 @@ describe("hasOne", function() {
     it("get should get the association", function () {
       return Leaf
         .oneAsync({ size: 14 })
-        .then(function(leaf) {
-					should.exist(leaf);
+        .then(function (leaf) {
+          should.exist(leaf);
           return leaf.getTreeAsync();
         })
         .then(function (tree) {
@@ -127,8 +127,8 @@ describe("hasOne", function() {
         .spread(function (stalk, leaf) {
           should.exist(leaf);
           should.not.exist(leaf.stalkId);
-					return [stalk, leaf.setStalkAsync(stalk)];
-				})
+          return [stalk, leaf.setStalkAsync(stalk)];
+        })
         .then(function (stalk) {
           return [stalk, Leaf.oneAsync({ size: 14 })];
         })
@@ -142,8 +142,8 @@ describe("hasOne", function() {
         .oneAsync({ length: 20 })
         .then(function (stalk) {
           should.exist(stalk);
-					return Leaf.oneAsync({ size: 14 });
-				})
+          return Leaf.oneAsync({size: 14});
+        })
         .then(function (leaf) {
           should.exist(leaf);
           should.exist(leaf.stalkId);
@@ -152,9 +152,9 @@ describe("hasOne", function() {
         .then(function () {
           return Leaf.oneAsync({ size: 14 });
         })
-				.then(function (leaf) {
-					should.equal(leaf.stalkId, null);
-				});
+        .then(function (leaf) {
+          should.equal(leaf.stalkId, null);
+        });
     });
   });
 

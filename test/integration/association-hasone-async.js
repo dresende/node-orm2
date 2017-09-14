@@ -158,57 +158,31 @@ describe("hasOne", function() {
     });
   });
 
-  describe("if not passing another Model (promise-based test)", function () {
-    it("should use same model", function (done) {
-      db.settings.set('instance.identityCache', false);
-      db.settings.set('instance.returnAllErrors', true);
-
-      var Person = db.define("person", {
-        name : String
-      });
-      Person.hasOne("parent", {
-        autoFetch : true
-      });
-
-      helper.dropSync(Person, function () {
-        var child = new Person({
-          name : "Child"
-        });
-        child.setParentAsync(new Person({ name: "Parent" })).then(function () {
-          done();
-        }).catch(function(err) {
-          done(err);
-        });
-      });
-    });
-  });
-
   if (protocol != "mongodb") {
-    describe("mapsTo Async (promise-based tests)", function () {
-      describe("with `mapsTo` set via `hasOne`", function () {
+    describe("mapsTo Async", function () {
+      describe("with `mapsTo` get via `getOneAsync`", function () {
         var leaf = null;
 
         before(setup());
 
         before(function (done) {
-          Leaf.createAsync({ size: 444, stalkId: stalkId, holeId: holeId }).then(function (lf) {
-            leaf = lf;
-            done();
-          }).catch(function(err) {
-            done(err);
-          });
+          Leaf.createAsync({ size: 444, stalkId: stalkId, holeId: holeId })
+            .then(function (lf) {
+              leaf = lf;
+              done();
+            }).catch(function(err) {
+              done(err);
+            });
         });
 
-        it("should get parent", function (done) {
-          leaf.getStalkAsync().then(function (stalk) {
-
-            should.exist(stalk);
-            should.equal(stalk.id, stalkId);
-            should.equal(stalk.length, 20);
-            done();
-          }).catch(function(err) {
-            done(err);
-          });
+        it("should get parent", function () {
+          return leaf
+            .getStalkAsync()
+            .then(function (stalk) {
+              should.exist(stalk);
+              should.equal(stalk.id, stalkId);
+              should.equal(stalk.length, 20);
+            });
         });
       });
 
@@ -218,27 +192,25 @@ describe("hasOne", function() {
         before(setup());
 
         before(function (done) {
-          Leaf.createAsync({ size: 444, stalkId: stalkId, holeId: holeId }).then(function (lf) {
-            leaf = lf;
-            done();
-          }).catch(function(err) {
-            done(err);
-          });
+          Leaf.createAsync({ size: 444, stalkId: stalkId, holeId: holeId })
+            .then(function (lf) {
+              leaf = lf;
+              done();
+            }).catch(function(err) {
+              done(err);
+            });
         });
 
-        it("should get parent", function (done) {
-          leaf.getHoleAsync().then(function (hole) {
-
-            should.exist(hole);
-            should.equal(hole.id, stalkId);
-            should.equal(hole.width, 3);
-            done();
-          }).catch(function(err) {
-            done(err);
-          });
+        it("should get parent", function () {
+          return leaf
+            .getHoleAsync()
+            .then(function (hole) {
+              should.exist(hole);
+              should.equal(hole.id, stalkId);
+              should.equal(hole.width, 3);
+            });
         });
       });
     });
   };
-
 });

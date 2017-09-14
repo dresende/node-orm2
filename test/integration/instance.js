@@ -97,14 +97,11 @@ describe("Model instance", function() {
       });
     });
 
-    it("should have a saving state to avoid loops (promise-based)", function (done) {
-      main_item.find({ name : "new name" }).first(function (err, mainItem) {
-        mainItem.saveAsync({ name : "new name test" }).then(function () {
-          done();
-        }).catch(function(err) {
-          done(err);
+    it("should have a saving state to avoid loops (promise-based)", function () {
+      return main_item.find({ name : "new name" }).firstAsync()
+        .then(function (mainItem) {
+          return mainItem.saveAsync({ name : "new name test" });
         });
-      });
     });
   });
 
@@ -347,28 +344,23 @@ describe("Model instance", function() {
       });
     });
 
-    it("should return validation errors if invalid (promise-based)", function (done) {
+    it("should return validation errors if invalid (promise-based)", function () {
       var person = new Person({ age: -1 });
 
-      person.validateAsync().then(function (validationErrors) {
-        should.equal(Array.isArray(validationErrors), true);
-
-        done();
-      }).catch(function(err) {
-        done(err);
-      });
+      return person.validateAsync()
+        .then(function (validationErrors) {
+          should.equal(Array.isArray(validationErrors), true);
+        });
     });
 
-    it("should return false if valid (promise-based)", function (done) {
+    it("should return false if valid (promise-based)", function () {
       var person = new Person({ name: 'Janette' });
 
-      person.validateAsync().then(function (validationErrors) {
-        should.equal(validationErrors, false);
+      return person.validateAsync()
+        .then(function (validationErrors) {
+          should.equal(validationErrors, false);
 
-        done();
-      }).catch(function(err) {
-        done(err);
-      });
+        });
     });
   });
 
@@ -397,29 +389,21 @@ describe("Model instance", function() {
         });
       });
 
-      it("should be saved for valid numbers, using both save & create (promise-based)", function (done) {
+      it("should be saved for valid numbers, using both save & create (promise-based)", function () {
         var person1 = new Person({ height: 190 });
 
-        person1.saveAsync().then(function () {
-
-          Person.createAsync({ height: 170 }).then(function (person2) {
-            Person.getAsync(person1[Person.id]).then(function (item) {
+        return person1.saveAsync().then(function () {
+          return Person.createAsync({ height: 170 })
+            .then(function (person2) {
+              return [person2, Person.getAsync(person1[Person.id])];
+            })
+            .spread(function (person2, item) {
               should.equal(item.height, 190);
-              Person.getAsync(person2[Person.id]).then(function (item) {
-                should.equal(item.height, 170);
-
-                done();
-              }).catch(function(err) {
-                done(err);
-              });
-            }).catch(function(err) {
-              done(err);
+              return Person.getAsync(person2[Person.id]);
+            })
+            .then(function (item) {
+              should.equal(item.height, 170);
             });
-          }).catch(function(err) {
-            done(err);
-          });
-        }).catch(function(err) {
-          done(err);
         });
       });
 
@@ -476,54 +460,50 @@ describe("Model instance", function() {
           });
         });
 
-        it("should raise an error for NaN integers (promise-based)", function (done) {
+        it("should raise an error for NaN integers (promise-based)", function () {
           var person = new Person({ height: NaN });
 
-          person.saveAsync().catch(function(err) {
-            var msg = {
-              postgres : 'invalid input syntax for integer: "NaN"'
-            }[protocol];
+          return person.saveAsync()
+            .catch(function(err) {
+              var msg = {
+                postgres : 'invalid input syntax for integer: "NaN"'
+              }[protocol];
 
-            should.equal(err.message, msg);
-
-            done();
-          });
+              should.equal(err.message, msg);
+            });
         });
 
-        it("should raise an error for Infinity integers (promise-based)", function (done) {
+        it("should raise an error for Infinity integers (promise-based)", function () {
           var person = new Person({ height: Infinity });
 
-          person.saveAsync().catch(function (err) {
-            should.exist(err);
-            var msg = {
-              postgres : 'invalid input syntax for integer: "Infinity"'
-            }[protocol];
+          return person.saveAsync()
+            .catch(function (err) {
+              should.exist(err);
+              var msg = {
+                postgres : 'invalid input syntax for integer: "Infinity"'
+              }[protocol];
 
-            should.equal(err.message, msg);
-
-            done();
-          });
+              should.equal(err.message, msg);
+            });
         });
 
-        it("should raise an error for nonsensical integers, for both save & create (promise-based)", function (done) {
+        it("should raise an error for nonsensical integers, for both save & create (promise-based)", function () {
           var person = new Person({ height: 'bugz' });
+          var msg = {
+            postgres : 'invalid input syntax for integer: "bugz"'
+          }[protocol];
 
-          person.saveAsync().catch(function (err) {
-            should.exist(err);
-            var msg = {
-              postgres : 'invalid input syntax for integer: "bugz"'
-            }[protocol];
+          return person.saveAsync()
+            .catch(function (err) {
+              should.exist(err);
 
-            should.equal(err.message, msg);
-
-            Person.createAsync({ height: 'bugz' }).then(function () {
-              done(new Error('Function should catch an error instead of finish'));
-            }).catch(function(err) {
+              should.equal(err.message, msg);
+              return Person.createAsync({ height: 'bugz' });
+            })
+            .catch(function(err) {
               should.exist(err);
               should.equal(err.message, msg);
-              done();
             });
-          });
         });
       }
 
@@ -553,31 +533,24 @@ describe("Model instance", function() {
           });
         });
 
-        it("should store NaN & Infinite floats (promise-based)", function (done) {
+        it("should store NaN & Infinite floats (promise-based)", function () {
           var person = new Person({ weight: NaN });
 
-          person.saveAsync().then(function () {
-
-            Person.getAsync(person[Person.id]).then(function (person) {
+          return person.saveAsync()
+            .then(function () {
+              return Person.getAsync(person[Person.id]);
+            })
+            .then(function (person) {
               should(isNaN(person.weight));
 
-              person.saveAsync({ weight: Infinity, name: 'black hole' }).then(function () {
-                Person.getAsync(person[Person.id]).then(function (person) {
-                  should.strictEqual(person.weight, Infinity);
-
-                  done();
-                }).catch(function(err) {
-                  done(err);
-                });
-              }).catch(function(err) {
-                done(err);
-              });
-            }).catch(function(err) {
-              done(err);
+              return person.saveAsync({ weight: Infinity, name: 'black hole' });
+            })
+            .then(function () {
+              return Person.getAsync(person[Person.id]);
+            })
+            .then(function (person) {
+              should.strictEqual(person.weight, Infinity);
             });
-          }).catch(function(err) {
-            done(err);
-          });
         });
       }
     });
@@ -634,20 +607,17 @@ describe("Model instance", function() {
         });
       });
 
-      it("should delete an item and send an error", function (done) {
-        main_item.find({ name : "Main Item" }).first(function (err, mainItem) {
-          mainItem.removeAsync().then(function () {
-            main_item.find({ name : "Main Item" }).first(function (err, itemFound) {
-              if (err && !itemFound) {
-                done();
-              }
-
-              done(err);
-            });
-          }).catch(function(err) {
-            done(err);
+      it("should delete an item and send an error", function () {
+        return main_item.find({ name : "Main Item" }).firstAsync()
+          .then(function (mainItem) {
+            return mainItem.removeAsync();
+          })
+          .then(function () {
+            return main_item.find({ name : "Main Item" }).firstAsync();
+          })
+          .then(function (item) {
+            should.equal(item, null)
           });
-        });
       });
     });
   });

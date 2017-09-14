@@ -1,7 +1,6 @@
 var should   = require('should');
 var helper   = require('../support/spec_helper');
 var common   = require('../common');
-var ORM      = require('../../');
 
 describe("Model.save()", function() {
   var db = null;

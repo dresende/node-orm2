@@ -155,7 +155,7 @@ describe("hasOne Async", function () {
             has_owner.should.equal(false);
             return [John, Deco.setOwnersAsync(John)];
           })
-          .spread(function (John, Deco) {
+          .spread(function (John) {
             return [John, Person.findAsync({ pet_id: 1 })];
           })
           .spread(function (John, owner) {
@@ -164,49 +164,48 @@ describe("hasOne Async", function () {
           });
        }, 3, done);
     });
-
+    
     it("should be able to find given an association instance", function (done) {
-      common.retry(setup(), function (done) {
-        Person.find({ name: "John Doe" }).first(function (err, John) {
-          should.not.exist(err);
-          should.exist(John);
-          Pet.find({ name: "Deco" }).first(function (err, Deco) {
-            should.not.exist(err);
+      common.retry(setup(), function () {
+        return Person
+          .findAsync({ name: "John Doe" })
+          .then(function (John) {
+            var John = John[0];
+            should.exist(John);
+            return [John, Pet.findAsync({ name: "Deco" })];
+          })
+          .spread(function (John, Deco) {
+            var Deco = Deco[0];
             should.exist(Deco);
-            Deco.hasOwnersAsync().then(function (has_owner) {
-              has_owner.should.equal(false);
-
-              Deco.setOwnersAsync(John).then(function () {
-
-                Person.find({ pet: Deco }).first(function (err, owner) {
-                  should.not.exist(err);
-                  should.exist(owner);
-                  should.equal(owner.name, John.name);
-                  done();
-                });
-
-              }).catch(function(err) {
-                done(err);
-              });
-            }).done(function(err) {
-              done(err);
-            });
+            return [John, Deco, Deco.hasOwnersAsync()];
+          })
+          .spread(function (John, Deco, has_owner) {
+            has_owner.should.equal(false);
+            return [John, Deco.setOwnersAsync(John)];
+          })
+          .spread(function (John, Deco) {
+            return [John, Person.findAsync({ pet: Deco })];
+          })
+          .spread(function(John, owner){
+            should.exist(owner[1]);
+            should.equal(owner[1].name, John.name);
           });
-        });
       }, 3, done);
     });
 
-    it("should be able to find given a number of association instances with a single primary key", function (done) {
-      common.retry(setup(), function (done) {
-        Person.find({ name: "John Doe" }).first(function (err, John) {
-          should.not.exist(err);
-          should.exist(John);
-          Pet.all(function (err, pets) {
-            should.not.exist(err);
+    it.only("should be able to find given a number of association instances with a single primary key", function (done) {
+      //common.retry(setup(), function (done) {
+        Person.findAsync({ name: "John Doe" })
+          .then(function (John) {
+            should.exist(John);
+            return [John, Pet.allAsync()];
+          })
+          .then(function (John, pets) {
             should.exist(pets);
             should.equal(pets.length, 2);
-
-            pets[0].hasOwnersAsync().then(function (has_owner) {
+            return [John, pets[0], pets[0].hasOwnersAsync()];
+          })
+          .then(function (John, pets, has_owner) {
               has_owner.should.equal(false);
 
               pets[0].setOwnersAsync(John).then(function () {
@@ -219,15 +218,9 @@ describe("hasOne Async", function () {
                   should.equal(owners[0].name, John.name);
                   done();
                 });
-              }).catch(function(err) {
-                done(err);
               });
-            }).catch(function(err) {
-              done(err);
             });
-          });
-        });
-      }, 3, done);
+      //}, 3, done);
     });
   });
 });

@@ -63,9 +63,6 @@ describe("LazyLoad properties", function() {
         John.getPhoto.should.be.a.Function();
         John.setPhoto.should.be.a.Function();
         John.removePhoto.should.be.a.Function();
-        John.getPhotoAsync.should.be.a.Function();
-        John.setPhotoAsync.should.be.a.Function();
-        John.removePhotoAsync.should.be.a.Function();
 
         return done();
       });
@@ -83,20 +80,6 @@ describe("LazyLoad properties", function() {
 
           return done();
         });
-      });
-    });
-
-    it("promise-based getAccessor should return property", function (done) {
-      Person.find().first(function (err, John) {
-        should.equal(err, null);
-        John.should.be.a.Object();
-        John.getPhotoAsync()
-          .then(function (photo) {
-            photo.toString().should.equal(PersonPhoto.toString());
-            done();
-          }).catch(function(err) {
-            done(err);
-          });
       });
     });
 
@@ -122,32 +105,6 @@ describe("LazyLoad properties", function() {
       });
     });
 
-    it("promise-based setAccessor should change property (promise-based)", function (done) {
-      Person.find().first(function (err, John) {
-        should.equal(err, null);
-        John.should.be.a.Object();
-
-        John.setPhotoAsync(OtherPersonPhoto)
-          .then(function (johnPhotoUpdated) {
-            johnPhotoUpdated.should.be.a.Object();
-
-            Person.find().first(function (err, John) {
-              should.equal(err, null);
-              John.should.be.a.Object();
-
-              John.getPhotoAsync()
-                .then(function (photo) {
-                  should.equal(err, null);
-                  photo.toString().should.equal(OtherPersonPhoto.toString());
-                  done();
-                }).catch(function (err) {
-                  done(err);
-                });
-            });
-          });
-      });
-    });
-
     it("removeAccessor should change property", function (done) {
       Person.find().first(function (err, John) {
         should.equal(err, null);
@@ -169,32 +126,6 @@ describe("LazyLoad properties", function() {
             });
           });
         });
-    });
-
-    it("removeAccessor should change property (promise-based)", function (done) {
-      Person.find().first(function (err, John) {
-        should.equal(err, null);
-        John.should.be.a.Object();
-
-        John.removePhotoAsync().then(function () {
-          Person.getAsync(John[Person.id]).then(function (John) {
-            John.should.be.a.Object();
-
-            John.getPhotoAsync()
-              .then(function (photo) {
-                should.equal(err, null);
-                should.equal(photo, null);
-                done();
-              }).catch(function (err) {
-                done(err);
-              });
-          }).catch(function(err) {
-            done(err);
-          });
-        }).catch(function(err) {
-          done(err);
-        });
-      });
     });
   });
 });

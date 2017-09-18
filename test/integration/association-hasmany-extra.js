@@ -1,6 +1,5 @@
 var should = require('should');
 var helper = require('../support/spec_helper');
-var ORM    = require('../../');
 
 describe("hasMany extra properties", function() {
   var db     = null;
@@ -79,43 +78,40 @@ describe("hasMany extra properties", function() {
   describe("if passed to addAccessorAsync", function () {
     before(setup());
 
-    it("should be added to association", function (done) {
-      Person.create([{
+    it("should be added to association", function () {
+      return Person.createAsync([{
         name    : "John"
-      }], function (err, people) {
-        Pet.create([{
-          name : "Deco"
-        }, {
-          name : "Mutt"
-        }], function (err, pets) {
+      }])
+        .then(function (people) {
+          return [people, Pet.createAsync([{
+            name : "Deco"
+          }, {
+            name : "Mutt"
+          }])];
+        })
+        .spread(function (people, pets) {
           var data = { adopted: true };
 
-          people[0].addPetsAsync(pets, { since : new Date(), data: data }).then(function () {
+          return [pets, data, people[0].addPetsAsync(pets, { since : new Date(), data: data })];
+        })
+        .spread(function (pets, data) {
+          return [pets, data, Person.find({ name: "John" }, { autoFetch : true }).firstAsync()];
+        })
+        .spread(function (pets, data, John) {
+          John.should.have.property("pets");
+          should(Array.isArray(pets));
 
-            Person.find({ name: "John" }, { autoFetch : true }).first(function (err, John) {
-              should.equal(err, null);
+          John.pets.length.should.equal(2);
 
-              John.should.have.property("pets");
-              should(Array.isArray(pets));
+          John.pets[0].should.have.property("name");
+          John.pets[0].should.have.property("extra");
+          John.pets[0].extra.should.be.a.Object();
+          John.pets[0].extra.should.have.property("since");
+          should(John.pets[0].extra.since instanceof Date);
 
-              John.pets.length.should.equal(2);
-
-              John.pets[0].should.have.property("name");
-              John.pets[0].should.have.property("extra");
-              John.pets[0].extra.should.be.a.Object();
-              John.pets[0].extra.should.have.property("since");
-              should(John.pets[0].extra.since instanceof Date);
-
-              should.equal(typeof John.pets[0].extra.data, 'object');
-              should.equal(JSON.stringify(data), JSON.stringify(John.pets[0].extra.data));
-
-              done();
-            });
-          }).catch(function(err) {
-            done(err);
-          });
+          should.equal(typeof John.pets[0].extra.data, 'object');
+          should.equal(JSON.stringify(data), JSON.stringify(John.pets[0].extra.data));
         });
-      });
     });
   });
 });

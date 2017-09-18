@@ -173,15 +173,15 @@ var Person = db.define("person", {
 	surname : String
 }, {
 	hooks: {
-		beforeCreate: function () {
-		  return new Promise(function(resolve, reject) {
-		    if (this.surname == "Doe") {
-              return reject(new Error("No Does allowed"));
-            }
+      beforeCreate: function () {
+        return new Promise(function(resolve, reject) {
+          if (this.surname == "Doe") {
+            return reject(new Error("No Does allowed"));
+          }
             return resolve();
-		  });
-		}
-	}
+          });
+        }
+      }
 });
 ```
 -------

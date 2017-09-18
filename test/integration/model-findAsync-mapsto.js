@@ -74,7 +74,7 @@ describe("Model.pkMapTo.findAsync()", function() {
     before(setup());
 
     it("1st find should work", function () {
-      Person.findAsync({ surname: "Dean" })
+      return Person.findAsync({ surname: "Dean" })
         .then(function (people) {
           people.should.be.a.Object();
           people.should.have.property("length", 2);
@@ -82,7 +82,7 @@ describe("Model.pkMapTo.findAsync()", function() {
         });
     });
     it("2nd find should should also work", function () {
-      Person.findAsync({ surname: "Doe" })
+      return Person.findAsync({ surname: "Doe" })
         .then(function (people) {
           people.should.be.a.Object();
           people.should.have.property("length", 3);

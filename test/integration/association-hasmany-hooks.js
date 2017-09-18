@@ -1,6 +1,5 @@
 var should = require('should');
 var helper = require('../support/spec_helper');
-var ORM    = require('../../');
 
 describe("hasMany hooks", function() {
   var db     = null;
@@ -64,8 +63,6 @@ describe("hasMany hooks", function() {
   });
 
   describe("beforeSave", function () {
-    var had_extra = false;
-
     before(setup({}, {
       hooks : {
         beforeSave: function (next) {
@@ -93,8 +90,6 @@ describe("hasMany hooks", function() {
   });
 
   describe("beforeSave", function () {
-    var had_extra = false;
-
     before(setup({}, {
       hooks : {
         beforeSave: function (next) {
@@ -130,90 +125,64 @@ describe("hasMany hooks", function() {
       born : Date
     }, {
       hooks : {
-        beforeSave: function (extra, next) {
-          had_extra = (typeof extra == "object");
-          return next();
+        beforeSave: function (extra) {
+          return new Promise(function (resolve) {
+            setTimeout(function () {
+              had_extra = (typeof extra == "object");
+              resolve()
+            }, 1000);
+          });
         }
       }
     }));
 
-    it("should pass extra data to hook if extra defined", function (done) {
-      Person.create({
+    it("should pass extra data to hook if extra defined", function () {
+      return Person.createAsync({
         name    : "John"
-      }, function (err, John) {
-        Pet.create({
-          name : "Deco"
-        }, function (err, Deco) {
-          John.addPetsAsync(Deco).then(function () {
-            should.not.exist(err);
-
-            had_extra.should.equal(true);
-
-            done();
-          }).catch(function(err) {
-            done(err);
-          });
+      })
+        .then(function (John) {
+          return [John, Pet.createAsync({
+            name : "Deco"
+          })];
+        })
+        .spread(function (John, Deco) {
+          return John.addPetsAsync(Deco);
+        })
+        .then(function () {
+          had_extra.should.equal(true);
         });
-      });
     });
   });
 
   describe("beforeSaveAsync", function () {
-    var had_extra = false;
-
     before(setup({}, {
       hooks : {
-        beforeSave: function (next) {
-          next.should.be.a.Function();
-          return next();
+        beforeSave: function () {
+          return new Promise(function (resolve, reject) {
+            setTimeout(function () {
+              return reject(new Error('blocked'));
+            }, 1000);
+          });
         }
       }
     }));
 
-    it("should not pass extra data to hook if extra defined", function (done) {
-      Person.create({
+    it("should block if error returned", function () {
+      return Person.createAsync({
         name    : "John"
-      }, function (err, John) {
-        Pet.create({
-          name : "Deco"
-        }, function (err, Deco) {
-          John.addPetsAsync(Deco).then(function () {
-            done();
-          }).catch(function(err) {
-            done(err);
-          });
+      })
+        .then(function (John) {
+          return [John, Pet.createAsync({
+            name : "Deco"
+          })];
+        })
+        .spread(function (John, Deco) {
+          return John.addPetsAsync(Deco);
+        })
+        .catch(function(err) {
+          should.exist(err);
+          err.message.should.equal('blocked');
         });
-      });
-    });
-  });
-
-  describe("beforeSaveAsync", function () {
-    var had_extra = false;
-
-    before(setup({}, {
-      hooks : {
-        beforeSave: function (next) {
-          setTimeout(function () {
-            return next(new Error('blocked'));
-          }, 100);
-        }
-      }
-    }));
-
-    it("should block if error returned", function (done) {
-      Person.create({
-        name    : "John"
-      }, function (err, John) {
-        Pet.create({
-          name : "Deco"
-        }, function (err, Deco) {
-          John.addPetsAsync(Deco).catch(function(err) {
-            should.exist(err);
-            err.message.should.equal('blocked');
-            done()
-          });
-        });
-      });
     });
   });
 });

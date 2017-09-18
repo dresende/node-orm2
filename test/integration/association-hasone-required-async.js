@@ -4,7 +4,7 @@ var should = require('should');
 var async  = require('async');
 var _      = require('lodash');
 
-describe("hasOne", function() {
+describe("hasOne Async", function() {
   var db     = null;
   var Person = null;
 
@@ -40,50 +40,42 @@ describe("hasOne", function() {
         name     : "John",
         parentId : null
       });
-      John.save(function (errors) {
-        should.exist(errors);
-        should.equal(errors.length, 1);
-        should.equal(errors[0].type,     'validation');
-        should.equal(errors[0].msg,      'required');
-        should.equal(errors[0].property, 'parentId');
-        return done();
-      });
+      John.saveAsync()
+        .catch(function(err) {
+          should.exist(err);
+          should.equal(err.length, 1);
+          should.equal(err[0].type,     'validation');
+          should.equal(err[0].msg,      'required');
+          should.equal(err[0].property, 'parentId');
+          done();
+        });
     });
 
-    it("should accept association", function (done) {
+    it("should accept association", function () {
       var John = new Person({
         name     : "John",
         parentId : 1
       });
-      John.save(function (err) {
-        should.not.exist(err);
-        return done();
-      });
+      return John.saveAsync();
     });
   });
 
   describe("not required", function () {
     before(setup(false));
 
-    it("should accept empty association", function (done) {
+    it("should accept empty association", function () {
       var John = new Person({
         name : "John"
       });
-      John.save(function (err) {
-        should.not.exist(err);
-        return done();
-      });
+      return John.saveAsync();
     });
 
-    it("should accept null association", function (done) {
+    it("should accept null association", function () {
       var John = new Person({
         name      : "John",
         parent_id : null
       });
-      John.save(function (err) {
-        should.not.exist(err);
-        return done();
-      });
+      return John.saveAsync();
     });
   });
 });

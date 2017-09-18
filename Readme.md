@@ -100,7 +100,7 @@ orm.connect("mysql://username:password@host/database", function (err, db) {
 
 - Read documentation about [bluebird](http://bluebirdjs.com/docs/api-reference.html) `Promise` for more advanced knowledge how to use `Promises`.
 
-###Connect
+### Connect
 
 The connection URL has the following syntax: `driver://username:password@hostname/database?option1=value1&option2=value2..`
 
@@ -146,7 +146,7 @@ orm.connectAsync(opts)
 ```
 -------
 
-###Model Hooks
+### Model Hooks
 
 If you want to listen for a type of event than occurs in instances of a Model, you can attach a function that
 will be called when that event happens. For each hook above implemented Promise support, with backward capability via use next callback.
@@ -185,7 +185,7 @@ var Person = db.define("person", {
 });
 ```
 -------
-###Editing Syncing and dropping models
+### Editing Syncing and dropping models
 Syncing is an utility method that creates all the necessary tables in the database for your models and associations to work. Tables are not replaced, they are only created if they don't exist.
 
 There are 2 ways of syncing:
@@ -214,7 +214,7 @@ orm.connectAsync("....")
   });
 ```
 -------
-###Finding items
+### Finding items
 
 #### findAsync
 Find records with matching criteria, can be chained (see below):
@@ -299,7 +299,7 @@ Person.findAsync({id: [1, 2]})
   });
 ```
 -------
-###Creating and Updating Items
+### Creating and Updating Items
 #### createAsync
 ```javascript
 var newRecord = {};
@@ -329,7 +329,7 @@ Person.createAsync(newRecord)
     });
 ```
 -------
-###Aggregation
+### Aggregation
 If you need to get some aggregated values from a Model, you can use `Model.aggregate()`. Here's an example to better
 illustrate:
 

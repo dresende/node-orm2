@@ -181,11 +181,11 @@ describe("hasOne Async", function () {
           return [John, Deco.setOwnersAsync(John)];
         })
         .spread(function (John, Deco) {
-          return [John, Person.findAsync({ pet: Deco })];
+          return [John, Person.findAsync({ pet: Deco, id: John.id })];
         })
         .spread(function(John, owner){
-          should.exist(owner[1]);
-          should.equal(owner[1].name, John.name);
+          should.exist(owner[0]);
+          should.equal(owner[0].name, John.name);
         });
     });
 
@@ -205,7 +205,7 @@ describe("hasOne Async", function () {
           return [John, pets, pets[0].setOwnersAsync(John)];
         })
         .spread(function (John, pets) {
-          return [John, Person.findAsync({ pet: pets })];
+          return [John, Person.findAsync({ pet: pets, id: John.id })];
         })
         .spread(function (John, owners) {
           should.exist(owners[0]);

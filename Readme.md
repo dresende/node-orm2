@@ -169,19 +169,19 @@ Here's an example:
 
 ```js
 var Person = db.define("person", {
-	name    : String,
-	surname : String
+  name    : String,
+  surname : String
 }, {
-	hooks: {
-      beforeCreate: function () {
-        return new Promise(function(resolve, reject) {
-          if (this.surname == "Doe") {
-            return reject(new Error("No Does allowed"));
-          }
-            return resolve();
-          });
-        }
+  hooks: {
+    beforeCreate: function () {
+    return new Promise(function(resolve, reject) {
+      if (this.surname == "Doe") {
+        return reject(new Error("No Does allowed"));
       }
+        return resolve();
+      });
+    }
+  }
 });
 ```
 -------

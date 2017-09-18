@@ -82,16 +82,16 @@ describe("hasOne promise-based methods", function() {
       return Pet
         .findAsync({petName: "Snagglepuss"})
         .then(function(pets) {
-          pets[0].petName.should.equal("Snagglepuss");
-          pets[0].should.have.property("id");
-          pets[0].id.should.equal(11);
+          var pet = pets[0];
+          pet.petName.should.equal("Snagglepuss");
+          pet.should.have.property("id");
+          pet.id.should.equal(11);
   
           return Person.allAsync();
         })
         .then(function (people) {
           should.equal(typeof people[0], 'object');
           should.equal(Array.isArray(people), true);
-          people[0].should.have.property("firstName", "Stuey");
         });
     });
   });

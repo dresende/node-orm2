@@ -95,11 +95,280 @@ orm.connect("mysql://username:password@host/database", function (err, db) {
 	});
 });
 ```
+------
+## Promise
 
-## Promises
+- Read documentation about [bluebird](http://bluebirdjs.com/docs/api-reference.html) `Promise` for more advanced knowledge how to use `Promises`.
 
-You can use the [promise enabled wrapper library](https://github.com/rafaelkaufmann/q-orm).
+### Connect
 
+The connection URL has the following syntax: `driver://username:password@hostname/database?option1=value1&option2=value2..`
+
+```javascript
+var orm = require('orm');
+
+orm.connectAsync('mysql://root:password@localhost/test')
+  .then(function(db) {
+      // connected
+      // ...
+  })
+  .catch(function() {
+     console.error('Connection error: ' + err);
+  });
+```
+
+Valid options are:
+
+- `debug` (default: **false**): prints queries to console;
+- `pool` (default: **false**): manages a connection pool (only for `mysql` and `postgres`) using built-in driver pool;
+- `strdates` (default: **false**): saves dates as strings (only for `sqlite`).
+- `timezone` (default: **'local'**): store dates in the database using this timezone (`mysql` and `postgres` only)
+
+```javascript
+var orm = require('orm');
+
+var opts = {
+    host:     host,
+    database: database,
+    protocol: 'mysql',
+    port:     '3306',
+    query:    {pool: true}
+  };
+  
+orm.connectAsync(opts)
+  .then(function(db) { 
+    // connected
+    // ...  
+  })
+  .catch(function() {
+    console.error('Connection error: ' + err);
+  });
+```
+-------
+
+### Model Hooks
+
+If you want to listen for a type of event than occurs in instances of a Model, you can attach a function that
+will be called when that event happens. For each hook above implemented Promise support, with backward capability via use next callback.
+For use promise you should return `Promise`, look at example.
+
+Currently the following events are supported:
+
+- `beforeValidation` : (no parameters) Before all validations and prior to `beforeCreate` and `beforeSave`;
+- `beforeCreate` : (no parameters) Right before trying to save a new instance (prior to `beforeSave`);
+- `beforeSave` : (no parameters) Right before trying to save;
+- `afterSave` : (bool success) Right after saving;
+- `afterCreate` : (bool success) Right after saving a new instance;
+- `afterLoad` : (no parameters) Right after loading and preparing an instance to be used;
+- `afterAutoFetch` : (no parameters) Right after auto-fetching associations (if any), it will trigger regardless of having associations or not;
+- `beforeRemove` : (no parameters) Right before trying to remove an instance;
+- `afterRemove` : (bool success) Right after removing an instance;
+
+All hook function are called with `this` as the instance so you can access anything you want related to it.
+Here's an example:
+
+```js
+var Person = db.define("person", {
+  name    : String,
+  surname : String
+}, {
+  hooks: {
+    beforeCreate: function () {
+    return new Promise(function(resolve, reject) {
+      if (this.surname == "Doe") {
+        return reject(new Error("No Does allowed"));
+      }
+        return resolve();
+      });
+    }
+  }
+});
+```
+-------
+### Editing Syncing and dropping models
+Syncing is an utility method that creates all the necessary tables in the database for your models and associations to work. Tables are not replaced, they are only created if they don't exist.
+
+There are 2 ways of syncing:
+
+1. Calling `Model.syncPromise()` will only synchronize the model
+2. Calling `db.syncPromise()` will synchronize all models
+
+Dropping is a similar method but instead it drops all tables involved in your models, even if they were not created by ORM. There also 2 ways of dropping.
+
+```js
+var orm = require("orm");
+
+orm.connectAsync("....")
+  .then(function (db) {
+    var Person = db.define("person", {
+        name : String
+    });
+
+    return [Person, db.dropAsync()];
+  })
+  .spread(function(Person) {
+    return Person.syncPromise();
+  })
+  .then(function () {
+    // created tables for Person model
+  });
+```
+-------
+### Finding items
+
+#### findAsync
+Find records with matching criteria, can be chained (see below):
+```javascript
+Person.find({status:'active'})
+  .then(function(results) {
+    // ...
+  });
+```
+
+You can limit your results as well. This limits our results to 10
+```javascript
+Person.find({status:'active'}, 10)
+  .then(function(results) {
+    // ...
+  });
+```
+
+`Person.all` is an alias to `Person.find`
+
+#### getAsync
+Find record by primary key.
+```javascript
+Person.getAsync(1)
+  .then(function(person) {
+    // ...
+  });
+```
+#### oneAsync
+Find one record with similar syntax to find.
+```javascript
+Person.oneAsync({status:'active'})
+  .then(function(person) {
+    // ...
+  });
+```
+
+#### countAsync
+Get the number of matching records.
+```javascript
+Person.countAsync({status:'active'})
+  .then(function(activePeopleCount) {
+    // ...
+  });
+```
+
+#### existsAsync
+Test a record matching your conditions exists.
+```javascript
+Person.exists({id:1, status:'active'})
+  .then(function(personIsActive) {
+    // ...
+  });
+```
+
+#### Filtering and sorting
+We accept 2 objects to perform filtering (first) and aggregate (second). The aggregate object accepts `limit`, `order`, and `groupBy`.
+
+```javascript
+Person.findAsync({status:'active'}, {limit:10})
+  .then(function(results) {
+    // ...
+  });
+```
+
+#### Conditions for find/count/one etc.
+All comma separated key/values are AND'd together in the query. You may prefix a set of conditions with logical operators.
+```javascript
+Person.findAsync({or:[{col1: 1}, {col2: 2}]})
+  .then(function(res) {
+    // ...
+  });
+```
+
+#### Finding with an `IN`
+`sql-query` (underlying SQL engine) will automatically coerce any array to an `IN` based query.
+
+```javascript
+Person.findAsync({id: [1, 2]})
+  .then(function(persons) {
+    // Finds people with id's 1 and 2 (e.g. `WHERE id IN (1, 2)`)
+  });
+```
+-------
+### Creating and Updating Items
+#### createAsync
+```javascript
+var newRecord = {};
+newRecord.id = 1;
+newRecord.name = "John";
+
+Person.createAsync(newRecord)
+  .then(function(results) {
+    // ...
+  });
+```
+
+#### saveAsync
+```js
+    Person.findAsync({ surname: "Doe" })
+      .then(function (people) {
+        // SQL: "SELECT * FROM person WHERE surname = 'Doe'"
+        
+        console.log("People found: %d", people.length);
+        console.log("First person: %s, age %d", people[0].fullName(), people[0].age);
+        
+        people[0].age = 16;
+        return people[0].saveAsync();
+    })
+    .then(function () {
+      // saved
+    });
+```
+-------
+### Aggregation
+If you need to get some aggregated values from a Model, you can use `Model.aggregate()`. Here's an example to better
+illustrate:
+
+```js
+Person.aggregate({ surname: "Doe" }).min("age").max("age").getAsync()
+  .then(function(result) {
+   var [min, max] = result; // you should use destructuring here
+   
+   console.log(min, max);
+  });
+```
+
+An `Array` of properties can be passed to select only a few properties. An `Object` is also accepted to define conditions.
+
+Here's an example to illustrate how to use `.groupBy()`:
+
+```js
+//The same as "select avg(weight), age from person where country='someCountry' group by age;"
+Person.aggregate(["age"], { country: "someCountry" }).avg("weight").groupBy("age").getAsync()
+  .then(function (stats) {
+    // stats is an Array, each item should have 'age' and 'avg_weight'
+  });
+```
+
+### Base `.aggregate()` methods
+
+- `.limit()`: you can pass a number as a limit, or two numbers as offset and limit respectively
+- `.order()`: same as `Model.find().order()`
+
+### Additional `.aggregate()` methods
+
+- `min`
+- `max`
+- `avg`
+- `sum`
+
+There are more aggregate functions depending on the driver (Math functions for example).
+
+-------
 
 ## Express
 

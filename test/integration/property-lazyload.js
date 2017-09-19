@@ -59,6 +59,7 @@ describe("LazyLoad properties", function() {
         should.equal(err, null);
 
         John.should.be.a.Object();
+
         John.getPhoto.should.be.a.Function();
         John.setPhoto.should.be.a.Function();
         John.removePhoto.should.be.a.Function();
@@ -85,7 +86,6 @@ describe("LazyLoad properties", function() {
     it("setAccessor should change property", function (done) {
       Person.find().first(function (err, John) {
         should.equal(err, null);
-
         John.should.be.a.Object();
 
         John.setPhoto(OtherPersonPhoto, function (err) {
@@ -93,13 +93,11 @@ describe("LazyLoad properties", function() {
 
           Person.find().first(function (err, John) {
             should.equal(err, null);
-
             John.should.be.a.Object();
 
             John.getPhoto(function (err, photo) {
               should.equal(err, null);
               photo.toString().should.equal(OtherPersonPhoto.toString());
-
               return done();
             });
           });
@@ -110,26 +108,24 @@ describe("LazyLoad properties", function() {
     it("removeAccessor should change property", function (done) {
       Person.find().first(function (err, John) {
         should.equal(err, null);
+          John.should.be.a.Object();
 
-        John.should.be.a.Object();
-
-        John.removePhoto(function (err) {
-          should.equal(err, null);
-
-          Person.get(John[Person.id], function (err, John) {
+          John.removePhoto(function (err) {
             should.equal(err, null);
 
-            John.should.be.a.Object();
-
-            John.getPhoto(function (err, photo) {
+            Person.get(John[Person.id], function (err, John) {
               should.equal(err, null);
-              should.equal(photo, null);
+              John.should.be.a.Object();
 
-              return done();
+              John.getPhoto(function (err, photo) {
+                should.equal(err, null);
+                should.equal(photo, null);
+
+                return done();
+              });
             });
           });
         });
-      });
     });
   });
 });

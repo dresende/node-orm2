@@ -91,6 +91,15 @@ describe("Model.find() chaining", function() {
         return done();
       });
     });
+    it("should limit results to N items (promise-based)", function (done) {
+      Person.find().limit(2).runAsync().then(function (instances) {
+        instances.should.have.property("length", 2);
+
+        done();
+      }).catch(function(err) {
+        done(err);
+      });
+    });
   });
 
   describe(".skip(N)", function () {
@@ -105,6 +114,16 @@ describe("Model.find() chaining", function() {
         return done();
       });
     });
+    it("should skip the first N results (promise-based)", function (done) {
+      Person.find().skip(2).order("age").runAsync().then(function (instances) {
+        instances.should.have.property("length", 1);
+        instances[0].age.should.equal(20);
+
+        done();
+      }).catch(function(err) {
+        done(err);
+      });
+    });
   });
 
   describe(".offset(N)", function () {
@@ -117,6 +136,16 @@ describe("Model.find() chaining", function() {
         instances[0].age.should.equal(20);
 
         return done();
+      });
+    });
+    it("should skip the first N results (promise-based)", function (done) {
+      Person.find().offset(2).order("age").runAsync().then(function (instances) {
+        instances.should.have.property("length", 1);
+        instances[0].age.should.equal(20);
+
+        done();
+      }).catch(function(err) {
+        done(err);
       });
     });
   });
@@ -135,6 +164,18 @@ describe("Model.find() chaining", function() {
       });
     });
 
+    it("('property') should order by that property ascending (promise-based)", function (done) {
+      Person.find().order("age").runAsync().then(function (instances) {
+        instances.should.have.property("length", 3);
+        instances[0].age.should.equal(18);
+        instances[2].age.should.equal(20);
+
+        done();
+      }).catch(function(err) {
+        done(err);
+      });
+    });
+
     it("('-property') should order by that property descending", function (done) {
       Person.find().order("-age").run(function (err, instances) {
         should.equal(err, null);
@@ -146,6 +187,18 @@ describe("Model.find() chaining", function() {
       });
     });
 
+    it("('-property') should order by that property descending (promise-based)", function (done) {
+      Person.find().order("-age").runAsync().then(function (instances) {
+        instances.should.have.property("length", 3);
+        instances[0].age.should.equal(20);
+        instances[2].age.should.equal(18);
+
+        done();
+      }).catch(function(err) {
+        done(err);
+      });
+    });
+
     it("('property', 'Z') should order by that property descending", function (done) {
       Person.find().order("age", "Z").run(function (err, instances) {
         should.equal(err, null);
@@ -154,6 +207,18 @@ describe("Model.find() chaining", function() {
         instances[2].age.should.equal(18);
 
         return done();
+      });
+    });
+
+    it("('property', 'Z') should order by that property descending (promise-based)", function (done) {
+      Person.find().order("age", "Z").runAsync().then(function (instances) {
+        instances.should.have.property("length", 3);
+        instances[0].age.should.equal(20);
+        instances[2].age.should.equal(18);
+
+        done();
+      }).catch(function(err) {
+        done(err);
       });
     });
   });
@@ -174,6 +239,18 @@ describe("Model.find() chaining", function() {
       });
     });
 
+    it("should allow ordering by SQL (promise-based)", function (done) {
+      Person.find().orderRaw("age DESC").runAsync().then(function (instances) {
+        instances.should.have.property("length", 3);
+        instances[0].age.should.equal(20);
+        instances[2].age.should.equal(18);
+
+        done();
+      }).catch(function(err) {
+        done(err);
+      });
+    });
+
     it("should allow ordering by SQL with escaping", function (done) {
       Person.find().orderRaw("?? DESC", ['age']).run(function (err, instances) {
         should.equal(err, null);
@@ -182,6 +259,18 @@ describe("Model.find() chaining", function() {
         instances[2].age.should.equal(18);
 
         return done();
+      });
+    });
+
+    it("should allow ordering by SQL with escaping (promise-based)", function (done) {
+      Person.find().orderRaw("?? DESC", ['age']).runAsync().then(function (instances) {
+        instances.should.have.property("length", 3);
+        instances[0].age.should.equal(20);
+        instances[2].age.should.equal(18);
+
+        done();
+      }).catch(function(err) {
+        done(err);
       });
     });
   });
@@ -201,8 +290,21 @@ describe("Model.find() chaining", function() {
       });
     });
 
+    it("('property', ...) should return only those properties, others null (promise-based)", function (done) {
+      Person.find().only("age", "surname").order("-age").runAsync().then(function (instances) {
+        instances.should.have.property("length", 3);
+        instances[0].should.have.property("age");
+        instances[0].should.have.property("surname", "Doe");
+        instances[0].should.have.property("name", null);
+
+        done();
+      }).catch(function(err){
+        done(err);
+      });
+    });
+
     // This works if cache is disabled. I suspect a cache bug.
-    xit("(['property', ...]) should return only those properties, others null", function (done) {
+    it("(['property', ...]) should return only those properties, others null", function (done) {
       Person.find().only([ "age", "surname" ]).order("-age").run(function (err, instances) {
         should.equal(err, null);
         instances.should.have.property("length", 3);
@@ -211,6 +313,18 @@ describe("Model.find() chaining", function() {
         instances[0].should.have.property("name", null);
 
         return done();
+      });
+    });
+    it("(['property', ...]) should return only those properties, others null (promise-based)", function (done) {
+      Person.find().only([ "age", "surname" ]).order("-age").runAsync().then(function (instances) {
+        instances.should.have.property("length", 3);
+        instances[0].should.have.property("age");
+        instances[0].should.have.property("surname", "Doe");
+        instances[0].should.have.property("name", null);
+
+        done();
+      }).catch(function(err) {
+        done(err);
       });
     });
   });
@@ -234,6 +348,23 @@ describe("Model.find() chaining", function() {
       });
     });
 
+    it("('property', ...) should not get these properties (promise-based)", function (done) {
+      Person.find().omit("age", "surname").order("-age").runAsync().then(function (instances) {
+        instances.should.have.property("length", 3);
+        if (common.protocol() != "mongodb") {
+          should.exist(instances[0].id);
+        }
+        should.exist(instances[0].friend_id);
+        instances[0].should.have.property("age", null);
+        instances[0].should.have.property("surname", null);
+        instances[0].should.have.property("name", "Jane");
+
+        done();
+      }).catch(function(err) {
+        done(err);
+      });
+    });
+
     it("(['property', ...]) should not get these properties", function (done) {
       Person.find().omit(["age", "surname"]).order("-age").run(function (err, instances) {
         should.equal(err, null);
@@ -243,6 +374,19 @@ describe("Model.find() chaining", function() {
         instances[0].should.have.property("name", "Jane");
 
         return done();
+      });
+    });
+
+    it("(['property', ...]) should not get these properties (promise-based)", function (done) {
+      Person.find().omit(["age", "surname"]).order("-age").runAsync().then(function (instances) {
+        instances.should.have.property("length", 3);
+        instances[0].should.have.property("age", null);
+        instances[0].should.have.property("surname", null);
+        instances[0].should.have.property("name", "Jane");
+
+        done();
+      }).catch(function(err) {
+        done(err);
       });
     });
   });
@@ -675,34 +819,6 @@ describe("Model.find() chaining", function() {
         dogs[1].friends.length.should.equal(1);
         dogs[1].family.length.should.equal(2);
         done();
-      });
-    });
-  });
-
-  describe(".success()", function () {
-    before(setup());
-
-    it("should return a Promise with .fail() method", function (done) {
-      Person.find().success(function (people) {
-        should(Array.isArray(people));
-
-        return done();
-      }).fail(function (err) {
-        // never called..
-      });
-    });
-  });
-
-  describe(".fail()", function () {
-    before(setup());
-
-    it("should return a Promise with .success() method", function (done) {
-      Person.find().fail(function (err) {
-        // never called..
-      }).success(function (people) {
-        should(Array.isArray(people));
-
-        return done();
       });
     });
   });

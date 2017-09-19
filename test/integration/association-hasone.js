@@ -468,4 +468,5 @@ describe("hasOne", function() {
       });
     });
   };
+
 });

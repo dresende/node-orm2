@@ -12,7 +12,9 @@ describe("ORM", function() {
     it("should expose .express(), .use() and .connect()", function (done) {
       ORM.express.should.be.a.Function();
       ORM.use.should.be.a.Function();
+      ORM.useAsync.should.be.a.Function();
       ORM.connect.should.be.a.Function();
+      ORM.connectAsync.should.be.a.Function();
 
       return done();
     });
@@ -48,188 +50,250 @@ describe("ORM", function() {
       return done();
     });
   });
-});
-
-describe("ORM.connect()", function () {
-  it("should expose .use(), .define(), .sync() and .load()", function (done) {
-    var db = ORM.connect();
-
-    db.use.should.be.a.Function();
-    db.define.should.be.a.Function();
-    db.sync.should.be.a.Function();
-    db.load.should.be.a.Function();
-
-    return done();
-  });
-
-  it("should emit an error if no url is passed", function (done) {
-    var db = ORM.connect();
-
-    db.on("connect", function (err) {
-      err.message.should.equal("CONNECTION_URL_EMPTY");
-
-      return done();
+  describe('ORM.connectAsync()', function () {
+    it('should be a function', function () {
+      return ORM.connectAsync.should.be.a.Function()
     });
-  });
 
-  it("should allow protocol alias", function (done) {
-    var db = ORM.connect("pg://127.0.0.2");
-
-    db.once("connect", function (err) {
-      should.exist(err);
-      err.message.should.not.equal("CONNECTION_PROTOCOL_NOT_SUPPORTED");
-
-      return done();
+    it('should throw error with correct message when protocol not supported', function () {
+      return ORM.connectAsync("bd://127.0.0.6")
+        .catch(function (err) {
+          should.exist(err);
+          err.message.should.not.equal("CONNECTION_PROTOCOL_NOT_SUPPORTED");
+        });
     });
-  });
 
-  it("should emit an error if empty url is passed", function (done) {
-    var db = ORM.connect("");
-
-    db.on("connect", function (err) {
-      err.message.should.equal("CONNECTION_URL_EMPTY");
-
-      return done();
+    it('should throw error with correct message when connection URL doesn\'t exist', function () {
+      ORM.connectAsync()
+        .catch(function (err) {
+          err.message.should.equal("CONNECTION_URL_EMPTY");
+        });
     });
-  });
 
-  it("should emit an error if empty url (with only spaces) is passed", function (done) {
-    var db = ORM.connect("   ");
-
-    db.on("connect", function (err) {
-      err.message.should.equal("CONNECTION_URL_EMPTY");
-
-      return done();
+    it("should throw error when passed empty string like connection URL", function () {
+      return ORM.connectAsync("")
+        .catch(function (err) {
+          err.message.should.equal("CONNECTION_URL_EMPTY");
+        });
     });
-  });
 
-  it("should emit an error if no protocol is passed", function (done) {
-    var db = ORM.connect("user@db");
-
-    db.on("connect", function (err) {
-      err.message.should.equal("CONNECTION_URL_NO_PROTOCOL");
-
-      return done();
+    it("should throw error when passed string with spaces only", function () {
+      return ORM.connectAsync("    ")
+        .catch(function (err) {
+          err.message.should.equal("CONNECTION_URL_EMPTY");
+        });
     });
-  });
 
-  it("should emit an error if unknown protocol is passed", function (done) {
-    var db = ORM.connect("unknown://db");
-
-    db.on("connect", function (err) {
-      should.equal(err.literalCode, 'NO_SUPPORT');
-      should.equal(
-        err.message,
-        "Connection protocol not supported - have you installed the database driver for unknown?"
-      );
-
-      return done();
+    it("should throw error when passed invalid protocol", function () {
+      return ORM.connectAsync("user@db")
+        .catch(function (err) {
+          err.message.should.equal("CONNECTION_URL_NO_PROTOCOL");
+        });
     });
-  });
 
-  it("should emit an error if cannot connect", function (done) {
-    var db = ORM.connect("mysql://fakeuser:nopassword@127.0.0.1/unknowndb");
-
-    db.on("connect", function (err) {
-      should.exist(err);
-      should.equal(err.message.indexOf("Connection protocol not supported"), -1);
-      err.message.should.not.equal("CONNECTION_URL_NO_PROTOCOL");
-      err.message.should.not.equal("CONNECTION_URL_EMPTY");
-
-      return done();
+    it("should throw error when passed unknown protocol", function () {
+      return ORM.connectAsync("unknown://db")
+        .catch(function (err) {
+          should.equal(err.literalCode, 'NO_SUPPORT');
+          should.equal(
+            err.message,
+            "Connection protocol not supported - have you installed the database driver for unknown?"
+          );
+        });
     });
-  });
 
-  it("should emit valid error if exception being thrown during connection try", function (done) {
-    var testConfig = {
-      protocol : 'mongodb',
-      href     : 'unknownhost',
-      database : 'unknowndb',
-      user     : '',
-      password : ''
-    },
-    db = ORM.connect(testConfig);
-
-    db.on("connect", function (err) {
-      should.exist(err);
-      should.equal(err.message.indexOf("Connection protocol not supported"), -1);
-      err.message.should.not.equal("CONNECTION_URL_NO_PROTOCOL");
-      err.message.should.not.equal("CONNECTION_URL_EMPTY");
-
-      return done();
+    it("should throw error when passed invalid connection db link", function () {
+      return ORM.connectAsync("mysql://fakeuser:nopassword@127.0.0.1/unknowndb")
+        .catch(function (err) {
+          should.exist(err);
+          should.equal(err.message.indexOf("Connection protocol not supported"), -1);
+          err.message.should.not.equal("CONNECTION_URL_NO_PROTOCOL");
+          err.message.should.not.equal("CONNECTION_URL_EMPTY");
+        });
     });
-  });
 
-  it("should not modify connection opts", function (done) {
-    var opts = {
-      protocol : 'mysql',
-      user     : 'notauser',
-      password : "wrong password",
-      query    : { pool: true, debug: true }
-    };
+    it("should do not mutate opts", function () {
+      var opts = {
+        protocol : 'mysql',
+        user     : 'notauser',
+        password : "wrong password",
+        query    : { pool: true, debug: true }
+      };
 
-    var expected = JSON.stringify(opts);
+      var expected = JSON.stringify(opts);
 
-    ORM.connect(opts, function (err, db) {
-      should.equal(
-        JSON.stringify(opts),
-        expected
-      );
-      done();
+      return ORM.connectAsync(opts)
+        .catch(function () {
+          should.equal(
+            JSON.stringify(opts),
+            expected
+          );
+        });
     });
-  });
 
-  it("should emit no error if ok", function (done) {
-    var db = ORM.connect(common.getConnectionString());
+    it("should pass successful when opts is OK!", function () {
+      return ORM.connectAsync(common.getConnectionString())
+        .then(function (db) {
+          should.exist(db);
 
-    db.on("connect", function (err) {
-      should.not.exist(err);
-
-      return done();
+          db.use.should.be.a.Function();
+          db.define.should.be.a.Function();
+          db.sync.should.be.a.Function();
+          db.load.should.be.a.Function();
+        })
     });
-  });
 
-  describe("if no connection error", function () {
-    var db = null;
+    describe('POOL via connectAsync', function () {
+      var connStr = null;
 
-    before(function (done) {
-      helper.connect(function (connection) {
-        db = connection;
-
-        return done();
+      beforeEach(function () {
+        connStr = common.getConnectionString();
       });
-    });
 
-    after(function () {
-      return db.close();
-    });
-
-    it("should be able to ping the server", function (done) {
-      db.ping(function () {
-        return done();
+      afterEach(function () {
+        connStr = null
       });
+
+      if (protocol !== 'mongodb') {
+        it("should understand pool `'false'` from query string", function () {
+          var connString = connStr + "debug=false&pool=false";
+          return ORM.connectAsync(connString)
+            .then(function (db) {
+              should.strictEqual(db.driver.opts.pool,  false);
+              should.strictEqual(db.driver.opts.debug, false);
+            })
+        });
+
+        it("should understand pool `'0'` from query string", function () {
+          var connString = connStr + "debug=0&pool=0";
+          return ORM.connectAsync(connString)
+            .then(function (db) {
+              should.strictEqual(db.driver.opts.pool,  false);
+              should.strictEqual(db.driver.opts.debug, false);
+            });
+        });
+
+        it("should understand pool `'true'` from query string", function () {
+          var connString = connStr + "debug=true&pool=true";
+          return ORM.connectAsync(connString)
+            .then(function (db) {
+              should.strictEqual(db.driver.opts.pool,  true);
+              should.strictEqual(db.driver.opts.debug, true);
+            });
+        });
+
+        it("should understand pool `'true'` from query string", function () {
+          var connString = connStr + "debug=1&pool=1";
+          return ORM.connectAsync(connString)
+            .then(function (db) {
+              should.strictEqual(db.driver.opts.pool,  true);
+              should.strictEqual(db.driver.opts.debug, true);
+            });
+        });
+
+        it("should understand pool `'true'` from query string", function () {
+          var connCopy = _.cloneDeep(common.getConfig());
+          var connOpts = _.extend(connCopy, {
+            protocol: common.protocol(),
+            query: {
+              pool: true, debug: true
+            }
+          });
+
+          return ORM.connectAsync(connOpts)
+            .then(function (db) {
+              should.strictEqual(db.driver.opts.pool,  true);
+              should.strictEqual(db.driver.opts.debug, true);
+            });
+        });
+
+        it("should understand pool `false` from query options", function () {
+          var connCopy = _.cloneDeep(common.getConfig());
+          var connOpts = _.extend(connCopy, {
+            protocol: common.protocol(),
+            query: {
+              pool: false, debug: false
+            }
+          });
+
+          return ORM.connectAsync(connOpts)
+            .then(function (db) {
+              should.strictEqual(db.driver.opts.pool,  false);
+              should.strictEqual(db.driver.opts.debug, false);
+            });
+        });
+      }
     });
   });
 
-  describe("if callback is passed", function (done) {
-    it("should return an error if empty url is passed", function (done) {
-      ORM.connect("", function (err) {
+  describe("ORM.connect()", function () {
+    it("should expose .use(), .define(), .sync() and .load()", function (done) {
+      var db = ORM.connect();
+
+      db.use.should.be.a.Function();
+      db.define.should.be.a.Function();
+      db.sync.should.be.a.Function();
+      db.load.should.be.a.Function();
+
+      return done();
+    });
+
+    it("should emit an error if no url is passed", function (done) {
+      var db = ORM.connect();
+
+      db.on("connect", function (err) {
         err.message.should.equal("CONNECTION_URL_EMPTY");
 
         return done();
       });
     });
 
-    it("should return an error if no protocol is passed", function (done) {
-      ORM.connect("user@db", function (err) {
+    it.skip("should allow protocol alias", function (done) {
+      this.timeout(60000);
+      var db = ORM.connect("pg://127.0.0.6");
+
+      db.once("connect", function (err) {
+        should.exist(err);
+        err.message.should.not.equal("CONNECTION_PROTOCOL_NOT_SUPPORTED");
+
+        return done();
+      });
+    });
+
+    it("should emit an error if empty url is passed", function (done) {
+      var db = ORM.connect("");
+
+      db.on("connect", function (err) {
+        err.message.should.equal("CONNECTION_URL_EMPTY");
+
+        return done();
+      });
+    });
+
+    it("should emit an error if empty url (with only spaces) is passed", function (done) {
+      var db = ORM.connect("   ");
+
+      db.on("connect", function (err) {
+        err.message.should.equal("CONNECTION_URL_EMPTY");
+
+        return done();
+      });
+    });
+
+    it("should emit an error if no protocol is passed", function (done) {
+      var db = ORM.connect("user@db");
+
+      db.on("connect", function (err) {
         err.message.should.equal("CONNECTION_URL_NO_PROTOCOL");
 
         return done();
       });
     });
 
-    it("should return an error if unknown protocol is passed", function (done) {
-      ORM.connect("unknown://db", function (err) {
+    it("should emit an error if unknown protocol is passed", function (done) {
+      var db = ORM.connect("unknown://db");
+
+      db.on("connect", function (err) {
         should.equal(err.literalCode, 'NO_SUPPORT');
         should.equal(
           err.message,
@@ -239,111 +303,263 @@ describe("ORM.connect()", function () {
         return done();
       });
     });
-  });
 
-  if (protocol != 'mongodb') {
-    describe("query options", function () {
-      it("should understand pool `'false'` from query string", function (done) {
-        var connString = common.getConnectionString() + "debug=false&pool=false";
-        ORM.connect(connString, function (err, db) {
-          should.not.exist(err);
-          should.strictEqual(db.driver.opts.pool,  false);
-          should.strictEqual(db.driver.opts.debug, false);
-          done();
+    it("should emit an error if cannot connect", function (done) {
+      var db = ORM.connect("mysql://fakeuser:nopassword@127.0.0.1/unknowndb");
+
+      db.on("connect", function (err) {
+        should.exist(err);
+        should.equal(err.message.indexOf("Connection protocol not supported"), -1);
+        err.message.should.not.equal("CONNECTION_URL_NO_PROTOCOL");
+        err.message.should.not.equal("CONNECTION_URL_EMPTY");
+
+        return done();
+      });
+    });
+
+    it("should emit valid error if exception being thrown during connection try", function (done) {
+      var testConfig = {
+          protocol : 'mongodb',
+          href     : 'unknownhost',
+          database : 'unknowndb',
+          user     : '',
+          password : ''
+        },
+        db = ORM.connect(testConfig);
+
+      db.on("connect", function (err) {
+        should.exist(err);
+        should.equal(err.message.indexOf("Connection protocol not supported"), -1);
+        err.message.should.not.equal("CONNECTION_URL_NO_PROTOCOL");
+        err.message.should.not.equal("CONNECTION_URL_EMPTY");
+
+        return done();
+      });
+    });
+
+    it("should not modify connection opts", function (done) {
+      var opts = {
+        protocol : 'mysql',
+        user     : 'notauser',
+        password : "wrong password",
+        query    : { pool: true, debug: true }
+      };
+
+      var expected = JSON.stringify(opts);
+
+      ORM.connect(opts, function (err, db) {
+        should.equal(
+          JSON.stringify(opts),
+          expected
+        );
+        done();
+      });
+    });
+
+    it("should emit no error if ok", function (done) {
+      var db = ORM.connect(common.getConnectionString());
+
+      db.on("connect", function (err) {
+        should.not.exist(err);
+
+        return done();
+      });
+    });
+
+    describe("if no connection error", function () {
+      var db = null;
+
+      before(function (done) {
+        helper.connect(function (connection) {
+          db = connection;
+
+          return done();
         });
       });
 
-      it("should understand pool `'0'` from query string", function (done) {
-        var connString = common.getConnectionString() + "debug=0&pool=0";
-        ORM.connect(connString, function (err, db) {
-          should.not.exist(err);
-          should.strictEqual(db.driver.opts.pool,  false);
-          should.strictEqual(db.driver.opts.debug, false);
-          done();
+      after(function () {
+        return db.close();
+      });
+
+      it("should be able to ping the server", function (done) {
+        db.ping(function () {
+          return done();
         });
       });
 
-      it("should understand pool `'true'` from query string", function (done) {
-        var connString = common.getConnectionString() + "debug=true&pool=true";
-        ORM.connect(connString, function (err, db) {
-          should.not.exist(err);
-          should.strictEqual(db.driver.opts.pool,  true);
-          should.strictEqual(db.driver.opts.debug, true);
-          done();
+      it("should be able to pingAsync the server", function () {
+        return db.pingAsync();
+      });
+    });
+
+    describe("if callback is passed", function () {
+      it("should return an error if empty url is passed", function (done) {
+        ORM.connect("", function (err) {
+          err.message.should.equal("CONNECTION_URL_EMPTY");
+
+          return done();
         });
       });
 
-      it("should understand pool `'1'` from query string", function (done) {
-        var connString = common.getConnectionString() + "debug=1&pool=1";
-        ORM.connect(connString, function (err, db) {
-          should.not.exist(err);
-          should.strictEqual(db.driver.opts.pool,  true);
-          should.strictEqual(db.driver.opts.debug, true);
-          done();
+      it("should return an error if no protocol is passed", function (done) {
+        ORM.connect("user@db", function (err) {
+          err.message.should.equal("CONNECTION_URL_NO_PROTOCOL");
+
+          return done();
         });
       });
 
-      it("should understand pool `true` from query options", function (done) {
-        var connOpts = _.extend(common.getConfig(), {
-          protocol: common.protocol(),
-          query: {
-            pool: true, debug: true
-          }
-        });
-        ORM.connect(connOpts, function (err, db) {
-          should.not.exist(err);
-          should.strictEqual(db.driver.opts.pool,  true);
-          should.strictEqual(db.driver.opts.debug, true);
-          done();
-        });
-      });
+      it("should return an error if unknown protocol is passed", function (done) {
+        ORM.connect("unknown://db", function (err) {
+          should.equal(err.literalCode, 'NO_SUPPORT');
+          should.equal(
+            err.message,
+            "Connection protocol not supported - have you installed the database driver for unknown?"
+          );
 
-      it("should understand pool `false` from query options", function (done) {
-        var connOpts = _.extend(common.getConfig(), {
-          protocol: common.protocol(),
-          query: {
-            pool: false, debug: false
-          }
-        });
-        ORM.connect(connOpts, function (err, db) {
-          should.not.exist(err);
-          should.strictEqual(db.driver.opts.pool,  false);
-          should.strictEqual(db.driver.opts.debug, false);
-          done();
+          return done();
         });
       });
     });
-  }
-});
 
-describe("ORM.use()", function () {
-  it("should be able to use an established connection", function (done) {
-    var db = new sqlite.Database(':memory:');
+    if (protocol !== 'mongodb') {
+      describe("query options", function () {
+        var connStr = null;
 
-    ORM.use(db, "sqlite", function (err) {
-      should.not.exist(err);
+        beforeEach(function () {
+          connStr = common.getConnectionString();
+        });
 
-      return done();
+        afterEach(function () {
+          connStr = null
+        });
+        it("should understand pool `'false'` from query string", function (done) {
+          var connString = connStr + "debug=false&pool=false";
+          ORM.connect(connString, function (err, db) {
+            should.not.exist(err);
+            should.strictEqual(db.driver.opts.pool,  false);
+            should.strictEqual(db.driver.opts.debug, false);
+            done();
+          });
+        });
+
+        it("should understand pool `'0'` from query string", function (done) {
+          var connString = connStr + "debug=0&pool=0";
+          ORM.connect(connString, function (err, db) {
+            should.not.exist(err);
+            should.strictEqual(db.driver.opts.pool,  false);
+            should.strictEqual(db.driver.opts.debug, false);
+            done();
+          });
+        });
+
+        it("should understand pool `'true'` from query string", function (done) {
+          var connString = connStr + "debug=true&pool=true";
+          ORM.connect(connString, function (err, db) {
+            should.not.exist(err);
+            should.strictEqual(db.driver.opts.pool,  true);
+            should.strictEqual(db.driver.opts.debug, true);
+            done();
+          });
+        });
+
+        it("should understand pool `'1'` from query string", function (done) {
+          var connString = connStr + "debug=1&pool=1";
+          ORM.connect(connString, function (err, db) {
+            should.not.exist(err);
+            should.strictEqual(db.driver.opts.pool,  true);
+            should.strictEqual(db.driver.opts.debug, true);
+            done();
+          });
+        });
+
+        it("should understand pool `true` from query options", function (done) {
+          var connCopy = _.cloneDeep(common.getConfig());
+          var connOpts = _.extend(connCopy, {
+            protocol: common.protocol(),
+            query: {
+              pool: true, debug: true
+            }
+          });
+          ORM.connect(connOpts, function (err, db) {
+            should.not.exist(err);
+            should.strictEqual(db.driver.opts.pool,  true);
+            should.strictEqual(db.driver.opts.debug, true);
+            done();
+          });
+        });
+
+        it("should understand pool `false` from query options", function (done) {
+          var connCopy = _.cloneDeep(common.getConfig());
+          var connOpts = _.extend(connCopy, {
+            protocol: common.protocol(),
+            query: {
+              pool: false, debug: false
+            }
+          });
+          ORM.connect(connOpts, function (err, db) {
+            should.not.exist(err);
+            should.strictEqual(db.driver.opts.pool,  false);
+            should.strictEqual(db.driver.opts.debug, false);
+            done();
+          });
+        });
+      });
+    }
+  });
+
+  describe("ORM.use()", function () {
+    it("should be able to use an established connection", function (done) {
+      var db = new sqlite.Database(':memory:');
+
+      ORM.use(db, "sqlite", function (err) {
+        should.not.exist(err);
+
+        return done();
+      });
+    });
+
+    it("should be accept protocol alias", function (done) {
+      var db = new pg.Client();
+
+      ORM.use(db, "pg", function (err) {
+        should.equal(err, null);
+
+        return done();
+      });
+    });
+
+    it("should return an error in callback if protocol not supported", function (done) {
+      var db = new pg.Client();
+
+      ORM.use(db, "unknowndriver", function (err) {
+        should.exist(err);
+
+        return done();
+      });
     });
   });
 
-  it("should be accept protocol alias", function (done) {
-    var db = new pg.Client();
+  describe("ORM.useAsync()", function () {
+    it("should be able to use an established connection", function () {
+      var db = new sqlite.Database(':memory:');
 
-    ORM.use(db, "pg", function (err) {
-      should.equal(err, null);
-
-      return done();
+      return ORM.useAsync(db, "sqlite");
     });
-  });
 
-  it("should return an error in callback if protocol not supported", function (done) {
-    var db = new pg.Client();
+    it("should be accept protocol alias", function () {
+      var db = new pg.Client();
 
-    ORM.use(db, "unknowndriver", function (err) {
-      should.exist(err);
+      return ORM.useAsync(db, "pg")
+    });
 
-      return done();
+    it("should throw an error in callback if protocol not supported", function () {
+      var db = new pg.Client();
+
+      return ORM.useAsync(db, "unknowndriver")
+        .catch(function (err) {
+          should.exist(err);
+        });
     });
   });
 });

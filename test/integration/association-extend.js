@@ -215,7 +215,169 @@ describe("Model.extendsTo()", function() {
     });
   });
 
-  describe("findBy()", function () {
+  describe("when calling hasAccessor + Async", function () {
+    before(setup());
+
+    it("should return true if found", function (done) {
+      Person.find().first(function (err, John) {
+        should.equal(err, null);
+
+        John.hasAddressAsync().then(function (hasAddress) {
+          should.equal(err, null);
+          hasAddress.should.equal(true);
+
+          done();
+        }).catch(function(err){
+          done(err);
+        });
+      });
+    });
+
+    it("should return false if not found", function (done) {
+      Person.find().first(function (err, John) {
+        should.equal(err, null);
+        John.removeAddressAsync().then(function(){
+          John.hasAddressAsync().then(function (hasAddress) {
+          }).catch(function(err) {
+            err.should.be.a.Object();
+            done();
+          });
+        });
+      });
+    });
+
+    it("should return error if instance not with an ID", function (done) {
+      var Jane = new Person({
+        name: "Jane"
+      });
+      Jane.hasAddressAsync().catch(function(err) {
+        err.should.be.a.Object();
+        err.should.have.property("code", ORM.ErrorCodes.NOT_DEFINED);
+        done();
+      });
+    });
+  });
+
+  describe("when calling getAccessor + Async", function () {
+    before(setup());
+
+    it("should return extension if found", function (done) {
+      Person.find().first(function (err, John) {
+        should.equal(err, null);
+
+        John.getAddressAsync(John).then(function (Address) {
+          Address.should.be.a.Object();
+          Address.should.have.property("street", "Liberty");
+          done();
+        }).catch(function (err) {
+          done(err);
+        });
+      });
+    });
+
+    it("should return error if not found", function (done) {
+      Person.find().first(function (err, John) {
+        should.equal(err, null);
+        John.removeAddressAsync().then(function () {
+          John.getAddressAsync(John).catch(function(err){
+            err.should.be.a.Object();
+            err.should.have.property("code", ORM.ErrorCodes.NOT_FOUND);
+            done();
+          });
+        });
+      });
+    });
+
+    it("should return error if instance not with an ID", function (done) {
+      var Jane = new Person({
+        name: "Jane"
+      });
+      Jane.getAddressAsync().catch(function(err) {
+        err.should.be.a.Object();
+        err.should.have.property("code", ORM.ErrorCodes.NOT_DEFINED);
+        done();
+      });
+    });
+  });
+
+  describe("when calling setAccessor + Async", function () {
+    before(setup());
+
+    it("should remove any previous extension", function (done) {
+      Person.find().first(function (err, John) {
+        should.equal(err, null);
+
+        PersonAddress.find({ number: 123 }).count(function (err, c) {
+          should.equal(err, null);
+          c.should.equal(1);
+
+          var addr = new PersonAddress({
+            street : "4th Ave",
+            number : 4
+          });
+
+          John.setAddressAsync(addr).then(function () {
+            John.getAddressAsync(addr).then(function (Address) {
+              Address.should.be.a.Object();
+              Address.should.have.property("street", addr.street);
+              PersonAddress.find({ number: 123 }).count(function (err, c) {
+                should.equal(err, null);
+                c.should.equal(0);
+                 done();
+              });
+            });
+          }).catch(function(err) {
+            done(err);
+          });
+        });
+      });
+    });
+  });
+
+  describe("when calling delAccessor + Async", function () {
+    before(setup());
+
+    it("should remove any extension", function (done) {
+      Person.find().first(function (err, John) {
+        should.equal(err, null);
+
+        PersonAddress.find({ number: 123 }).count(function (err, c) {
+          should.equal(err, null);
+          c.should.equal(1);
+
+          var addr = new PersonAddress({
+            street : "4th Ave",
+            number : 4
+          });
+
+          John.removeAddressAsync().then(function () {
+
+            PersonAddress.find({ number: 123 }).count(function (err, c) {
+              should.equal(err, null);
+              c.should.equal(0);
+
+              done();
+            });
+          }).catch(function(err) {
+            done(err);
+          });
+        });
+      });
+    });
+
+    it("should return error if instance not with an ID", function (done) {
+      var Jane = new Person({
+        name: "Jane"
+      });
+      Jane.removeAddressAsync().catch(function(err) {
+        err.should.be.a.Object();
+        err.should.have.property("code", ORM.ErrorCodes.NOT_DEFINED);
+        done();
+      });
+    });
+  });
+
+  describe("findBy()", function () { // TODO: make async after Models method include async support
     before(setup());
 
     it("should throw if no conditions passed", function (done) {

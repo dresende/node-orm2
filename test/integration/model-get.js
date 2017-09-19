@@ -124,23 +124,23 @@ describe("Model.get()", function() {
     });
 
     describe("changing instance.identityCacheSaveCheck = false", function () {
-      before(function (done) {
+      before(function () {
         Person.settings.set("instance.identityCacheSaveCheck", false);
+      });
 
-        it("should return the same object with the changed name", function (done) {
-          Person.get(John[Person.id], function (err, John1) {
+      it("should return the same object with the changed name", function (done) {
+        Person.get(John[Person.id], function (err, John1) {
+          should.equal(err, null);
+
+          John1.name = "James";
+
+          Person.get(John[Person.id], function (err, John2) {
             should.equal(err, null);
 
-            John1.name = "James";
+            John1[Person.id].should.equal(John2[Person.id]);
+            John2.name.should.equal("James");
 
-            Person.get(John[Person.id], function (err, John2) {
-              should.equal(err, null);
-
-              John1[Person.id].should.equal(John2[Person.id]);
-              John2.name.should.equal("James");
-
-              return done();
-            });
+            return done();
           });
         });
       });

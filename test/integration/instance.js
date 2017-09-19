@@ -96,6 +96,13 @@ describe("Model instance", function() {
         });
       });
     });
+
+    it("should have a saving state to avoid loops (promise-based)", function () {
+      return main_item.find({ name : "new name" }).firstAsync()
+        .then(function (mainItem) {
+          return mainItem.saveAsync({ name : "new name test" });
+        });
+    });
   });
 
   describe("#isInstance", function () {
@@ -336,6 +343,25 @@ describe("Model instance", function() {
         return done();
       });
     });
+
+    it("should return validation errors if invalid (promise-based)", function () {
+      var person = new Person({ age: -1 });
+
+      return person.validateAsync()
+        .then(function (validationErrors) {
+          should.equal(Array.isArray(validationErrors), true);
+        });
+    });
+
+    it("should return false if valid (promise-based)", function () {
+      var person = new Person({ name: 'Janette' });
+
+      return person.validateAsync()
+        .then(function (validationErrors) {
+          should.equal(validationErrors, false);
+
+        });
+    });
   });
 
   describe("properties", function () {
@@ -360,6 +386,24 @@ describe("Model instance", function() {
               });
             });
           });
+        });
+      });
+
+      it("should be saved for valid numbers, using both save & create (promise-based)", function () {
+        var person1 = new Person({ height: 190 });
+
+        return person1.saveAsync().then(function () {
+          return Person.createAsync({ height: 170 })
+            .then(function (person2) {
+              return [person2, Person.getAsync(person1[Person.id])];
+            })
+            .spread(function (person2, item) {
+              should.equal(item.height, 190);
+              return Person.getAsync(person2[Person.id]);
+            })
+            .then(function (item) {
+              should.equal(item.height, 170);
+            });
         });
       });
 
@@ -415,6 +459,52 @@ describe("Model instance", function() {
             });
           });
         });
+
+        it("should raise an error for NaN integers (promise-based)", function () {
+          var person = new Person({ height: NaN });
+
+          return person.saveAsync()
+            .catch(function(err) {
+              var msg = {
+                postgres : 'invalid input syntax for integer: "NaN"'
+              }[protocol];
+
+              should.equal(err.message, msg);
+            });
+        });
+
+        it("should raise an error for Infinity integers (promise-based)", function () {
+          var person = new Person({ height: Infinity });
+
+          return person.saveAsync()
+            .catch(function (err) {
+              should.exist(err);
+              var msg = {
+                postgres : 'invalid input syntax for integer: "Infinity"'
+              }[protocol];
+
+              should.equal(err.message, msg);
+            });
+        });
+
+        it("should raise an error for nonsensical integers, for both save & create (promise-based)", function () {
+          var person = new Person({ height: 'bugz' });
+          var msg = {
+            postgres : 'invalid input syntax for integer: "bugz"'
+          }[protocol];
+
+          return person.saveAsync()
+            .catch(function (err) {
+              should.exist(err);
+
+              should.equal(err.message, msg);
+              return Person.createAsync({ height: 'bugz' });
+            })
+            .catch(function(err) {
+              should.exist(err);
+              should.equal(err.message, msg);
+            });
+        });
       }
 
       if (protocol != 'mysql') {
@@ -442,6 +532,26 @@ describe("Model instance", function() {
             });
           });
         });
+
+        it("should store NaN & Infinite floats (promise-based)", function () {
+          var person = new Person({ weight: NaN });
+
+          return person.saveAsync()
+            .then(function () {
+              return Person.getAsync(person[Person.id]);
+            })
+            .then(function (person) {
+              should(isNaN(person.weight));
+
+              return person.saveAsync({ weight: Infinity, name: 'black hole' });
+            })
+            .then(function () {
+              return Person.getAsync(person[Person.id]);
+            })
+            .then(function (person) {
+              should.strictEqual(person.weight, Infinity);
+            });
+        });
       }
     });
 
@@ -458,6 +568,56 @@ describe("Model instance", function() {
 
           done();
         });
+      });
+    });
+
+    describe("#removeAsync", function () {
+      var main_item, item;
+
+      before(function (done) {
+        main_item = db.define("main_item", {
+          name      : String
+        }, {
+          auteFetch : true
+        });
+        item = db.define("item", {
+          name      : String
+        }, {
+          identityCache  : false
+        });
+        item.hasOne("main_item", main_item, {
+          reverse   : "items",
+          autoFetch : true
+        });
+
+        return helper.dropSync([ main_item, item ], function () {
+          main_item.create({
+            name : "Main Item"
+          }, function (err, mainItem) {
+            item.create({
+              name : "Item"
+            }, function (err, Item) {
+              mainItem.setItems(Item, function (err) {
+                should.not.exist(err);
+
+                return done();
+              });
+            });
+          });
+        });
+      });
+
+      it("should delete an item and send an error", function () {
+        return main_item.find({ name : "Main Item" }).firstAsync()
+          .then(function (mainItem) {
+            return mainItem.removeAsync();
+          })
+          .then(function () {
+            return main_item.find({ name : "Main Item" }).firstAsync();
+          })
+          .then(function (item) {
+            should.equal(item, null)
+          });
       });
     });
   });

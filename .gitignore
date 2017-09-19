@@ -7,4 +7,5 @@ test/config.js
 test/coverage.html
 lib-cov/
 *~
-/.idea
+npm-debug.log
+.idea

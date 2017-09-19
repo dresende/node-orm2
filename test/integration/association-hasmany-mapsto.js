@@ -1,9 +1,6 @@
-var _        = require('lodash');
 var should   = require('should');
 var helper   = require('../support/spec_helper');
-var ORM      = require('../../');
 var common   = require('../common');
-var protocol = common.protocol();
 
 if (common.protocol() == "mongodb") return;   // Can't do mapsTo testing on mongoDB ()
 
@@ -661,7 +658,6 @@ describe("hasMany with mapsTo", function () {
           });
         });
       });
-
     });
   });
 });

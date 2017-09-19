@@ -92,6 +92,7 @@ describe("hasOne", function () {
           });
         });
       });
+      
 
       describe("Chain", function () {
         before(function (done) {
@@ -161,7 +162,7 @@ describe("hasOne", function () {
           Fido.hasOwners(function (err, has_owner) {
             should.not.exist(err);
             has_owner.should.be.false;
-
+            
             Fido.setOwners(owners, function (err) {
               should.not.exist(err);
 
@@ -188,7 +189,7 @@ describe("hasOne", function () {
         });
       });
     });
-
+    
     // broken in mongo
     if (common.protocol() != "mongodb") {
       describe("findBy()", function () {

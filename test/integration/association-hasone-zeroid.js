@@ -125,32 +125,5 @@ describe("hasOne", function() {
         });
       });
     });
-
-    it("should work for zero ownerID ", function (done) {
-      Pet.find({petName: "Snagglepuss"}, function(err, pets) {
-        should.not.exist(err);
-
-        pets[0].petName.should.equal("Snagglepuss");
-        pets[0].should.have.property("id");
-        pets[0].id.should.equal(11);
-        pets[0].ownerID.should.equal(0);
-
-        pets[0].should.not.have.property("owner");
-
-        // But we should be able to see if its there
-        pets[0].hasOwner(function(err, result) {
-          should.not.exist(err);
-          should.equal(result, true);
-
-          // ...and then get it
-          pets[0].getOwner(function(err, result) {
-            should.not.exist(err);
-            result.firstName.should.equal("John");
-
-            return done()
-          });
-        });
-      });
-    });
   });
 });

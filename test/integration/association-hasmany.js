@@ -306,6 +306,37 @@ describe("hasMany", function () {
             });
           });
         });
+        it("should return true if join table has duplicate entries (promise-based)", function (done) {
+          Pet.find({ name: ["Mutt", "Deco"] }, function (err, pets) {
+            should.not.exist(err);
+            should.equal(pets.length, 2);
+
+            Person.find({ name: "John" }).first(function (err, John) {
+              should.not.exist(err);
+
+              John.hasPetsAsync(pets).then(function (hasPets) {
+                should.equal(hasPets, true);
+
+                db.driver.execQueryAsync(
+                  "INSERT INTO person_pets (person_id, pets_id) VALUES (?,?), (?,?)",
+                  [John.id, pets[0].id, John.id, pets[1].id]).then(
+                  function () {
+                    John.hasPetsAsync(pets).then(function (hasPets) {
+                      should.equal(hasPets, true);
+                      done();
+                    }).catch(function(err){
+                      done(err);
+                    });
+                  }
+                ).catch(function(err) {
+                  done(err);
+                });
+              }).catch(function(err){
+                done(err);
+              });
+            });
+          });
+        });
       }
     });
 
@@ -333,10 +364,6 @@ describe("hasMany", function () {
           });
         });
       });
-    });
-
-    describe("delAccessor", function () {
-      before(setup());
 
       it("should remove specific associations if passed", function (done) {
         Pet.find({ name: "Mutt" }, function (err, pets) {

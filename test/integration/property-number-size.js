@@ -1,7 +1,6 @@
 var should   = require('should');
 var common   = require('../common');
 var helper   = require('../support/spec_helper');
-var ORM      = require('../../');
 var protocol = common.protocol().toLowerCase();
 
 // Round because different systems store floats in different

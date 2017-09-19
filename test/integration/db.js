@@ -37,7 +37,7 @@ describe("db.driver", function () {
     should.exist(db.driver);
   });
 
-  if (common.protocol() == "mongodb") return;
+  if (common.protocol() === "mongodb") return;
 
   describe("query", function () {
     it("should be available", function () {
@@ -63,6 +63,7 @@ describe("db.driver", function () {
     });
 
     describe('#eagerQuery', function () {
+      if (common.protocol() === "redshift") return;
       var fixture = {
         association: {
           model: {

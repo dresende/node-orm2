@@ -130,7 +130,7 @@ describe("hasMany hooks", function() {
             setTimeout(function () {
               had_extra = (typeof extra == "object");
               resolve()
-            }, 1000);
+            }, 3000);
           });
         }
       }

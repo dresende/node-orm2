@@ -1,3 +1,6 @@
+### v4.0.0
+- Added Promise support (see readme & wiki) ([#807](../../pull/807))
+
 ### v3.2.4
 - Update dependencies
 

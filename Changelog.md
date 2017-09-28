@@ -1,3 +1,9 @@
+### v4.0.1
+- Fix undefinedAsync accessor methods.
+
+### v4.0.0
+- Added Promise support (see readme & wiki) ([#807](../../pull/807))
+
 ### v3.2.4
 - Update dependencies
 

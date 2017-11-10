@@ -1,6 +1,7 @@
 ## Object Relational Mapping
 
 [![Build Status](https://api.travis-ci.org/dresende/node-orm2.svg?branch=master)](http://travis-ci.org/dresende/node-orm2)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fdresende%2Fnode-orm2.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fdresende%2Fnode-orm2?ref=badge_shield)
 [![](https://badge.fury.io/js/orm.svg)](https://npmjs.org/package/orm)
 [![](https://gemnasium.com/dresende/node-orm2.svg)](https://gemnasium.com/dresende/node-orm2)
 [![Flattr this git repo](http://api.flattr.com/button/flattr-badge-large.png)](https://flattr.com/submit/auto?user_id=dresende&url=https://github.com/dresende/node-orm2&title=ORM&language=&tags=github&category=software)
@@ -1147,3 +1148,7 @@ require('orm').addAdapter('cassandra', CassandraAdapter);
 ```
 
 See [the documentation for creating adapters](./Adapters.md) for more details.
+
+
+## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fdresende%2Fnode-orm2.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fdresende%2Fnode-orm2?ref=badge_large)

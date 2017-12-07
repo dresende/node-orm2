@@ -1,3 +1,6 @@
+### v4.0.2
+- Fix timezone bug in sqlite ([822](../../pull/822)]
+
 ### v4.0.1
 - Fix undefinedAsync accessor methods.
 

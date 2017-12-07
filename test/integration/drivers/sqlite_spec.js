@@ -72,6 +72,40 @@ describe("Sqlite driver", function() {
           should.strictEqual(valueToProperty('1.200 '), 1);
         });
       });
+
+      describe("date", function () {
+        var timezone = /GMT([+/-]\d{4})/.exec(new Date().toString())[1];
+
+        function valueToProperty (value) {
+          return driver.valueToProperty(value, { type: 'date' });
+        }
+
+        it("should return origin object when given non-string", function () {
+          var now = new Date();
+          should.strictEqual(valueToProperty(now), now);
+          var array = [];
+          should.strictEqual(valueToProperty(array), array);
+          var obj = {};
+          should.strictEqual(valueToProperty(obj), obj);
+        })
+
+        it("should pass on normal time", function () {
+          var normal = '2017-12-07 00:00:00';
+          should.strictEqual(valueToProperty(normal).toString(), new Date(normal).toString());
+        })
+
+        it("should pass on utc time by orm saved with local config", function () {
+          var utc = '2017-12-07T00:00:00';
+          should.strictEqual(valueToProperty(utc+'Z').toString(), new Date(utc+timezone).toString());
+        })
+
+        it("should pass on utc time by orm saved with timezone config", function () {
+          var utc = '2017-12-07T00:00:00';
+          driver.config.timezone = timezone;
+          should.strictEqual(valueToProperty(utc+'Z').toString(), new Date(utc+timezone).toString());
+          driver.config.timezone = '';
+        })
+      });
     });
   });
 

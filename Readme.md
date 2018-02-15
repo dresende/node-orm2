@@ -6,6 +6,13 @@
 [![](https://gemnasium.com/dresende/node-orm2.svg)](https://gemnasium.com/dresende/node-orm2)
 [![Flattr this git repo](http://api.flattr.com/button/flattr-badge-large.png)](https://flattr.com/submit/auto?user_id=dresende&url=https://github.com/dresende/node-orm2&title=ORM&language=&tags=github&category=software)
 
+## This package is not actively maintained
+
+If you're starting a new project, please consider using one of the following instead as they have a much more active community:
+https://github.com/bookshelf/bookshelf
+https://github.com/sequelize/sequelize
+
+
 ## Install
 
 ```sh

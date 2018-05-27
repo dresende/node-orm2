@@ -182,8 +182,9 @@ var Person = db.define("person", {
 }, {
   hooks: {
     beforeCreate: function () {
+      var that = this;
     return new Promise(function(resolve, reject) {
-      if (this.surname == "Doe") {
+      if (that.surname == "Doe") {
         return reject(new Error("No Does allowed"));
       }
         return resolve();

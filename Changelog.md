@@ -1,3 +1,8 @@
+### v5.0.0
+- Upgrade to latest `sqlite` & `mysql` package versions
+- Upgrade to `pg` 7.x. ORM will not work with `pg` < 7
+- Drop support for nodejs < 4 (required due to `pg` upgrade)
+
 ### v4.0.2
 - Fix timezone bug in sqlite ([822](../../pull/822)]
 

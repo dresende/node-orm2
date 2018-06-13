@@ -21,7 +21,7 @@ npm install orm
 
 ## Node.js Version Support
 
-Supported: 0.12 - 6.0 +
+Supported: 4.0 +
 
 Tests are run on [Travis CI](https://travis-ci.org/)
 If you want you can run tests locally:
@@ -142,11 +142,11 @@ var opts = {
     port:     '3306',
     query:    {pool: true}
   };
-  
+
 orm.connectAsync(opts)
-  .then(function(db) { 
+  .then(function(db) {
     // connected
-    // ...  
+    // ...
   })
   .catch(function() {
     console.error('Connection error: ' + err);
@@ -325,10 +325,10 @@ Person.createAsync(newRecord)
     Person.findAsync({ surname: "Doe" })
       .then(function (people) {
         // SQL: "SELECT * FROM person WHERE surname = 'Doe'"
-        
+
         console.log("People found: %d", people.length);
         console.log("First person: %s, age %d", people[0].fullName(), people[0].age);
-        
+
         people[0].age = 16;
         return people[0].saveAsync();
     })
@@ -345,7 +345,7 @@ illustrate:
 Person.aggregate({ surname: "Doe" }).min("age").max("age").getAsync()
   .then(function(result) {
    var [min, max] = result; // you should use destructuring here
-   
+
    console.log(min, max);
   });
 ```

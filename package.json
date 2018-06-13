@@ -67,19 +67,19 @@
     "hat": "0.0.3",
     "lodash": "4.17.4",
     "path-is-absolute": "1.0.1",
-    "sinon": "^3.2.1",
     "sql-ddl-sync": "0.3.13",
     "sql-query": "0.1.26"
   },
   "devDependencies": {
-    "chalk": "2.0.1",
+    "chalk": "2.4.1",
     "glob": "7.1.2",
-    "mocha": "3.4.2",
+    "mocha": "5.2.0",
     "mongodb": "1.4.10",
     "mysql": "2.13.0",
     "pg": "6.4.1",
-    "semver": "5.3.0",
-    "should": "11.2.1",
+    "semver": "5.5.0",
+    "should": "13.2.1",
+    "sinon": "6.0.0",
     "sqlite3": "3.1.8"
   },
   "optionalDependencies": {}

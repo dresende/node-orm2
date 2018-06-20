@@ -1,7 +1,8 @@
 ### v5.0.0
-- Upgrade to latest `sqlite` & `mysql` package versions
-- Upgrade to `pg` 7.x. ORM will not work with `pg` < 7
-- Drop support for nodejs < 4 (required due to `pg` upgrade)
+- Update dependencies ([#830](../../pull/830))
+  - You need to upgrade `pg` in your project to version 7.x. Older versions are no longer supported.
+  - Postgres driver now has an error handler. You will need to add an error listener the the ORM instance returned by `connect` function, otherwise any errors will crash your application as per the [EventEmitter documentation](https://nodejs.org/api/events.html#events_error_events). This makes the Postgres driver consistent with other drivers supported by ORM (those however have reconnecting functionality, which prevents the error from surfacing). Due to the lack of reconnecting functionality, you should set `connection.reconnect` to `false` to avoid connection errors.
+  - Drop support for nodejs < 4 (required due to `pg` v 7 upgrade)
 
 ### v4.0.2
 - Fix timezone bug in sqlite ([822](../../pull/822)]

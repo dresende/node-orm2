@@ -1,3 +1,6 @@
+### v5.0.1
+- Update sql-ddl-sync (no functionality changes; lodash update)
+
 ### v5.0.0
 - Update dependencies ([#830](../../pull/830))
   - You need to upgrade `pg` in your project to version 7.x. Older versions are no longer supported.

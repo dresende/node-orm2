@@ -1,6 +1,6 @@
 ### v5.0.2
 
-- Fix rare crash when object slips into postgres `escapeValue` ([dresende/node-sql-query#54](dresende/node-sql-query#54)) ([#833](../../pull/833))
+- Fix rare crash when object slips into postgres `escapeValue` ([dresende/node-sql-query#54](https://github.com/dresende/node-sql-query/pull/54)) ([#833](../../pull/833))
 
 ### v5.0.1
 - Update sql-ddl-sync (no functionality changes; lodash update)

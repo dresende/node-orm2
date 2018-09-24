@@ -58,323 +58,50 @@ var orm = require("orm");
 orm.connect("mysql://username:password@host/database", function (err, db) {
   if (err) throw err;
 
-	var Person = db.define("person", {
-		name      : String,
-		surname   : String,
-		age       : Number, // FLOAT
-		male      : Boolean,
-		continent : [ "Europe", "America", "Asia", "Africa", "Australia", "Antarctica" ], // ENUM type
-		photo     : Buffer, // BLOB/BINARY
-		data      : Object // JSON encoded
-	}, {
-		methods: {
-			fullName: function () {
-				return this.name + ' ' + this.surname;
-			}
-		},
-		validations: {
-			age: orm.enforce.ranges.number(18, undefined, "under-age")
-		}
-	});
-
-    // add the table to the database
-	db.sync(function(err) {
-		if (err) throw err;
-
-		// add a row to the person table
-		Person.create({ id: 1, name: "John", surname: "Doe", age: 27 }, function(err) {
-			if (err) throw err;
-
-				// query the person table by surname
-				Person.find({ surname: "Doe" }, function (err, people) {
-			        // SQL: "SELECT * FROM person WHERE surname = 'Doe'"
-		        	if (err) throw err;
-
-			        console.log("People found: %d", people.length);
-			        console.log("First person: %s, age %d", people[0].fullName(), people[0].age);
-
-			        people[0].age = 16;
-			        people[0].save(function (err) {
-			            // err.msg = "under-age";
-		        });
-		    });
-
-		});
-	});
-});
-```
-------
-## Promise
-
-- Read documentation about [bluebird](http://bluebirdjs.com/docs/api-reference.html) `Promise` for more advanced knowledge how to use `Promises`.
-
-### Connect
-
-The connection URL has the following syntax: `driver://username:password@hostname/database?option1=value1&option2=value2..`
-
-```javascript
-var orm = require('orm');
-
-orm.connectAsync('mysql://root:password@localhost/test')
-  .then(function(db) {
-      // connected
-      // ...
-  })
-  .catch(function() {
-     console.error('Connection error: ' + err);
-  });
-```
-
-Valid options are:
-
-- `debug` (default: **false**): prints queries to console;
-- `pool` (default: **false**): manages a connection pool (only for `mysql` and `postgres`) using built-in driver pool;
-- `strdates` (default: **false**): saves dates as strings (only for `sqlite`).
-- `timezone` (default: **'local'**): store dates in the database using this timezone (`mysql` and `postgres` only)
-
-```javascript
-var orm = require('orm');
-
-var opts = {
-    host:     host,
-    database: database,
-    protocol: 'mysql',
-    port:     '3306',
-    query:    {pool: true}
-  };
-
-orm.connectAsync(opts)
-  .then(function(db) {
-    // connected
-    // ...
-  })
-  .catch(function() {
-    console.error('Connection error: ' + err);
-  });
-```
--------
-
-### Model Hooks
-
-If you want to listen for a type of event than occurs in instances of a Model, you can attach a function that
-will be called when that event happens. For each hook above implemented Promise support, with backward capability via use next callback.
-For use promise you should return `Promise`, look at example.
-
-Currently the following events are supported:
-
-- `beforeValidation` : (no parameters) Before all validations and prior to `beforeCreate` and `beforeSave`;
-- `beforeCreate` : (no parameters) Right before trying to save a new instance (prior to `beforeSave`);
-- `beforeSave` : (no parameters) Right before trying to save;
-- `afterSave` : (bool success) Right after saving;
-- `afterCreate` : (bool success) Right after saving a new instance;
-- `afterLoad` : (no parameters) Right after loading and preparing an instance to be used;
-- `afterAutoFetch` : (no parameters) Right after auto-fetching associations (if any), it will trigger regardless of having associations or not;
-- `beforeRemove` : (no parameters) Right before trying to remove an instance;
-- `afterRemove` : (bool success) Right after removing an instance;
-
-All hook function are called with `this` as the instance so you can access anything you want related to it.
-Here's an example:
-
-```js
-var Person = db.define("person", {
-  name    : String,
-  surname : String
-}, {
-  hooks: {
-    beforeCreate: function () {
-    return new Promise(function(resolve, reject) {
-      if (this.surname == "Doe") {
-        return reject(new Error("No Does allowed"));
+  var Person = db.define("person", {
+    name      : String,
+    surname   : String,
+    age       : Number, // FLOAT
+    male      : Boolean,
+    continent : [ "Europe", "America", "Asia", "Africa", "Australia", "Antarctica" ], // ENUM type
+    photo     : Buffer, // BLOB/BINARY
+    data      : Object // JSON encoded
+  }, {
+    methods: {
+      fullName: function () {
+        return this.name + ' ' + this.surname;
       }
-        return resolve();
-      });
+    },
+    validations: {
+      age: orm.enforce.ranges.number(18, undefined, "under-age")
     }
-  }
-});
-```
--------
-### Editing Syncing and dropping models
-Syncing is an utility method that creates all the necessary tables in the database for your models and associations to work. Tables are not replaced, they are only created if they don't exist.
-
-There are 2 ways of syncing:
-
-1. Calling `Model.syncPromise()` will only synchronize the model
-2. Calling `db.syncPromise()` will synchronize all models
-
-Dropping is a similar method but instead it drops all tables involved in your models, even if they were not created by ORM. There also 2 ways of dropping.
-
-```js
-var orm = require("orm");
-
-orm.connectAsync("....")
-  .then(function (db) {
-    var Person = db.define("person", {
-        name : String
-    });
-
-    return [Person, db.dropAsync()];
-  })
-  .spread(function(Person) {
-    return Person.syncPromise();
-  })
-  .then(function () {
-    // created tables for Person model
   });
-```
--------
-### Finding items
 
-#### findAsync
-Find records with matching criteria, can be chained (see below):
-```javascript
-Person.find({status:'active'})
-  .then(function(results) {
-    // ...
-  });
-```
+  // add the table to the database
+  db.sync(function(err) {
+    if (err) throw err;
 
-You can limit your results as well. This limits our results to 10
-```javascript
-Person.find({status:'active'}, 10)
-  .then(function(results) {
-    // ...
-  });
-```
+    // add a row to the person table
+    Person.create({ id: 1, name: "John", surname: "Doe", age: 27 }, function(err) {
+      if (err) throw err;
 
-`Person.all` is an alias to `Person.find`
-
-#### getAsync
-Find record by primary key.
-```javascript
-Person.getAsync(1)
-  .then(function(person) {
-    // ...
-  });
-```
-#### oneAsync
-Find one record with similar syntax to find.
-```javascript
-Person.oneAsync({status:'active'})
-  .then(function(person) {
-    // ...
-  });
-```
-
-#### countAsync
-Get the number of matching records.
-```javascript
-Person.countAsync({status:'active'})
-  .then(function(activePeopleCount) {
-    // ...
-  });
-```
-
-#### existsAsync
-Test a record matching your conditions exists.
-```javascript
-Person.exists({id:1, status:'active'})
-  .then(function(personIsActive) {
-    // ...
-  });
-```
-
-#### Filtering and sorting
-We accept 2 objects to perform filtering (first) and aggregate (second). The aggregate object accepts `limit`, `order`, and `groupBy`.
-
-```javascript
-Person.findAsync({status:'active'}, {limit:10})
-  .then(function(results) {
-    // ...
-  });
-```
-
-#### Conditions for find/count/one etc.
-All comma separated key/values are AND'd together in the query. You may prefix a set of conditions with logical operators.
-```javascript
-Person.findAsync({or:[{col1: 1}, {col2: 2}]})
-  .then(function(res) {
-    // ...
-  });
-```
-
-#### Finding with an `IN`
-`sql-query` (underlying SQL engine) will automatically coerce any array to an `IN` based query.
-
-```javascript
-Person.findAsync({id: [1, 2]})
-  .then(function(persons) {
-    // Finds people with id's 1 and 2 (e.g. `WHERE id IN (1, 2)`)
-  });
-```
--------
-### Creating and Updating Items
-#### createAsync
-```javascript
-var newRecord = {};
-newRecord.id = 1;
-newRecord.name = "John";
-
-Person.createAsync(newRecord)
-  .then(function(results) {
-    // ...
-  });
-```
-
-#### saveAsync
-```js
-    Person.findAsync({ surname: "Doe" })
-      .then(function (people) {
+      // query the person table by surname
+      Person.find({ surname: "Doe" }, function (err, people) {
         // SQL: "SELECT * FROM person WHERE surname = 'Doe'"
+        if (err) throw err;
 
         console.log("People found: %d", people.length);
         console.log("First person: %s, age %d", people[0].fullName(), people[0].age);
 
         people[0].age = 16;
-        return people[0].saveAsync();
-    })
-    .then(function () {
-      // saved
+        people[0].save(function (err) {
+          // err.msg == "under-age";
+        });
+      });
     });
-```
--------
-### Aggregation
-If you need to get some aggregated values from a Model, you can use `Model.aggregate()`. Here's an example to better
-illustrate:
-
-```js
-Person.aggregate({ surname: "Doe" }).min("age").max("age").getAsync()
-  .then(function(result) {
-   var [min, max] = result; // you should use destructuring here
-
-   console.log(min, max);
   });
+});
 ```
-
-An `Array` of properties can be passed to select only a few properties. An `Object` is also accepted to define conditions.
-
-Here's an example to illustrate how to use `.groupBy()`:
-
-```js
-//The same as "select avg(weight), age from person where country='someCountry' group by age;"
-Person.aggregate(["age"], { country: "someCountry" }).avg("weight").groupBy("age").getAsync()
-  .then(function (stats) {
-    // stats is an Array, each item should have 'age' and 'avg_weight'
-  });
-```
-
-### Base `.aggregate()` methods
-
-- `.limit()`: you can pass a number as a limit, or two numbers as offset and limit respectively
-- `.order()`: same as `Model.find().order()`
-
-### Additional `.aggregate()` methods
-
-- `min`
-- `max`
-- `avg`
-- `sum`
-
-There are more aggregate functions depending on the driver (Math functions for example).
 
 -------
 
@@ -482,33 +209,33 @@ Note - using this technique you can have cascading loads.
 ```js
 // your main file (after connecting)
 db.load("./models", function (err) {
-    // loaded!
-    var Person = db.models.person;
-    var Pet    = db.models.pet;
+  // loaded!
+  var Person = db.models.person;
+  var Pet    = db.models.pet;
 });
 
 // models.js
 module.exports = function (db, cb) {
-    db.load("./models-extra", function (err) {
-        if (err) {
-            return cb(err);
-        }
+  db.load("./models-extra", function (err) {
+    if (err) {
+      return cb(err);
+    }
 
-        db.define('person', {
-            name : String
-        });
-
-        return cb();
+    db.define('person', {
+      name : String
     });
+
+    return cb();
+  });
 };
 
 // models-extra.js
 module.exports = function (db, cb) {
-    db.define('pet', {
-        name : String
-    });
+  db.define('pet', {
+      name : String
+  });
 
-    return cb();
+  return cb();
 };
 ```
 
@@ -648,7 +375,7 @@ Here's an example to illustrate how to use `.groupBy()`:
 ```js
 //The same as "select avg(weight), age from person where country='someCountry' group by age;"
 Person.aggregate(["age"], { country: "someCountry" }).avg("weight").groupBy("age").get(function (err, stats) {
-    // stats is an Array, each item should have 'age' and 'avg_weight'
+  // stats is an Array, each item should have 'age' and 'avg_weight'
 });
 ```
 
@@ -700,7 +427,7 @@ You can also chain and just get the count in the end. In this case, offset, limi
 
 ```js
 Person.find({ surname: "Doe" }).count(function (err, people) {
-    // people = number of people with surname="Doe"
+  // people = number of people with surname="Doe"
 });
 ```
 
@@ -709,7 +436,7 @@ Note that a chained remove will not run any hooks.
 
 ```js
 Person.find({ surname: "Doe" }).remove(function (err) {
-    // Does gone..
+  // Does gone..
 });
 ```
 
@@ -1013,19 +740,19 @@ If you have a relation of 1 to n, you should use `hasOne` (belongs to) associati
 
 ```js
 var Person = db.define('person', {
-    name : String
+  name : String
 });
 var Animal = db.define('animal', {
-    name : String
+  name : String
 });
 Animal.hasOne("owner", Person); // creates column 'owner_id' in 'animal' table
 
 // get animal with id = 123
 Animal.get(123, function (err, animal) {
-    // animal is the animal model instance, if found
-    animal.getOwner(function (err, person) {
-        // if animal has really an owner, person points to it
-    });
+  // animal is the animal model instance, if found
+  animal.getOwner(function (err, person) {
+    // if animal has really an owner, person points to it
+  });
 });
 ```
 
@@ -1055,14 +782,14 @@ var Person = db.define('person', {
     name : String
 });
 Person.hasMany("friends", {
-    rate : Number
+  rate : Number
 }, {}, { key: true });
 
 Person.get(123, function (err, John) {
-    John.getFriends(function (err, friends) {
-        // assumes rate is another column on table person_friends
-        // you can access it by going to friends[N].extra.rate
-    });
+  John.getFriends(function (err, friends) {
+    // assumes rate is another column on table person_friends
+    // you can access it by going to friends[N].extra.rate
+  });
 });
 ```
 
@@ -1074,10 +801,10 @@ var Person = db.define('person', {
   name : String
 });
 Person.hasMany("friends", {
-    rate : Number
+  rate : Number
 }, {
-    key       : true, // Turns the foreign keys in the join table into a composite key
-    autoFetch : true
+  key       : true, // Turns the foreign keys in the join table into a composite key
+  autoFetch : true
 });
 
 Person.get(123, function (err, John) {
@@ -1089,12 +816,12 @@ You can also define this option globally instead of a per association basis.
 
 ```js
 var Person = db.define('person', {
-    name : String
+  name : String
 }, {
     autoFetch : true
 });
 Person.hasMany("friends", {
-    rate : Number
+  rate : Number
 }, {
   key: true
 });
@@ -1106,21 +833,21 @@ Confusing? Look at the next example.
 
 ```js
 var Pet = db.define('pet', {
-    name : String
+  name : String
 });
 var Person = db.define('person', {
-    name : String
+  name : String
 });
 Pet.hasOne("owner", Person, {
-    reverse : "pets"
+  reverse : "pets"
 });
 
 Person(4).getPets(function (err, pets) {
-    // although the association was made on Pet,
-    // Person will have an accessor (getPets)
-    //
-    // In this example, ORM will fetch all pets
-    // whose owner_id = 4
+  // although the association was made on Pet,
+  // Person will have an accessor (getPets)
+  //
+  // In this example, ORM will fetch all pets
+  // whose owner_id = 4
 });
 ```
 
@@ -1129,20 +856,42 @@ associations from both sides.
 
 ```js
 var Pet = db.define('pet', {
-    name : String
+  name : String
 });
 var Person = db.define('person', {
-    name : String
+  name : String
 });
 Person.hasMany("pets", Pet, {
-    bought  : Date
+  bought  : Date
 }, {
-    key     : true,
-    reverse : "owners"
+  key     : true,
+  reverse : "owners"
 });
 
 Person(1).getPets(...);
 Pet(2).getOwners(...);
+```
+
+------
+
+## Promise support
+
+ORM supports Promises via [bluebird](http://bluebirdjs.com/docs/api-reference.html).
+Most methods which accept a callback have a Promise version whith a `Async` postfix.
+Eg:
+```js
+orm.connectAsync().then().catch();
+Person.getAsync(1).then();
+Person.find({ age: 18 }).where("LOWER(surname) LIKE ?", ['dea%']).allAsync( ... );
+Person.aggregate({ surname: "Doe" }).min("age").max("age").getAsync();
+
+```
+The exception here are hooks, which should return a Promise if they perform asynchronous operations:
+```js
+beforeCreate: function () {
+  return new Promise(function(resolve, reject) {
+    doSomeStuff().then(resolve);
+  }
 ```
 
 ## Adding external database adapters

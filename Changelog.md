@@ -1,3 +1,6 @@
+### v5.0.3
+- Update dependencies to address security vulnerabilities
+
 ### v5.0.2
 
 - Fix rare crash when object slips into postgres `escapeValue` ([dresende/node-sql-query#54](https://github.com/dresende/node-sql-query/pull/54)) ([#833](../../pull/833))

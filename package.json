@@ -12,7 +12,7 @@
     "sqlite",
     "mongodb"
   ],
-  "version": "5.0.2",
+  "version": "5.0.3",
   "license": "MIT",
   "homepage": "http://dresende.github.io/node-orm2",
   "repository": "http://github.com/dresende/node-orm2.git",
@@ -65,7 +65,7 @@
     "bluebird": "3.5.1",
     "enforce": "0.1.7",
     "hat": "0.0.3",
-    "lodash": "4.17.10",
+    "lodash": "^4.17.11",
     "path-is-absolute": "1.0.1",
     "sql-ddl-sync": "0.3.14",
     "sql-query": "0.1.27"
@@ -79,7 +79,7 @@
     "pg": "7.4.3",
     "semver": "5.5.0",
     "should": "13.2.1",
-    "sinon": "6.0.0",
+    "sinon": "7.2.3",
     "sqlite3": "4.0.1"
   },
   "optionalDependencies": {}

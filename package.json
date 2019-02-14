@@ -67,7 +67,7 @@
     "hat": "0.0.3",
     "lodash": "^4.17.11",
     "path-is-absolute": "1.0.1",
-    "sql-ddl-sync": "0.3.14",
+    "sql-ddl-sync": "0.3.15",
     "sql-query": "0.1.27"
   },
   "devDependencies": {

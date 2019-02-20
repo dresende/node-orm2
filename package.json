@@ -12,7 +12,7 @@
     "sqlite",
     "mongodb"
   ],
-  "version": "5.0.3",
+  "version": "5.0.4",
   "license": "MIT",
   "homepage": "http://dresende.github.io/node-orm2",
   "repository": "http://github.com/dresende/node-orm2.git",
@@ -61,7 +61,7 @@
   },
   "analyse": false,
   "dependencies": {
-    "async": "2.6.1",
+    "async": "^2.6.2",
     "bluebird": "3.5.1",
     "enforce": "0.1.7",
     "hat": "0.0.3",

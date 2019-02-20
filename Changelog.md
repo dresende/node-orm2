@@ -1,3 +1,6 @@
+### v5.0.4
+- Update sql-query version to address security vulnerabilities ([841](../../pull/841)
+
 ### v5.0.3
 - Update dependencies to address security vulnerabilities
 

@@ -65,9 +65,15 @@
     "bluebird": "3.5.1",
     "enforce": "0.1.7",
     "hat": "0.0.3",
-    "lodash": "^4.17.11",
+    "lodash": "^4.17.14",
     "path-is-absolute": "1.0.1",
-    "sql-ddl-sync": "0.3.15",
+    "sql-ddl-sync": {
+      "version": "git+https://github.com/dresende/node-sql-ddl-sync.git#43f8e0803302678b1304c176cfd7da4f6e667315",
+      "from": "git+https://github.com/dresende/node-sql-ddl-sync.git",
+      "requires": {
+        "lodash": "4.17.14"
+      }
+    },
     "sql-query": "0.1.27"
   },
   "devDependencies": {

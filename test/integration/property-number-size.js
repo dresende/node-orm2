@@ -74,17 +74,7 @@ if (protocol != "sqlite") {
 
       it("should not be able to store int2 values which are too large", function (done) {
         NumberSize.create({ int2 : NumberData.int4 }, function (err, item) {
-          if (protocol == "mysql") {
-            should.equal(err, null);
-
-            return NumberSize.get(item.id, function (err, item) {
-              should(!fuzzyEql(item.int2, NumberData.int4));
-
-              return done();
-            });
-          } else {
-            err.should.be.a.Object();
-          }
+          err.should.be.an.Object();
 
           return done();
         });
@@ -92,17 +82,7 @@ if (protocol != "sqlite") {
 
       it("should not be able to store int4 values which are too large", function (done) {
         NumberSize.create({ int4 : NumberData.int8 }, function (err, item) {
-          if (protocol == "mysql") {
-            should.equal(err, null);
-
-            return NumberSize.get(item.id, function (err, item) {
-              should(!fuzzyEql(item.int4, NumberData.int8));
-
-              return done();
-            });
-          } else {
-            err.should.be.a.Object();
-          }
+          err.should.be.a.Object();
 
           return done();
         });
@@ -110,17 +90,7 @@ if (protocol != "sqlite") {
 
       it("should not be able to store float4 values which are too large", function (done) {
         NumberSize.create({ float4 : NumberData.float8 }, function (err, item) {
-          if (protocol == "mysql") {
-            should.equal(err, null);
-
-            return NumberSize.get(item.id, function (err, item) {
-              should(!fuzzyEql(item.float4, NumberData.float8));
-
-              return done();
-            });
-          } else {
-            err.should.be.a.Object();
-          }
+          err.should.be.a.Object();
 
           return done();
         });

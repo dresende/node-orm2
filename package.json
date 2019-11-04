@@ -12,7 +12,7 @@
     "sqlite",
     "mongodb"
   ],
-  "version": "5.0.4",
+  "version": "5.0.5",
   "license": "MIT",
   "homepage": "http://dresende.github.io/node-orm2",
   "repository": "http://github.com/dresende/node-orm2.git",
@@ -61,13 +61,13 @@
   },
   "analyse": false,
   "dependencies": {
-    "async": "^2.6.2",
+    "async": "~2.6.3",
     "bluebird": "3.5.1",
     "enforce": "0.1.7",
     "hat": "0.0.3",
-    "lodash": "^4.17.11",
+    "lodash": "~4.17.15",
     "path-is-absolute": "1.0.1",
-    "sql-ddl-sync": "0.3.15",
+    "sql-ddl-sync": "0.3.16",
     "sql-query": "0.1.27"
   },
   "devDependencies": {
@@ -75,12 +75,12 @@
     "glob": "7.1.2",
     "mocha": "5.2.0",
     "mongodb": "1.4.10",
-    "mysql": "2.15.0",
-    "pg": "7.4.3",
+    "mysql": "2.17.1",
+    "pg": "7.12.1",
     "semver": "5.5.0",
     "should": "13.2.1",
     "sinon": "7.2.3",
-    "sqlite3": "4.0.1"
+    "sqlite3": "4.1.0"
   },
   "optionalDependencies": {}
 }

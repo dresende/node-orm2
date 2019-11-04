@@ -1,3 +1,8 @@
+### v5.0.5
+- Update lodash & sql-ddl-sync version to address security vulnerabilities ([845](../../pull/845)
+- Node 11+ support (stable sort; see https://github.com/nodejs/node/issues/24294 for details)
+- Test against node 12 & 13
+
 ### v5.0.4
 - Update sql-query version to address security vulnerabilities ([841](../../pull/841)
 
@@ -5,7 +10,6 @@
 - Update dependencies to address security vulnerabilities
 
 ### v5.0.2
-
 - Fix rare crash when object slips into postgres `escapeValue` ([dresende/node-sql-query#54](https://github.com/dresende/node-sql-query/pull/54)) ([#833](../../pull/833))
 
 ### v5.0.1

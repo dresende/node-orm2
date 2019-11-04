@@ -668,7 +668,7 @@ describe("Model.find() chaining", function() {
     describe(".sort()", function () {
       it("should return the items sorted using the sorted function", function (done) {
         Person.find().each().sort(function (first, second) {
-          return (first.age < second.age);
+          return second.age - first.age;
         }).get(function (people) {
           should(Array.isArray(people));
 

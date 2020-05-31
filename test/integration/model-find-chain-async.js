@@ -182,4 +182,50 @@ describe("Model.find() chaining", function() {
         });
     });
   });
+
+  describe(".allAsync()", function () {
+    before(setup());
+
+    it("should return all records without any restriction", function () {
+      return Person.find()
+        .allAsync()
+        .then(function(persons) {
+          should.equal(persons.length, 3);
+        });
+    });
+
+    it("should restrict conditions from pervious chain calls", function () {
+      return Person.find({ age: 18 })
+        .order('-name')
+        .allAsync()
+        .then(function(persons) {
+          should.equal(persons.length, 2);
+          should.equal(persons[0].name, 'John');
+          should.equal(persons[1].name, 'Jane');
+        });
+    });
+  });
+
+  describe(".whereAsync()", function () {
+    before(setup());
+
+    it("should return all records without any restriction", function () {
+      return Person.find()
+        .whereAsync()
+        .then(function(persons) {
+          should.equal(persons.length, 3);
+        });
+    });
+
+    it("should restrict conditions from pervious chain calls", function () {
+      return Person.find({ age: 18 })
+        .order('-name')
+        .whereAsync()
+        .then(function(persons) {
+          should.equal(persons.length, 2);
+          should.equal(persons[0].name, 'John');
+          should.equal(persons[1].name, 'Jane');
+        });
+    });
+  });
 });

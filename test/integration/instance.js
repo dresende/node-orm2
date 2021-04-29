@@ -416,7 +416,7 @@ describe("Model instance", function() {
           person.save(function (err) {
             should.exist(err);
             var msg = {
-              postgres : 'invalid input syntax for integer: "NaN"'
+              postgres : 'invalid input syntax for type integer: "NaN"'
             }[protocol];
 
             should.equal(err.message, msg);
@@ -431,7 +431,7 @@ describe("Model instance", function() {
           person.save(function (err) {
             should.exist(err);
             var msg = {
-              postgres : 'invalid input syntax for integer: "Infinity"'
+              postgres : 'invalid input syntax for type integer: "Infinity"'
             }[protocol];
 
             should.equal(err.message, msg);
@@ -446,7 +446,7 @@ describe("Model instance", function() {
           person.save(function (err) {
             should.exist(err);
             var msg = {
-              postgres : 'invalid input syntax for integer: "bugz"'
+              postgres : 'invalid input syntax for type integer: "bugz"'
             }[protocol];
 
             should.equal(err.message, msg);
@@ -466,7 +466,7 @@ describe("Model instance", function() {
           return person.saveAsync()
             .catch(function(err) {
               var msg = {
-                postgres : 'invalid input syntax for integer: "NaN"'
+                postgres : 'invalid input syntax for type integer: "NaN"'
               }[protocol];
 
               should.equal(err.message, msg);
@@ -480,7 +480,7 @@ describe("Model instance", function() {
             .catch(function (err) {
               should.exist(err);
               var msg = {
-                postgres : 'invalid input syntax for integer: "Infinity"'
+                postgres : 'invalid input syntax for type integer: "Infinity"'
               }[protocol];
 
               should.equal(err.message, msg);
@@ -490,7 +490,7 @@ describe("Model instance", function() {
         it("should raise an error for nonsensical integers, for both save & create (promise-based)", function () {
           var person = new Person({ height: 'bugz' });
           var msg = {
-            postgres : 'invalid input syntax for integer: "bugz"'
+            postgres : 'invalid input syntax for type integer: "bugz"'
           }[protocol];
 
           return person.saveAsync()

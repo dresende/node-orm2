@@ -1,3 +1,8 @@
+### v5.0.6
+- Update packages to resolve security vulnerabilities
+- Test against modern nodejs versions only [10..16]
+- If using Postgres and Nodejs v14+, you must use `pg` driver >= 8.1. The cause of this is unclear, but tests timeout.
+
 ### v5.0.5
 - Update lodash & sql-ddl-sync version to address security vulnerabilities ([845](../../pull/845)
 - Node 11+ support (stable sort; see https://github.com/nodejs/node/issues/24294 for details)

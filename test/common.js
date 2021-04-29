@@ -42,7 +42,7 @@ common.getConfig = function () {
         return { user: "root", host: "localhost", database: "orm_test" };
       case 'postgres':
       case 'redshift':
-        return { user: "postgres", host: "localhost", database: "orm_test" };
+        return { user: "postgres", port: 5433, database: "orm_test" };
       case 'sqlite':
         return {};
       case 'mongodb':

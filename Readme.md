@@ -23,6 +23,8 @@ npm install orm
 
 Supported: 4.0 +
 
+If using Nodejs >= 14 & Postgres, you must use `pg` driver >= 8.1. v7 doesn't work correctly (tests time out).
+
 Tests are run on [Travis CI](https://travis-ci.org/)
 If you want you can run tests locally:
 

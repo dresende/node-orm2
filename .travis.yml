@@ -6,7 +6,7 @@ node_js:
   - '14'
   - '16'
 before_script:
-  - mysql -e 'create database orm_test;'
+  - mysql -e 'create database orm_test character set utf8mb4;'
   - sudo sed -i -e '/local.*peer/s/postgres/all/' -e 's/peer\|md5/trust/g' /etc/postgresql/13/main/pg_hba.conf
   - sudo service postgresql@13-main restart
   - psql -U postgres -p 5433 -c 'create database orm_test;'

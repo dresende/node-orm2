@@ -1,3 +1,6 @@
+### v5.0.7
+- Resolve security vulnerabilities
+
 ### v5.0.6
 - Update packages to resolve security vulnerabilities
 - Test against modern nodejs versions only [10..16]

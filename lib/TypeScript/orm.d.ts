@@ -24,6 +24,7 @@ declare module "orm" {
             find(conditions: { [property: string]: any }, callback: (err: Error, results: Instance[]) => void): Model;
             find(conditions: { [property: string]: any }, options: {
                 limit?: number;
+                offset?: number;
                 order?: any;
             }, callback: (err: Error, results: Instance[]) => void): Model;
             find(conditions: { [property: string]: any }, limit: number, order: string[], callback: (err: Error, results: Instance[]) => void): Model;

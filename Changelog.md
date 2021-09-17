@@ -1,3 +1,6 @@
+### v5.0.8
+- Improve Typescript typings - add offset prop to find options ([850](../../pull/850)
+
 ### v5.0.7
 - Resolve security vulnerabilities
 

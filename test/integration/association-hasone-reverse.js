@@ -222,7 +222,7 @@ describe("hasOne", function () {
             should.equal(Array.isArray(pets), true);
 
             // This often fails for sqlite on travis
-            if (common.isTravis() && common.protocol() != 'sqlite') {
+            if (common.isCI() && common.protocol() != 'sqlite') {
               should.equal(pets.length, 1);
               should.equal(pets[0].name, 'Deco');
             }

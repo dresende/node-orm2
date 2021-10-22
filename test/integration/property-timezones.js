@@ -4,7 +4,7 @@ var common   = require('../common');
 var ORM      = require('../../');
 
 if (common.protocol() == "mongodb") return;
-if (common.protocol() == "sqlite" && !common.getConfig().pathname) {
+if (common.protocol() == "sqlite" && !common.getConnectionConfig().pathname) {
   // sqlite needs a pathname for this test (because of reconnecting)
   // if using memory, when disconnecting everything is lost and this
   // test needs it

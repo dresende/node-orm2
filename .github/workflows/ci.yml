@@ -1,0 +1,86 @@
+name: test
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  test:
+
+    runs-on: ubuntu-latest
+
+    env:
+      CI: true
+      TZ: utc
+      NODE_ENV: test
+      MYSQL_DB_URL: "mysql://root:root@127.0.0.1:3306/orm_test?"
+      POSTGRES_DB_URL: "postgres://postgres:postgres@127.0.0.1:3306/orm_test?"
+      REDSHIFT_DB_URL: "redshift://postgres:postgres@127.0.0.1:3306/orm_test?"
+      SQLITE_DB_URL: "sqlite://?"
+
+    strategy:
+      matrix:
+        node-version: ['14']
+
+    name: test on nodejs ${{ matrix.node-version }}
+
+    services:
+      mysql:
+        image: mysql:5.7
+        env:
+          MYSQL_ROOT_PASSWORD: root
+        options: >-
+          --health-cmd="mysqladmin ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
+        ports:
+          - 3306:3306
+
+      postgres:
+        # Docker Hub image
+        image: postgres
+        # Set health checks to wait until postgres has started
+        env:
+          POSTGRES_PASSWORD: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+    steps:
+      - name: create mysql DB
+        run: mysql -uroot -proot -h 127.0.0.1 --port 3306 -e "CREATE DATABASE orm_test CHARACTER SET utf8mb4;"
+
+      - name: create postgres DB
+        run: psql -U postgres -h 127.0.0.1 -c 'create database orm_test;'
+        env:
+          PGPASSWORD: postgres
+
+      - uses: actions/checkout@v2
+
+      - name: install node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+      
+      - uses: bahmutov/npm-install@v1
+
+      - name: run tests
+        run: npm run test
+
+  test-success:
+    name: Tests
+    if: ${{ always() }}
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - name: Check build matrix status
+        if: ${{ needs.test.result != 'success' }}
+        run: exit 1

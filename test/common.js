@@ -2,6 +2,7 @@ var common      = exports;
 var path        = require('path');
 var async       = require('async');
 var _           = require('lodash');
+var url         = require("url");
 var util        = require('util');
 var querystring = require('querystring');
 var Semver      = require('semver');
@@ -13,8 +14,8 @@ common.protocol = function () {
   return process.env.ORM_PROTOCOL;
 };
 
-common.isTravis = function() {
-  return Boolean(process.env.CI);
+common.isCI = function() {
+  return !!process.env.CI;
 };
 
 common.createConnection = function(opts, cb) {
@@ -24,7 +25,7 @@ common.createConnection = function(opts, cb) {
 common.hasConfig = function (proto) {
   var config;
 
-  if (common.isTravis()) return 'found';
+  if (common.isCI()) return 'found';
 
   try {
     config = require("./config");
@@ -35,47 +36,47 @@ common.hasConfig = function (proto) {
   return (config.hasOwnProperty(proto) ? 'found' : 'not-defined');
 };
 
-common.getConfig = function () {
-  if (common.isTravis()) {
-    switch (this.protocol()) {
-      case 'mysql':
-        return { user: "root", host: "localhost", database: "orm_test" };
-      case 'postgres':
-      case 'redshift':
-        return { user: "postgres", port: 5433, database: "orm_test" };
-      case 'sqlite':
-        return {};
-      case 'mongodb':
-        return { host: "localhost", database: "test" };
-      default:
-        throw new Error("Unknown protocol");
-    }
-  } else {
-    var config = require("./config")[this.protocol()];
-    if (typeof config == "string") {
-      config = require("url").parse(config);
-    }
-    if (config.hasOwnProperty("auth")) {
-      if (config.auth.indexOf(":") >= 0) {
-        config.user = config.auth.substr(0, config.auth.indexOf(":"));
-        config.password = config.auth.substr(config.auth.indexOf(":") + 1);
-      } else {
-        config.user = config.auth;
-        config.password = "";
-      }
-    }
-    if (config.hostname) {
-      config.host = config.hostname;
-    }
+common.parseConnectionString = function (connString) {
+  const config = url.parse(connString);
 
-    return config;
+  if (config.auth) {
+    if (config.auth.indexOf(":") >= 0) {
+      config.user = config.auth.substr(0, config.auth.indexOf(":"));
+      config.password = config.auth.substr(config.auth.indexOf(":") + 1);
+    } else {
+      config.user = config.auth;
+      config.password = "";
+    }
   }
+  if (config.hostname) {
+    config.host = config.hostname;
+  }
+  if (config.pathname) {
+    config.database = config.pathname.slice(1);
+  }
+
+  return config;
 };
 
 common.getConnectionString = function (opts) {
-  var config   = this.getConfig();
-  var protocol = this.protocol();
-  var query;
+  let protocol = this.protocol();
+  const dbEnvVar = `${protocol.toUpperCase()}_DB_URL`;
+  const dbEnvConnString = process.env[dbEnvVar];
+
+  let config;
+  let query;
+
+  if (dbEnvConnString) {
+    config = common.parseConnectionString(dbEnvConnString);
+  } else {
+    const testDBConfig = require("./config")[this.protocol()];
+
+    if (typeof config == "string") {
+      config = common.parseConnectionString(testDBConfig);
+    } else {
+      config = _.cloneDeep(testDBConfig);
+    }
+  }
 
   _.defaults(config, {
     user     : { postgres: 'postgres', redshift: 'postgres', mongodb: '' }[protocol] || 'root',
@@ -94,10 +95,12 @@ common.getConnectionString = function (opts) {
     case 'postgres':
     case 'redshift':
     case 'mongodb':
-      if (common.isTravis()) {
+      if (common.isCI()) {
         if (protocol == 'redshift') protocol = 'postgres';
+        const auth = [config.user, config.password].join(':');
+
         return util.format("%s://%s@%s/%s?%s",
-          protocol, config.user, config.host, config.database, query
+          protocol, auth, config.host, config.database, query
         );
       } else {
         return util.format("%s://%s:%s@%s/%s?%s",
@@ -111,6 +114,10 @@ common.getConnectionString = function (opts) {
       throw new Error("Unknown protocol " + protocol);
   }
 };
+
+common.getConnectionConfig = function (opts) {
+  return common.parseConnectionString(common.getConnectionString(opts));
+}
 
 common.retry = function (before, run, until, done, args) {
   if (typeof until === "number") {

@@ -182,7 +182,7 @@ describe("ORM", function() {
             });
         });
 
-        it("should understand pool `'true'` from query string", function () {
+        it("should understand pool `'1'` from query string", function () {
           var connString = connStr + "debug=1&pool=1";
           return ORM.connectAsync(connString)
             .then(function (db) {
@@ -191,32 +191,36 @@ describe("ORM", function() {
             });
         });
 
-        it("should understand pool `'true'` from query string", function () {
-          var connCopy = _.cloneDeep(common.getConfig());
-          var connOpts = _.extend(connCopy, {
-            protocol: common.protocol(),
-            query: {
-              pool: true, debug: true
+        it("should understand pool `'true'` from connection object", function () {
+          const config = _.extend(
+            common.parseConnectionString(connStr),
+            {
+              protocol: common.protocol(),
+              query: {
+                pool: true, debug: true
+              }
             }
-          });
+          );
 
-          return ORM.connectAsync(connOpts)
+          return ORM.connectAsync(config)
             .then(function (db) {
               should.strictEqual(db.driver.opts.pool,  true);
               should.strictEqual(db.driver.opts.debug, true);
             });
         });
 
-        it("should understand pool `false` from query options", function () {
-          var connCopy = _.cloneDeep(common.getConfig());
-          var connOpts = _.extend(connCopy, {
-            protocol: common.protocol(),
-            query: {
-              pool: false, debug: false
+        it("should understand pool `false` from connection options", function () {
+          const config = _.extend(
+            common.parseConnectionString(connStr),
+            {
+              protocol: common.protocol(),
+              query: {
+                pool: false, debug: false
+              }
             }
-          });
+          );
 
-          return ORM.connectAsync(connOpts)
+          return ORM.connectAsync(config)
             .then(function (db) {
               should.strictEqual(db.driver.opts.pool,  false);
               should.strictEqual(db.driver.opts.debug, false);
@@ -362,7 +366,7 @@ describe("ORM", function() {
       db.on("connect", function (err) {
         should.not.exist(err);
 
-        return done();
+        db.close(done);
       });
     });
 
@@ -382,9 +386,7 @@ describe("ORM", function() {
       });
 
       it("should be able to ping the server", function (done) {
-        db.ping(function () {
-          return done();
-        });
+        db.ping(done);
       });
 
       it("should be able to pingAsync the server", function () {
@@ -473,15 +475,18 @@ describe("ORM", function() {
           });
         });
 
-        it("should understand pool `true` from query options", function (done) {
-          var connCopy = _.cloneDeep(common.getConfig());
-          var connOpts = _.extend(connCopy, {
-            protocol: common.protocol(),
-            query: {
-              pool: true, debug: true
+        it("should understand pool `true` from connection options", function (done) {
+          const config = _.extend(
+            common.parseConnectionString(connStr),
+            {
+              protocol: common.protocol(),
+              query: {
+                pool: true, debug: true
+              }
             }
-          });
-          ORM.connect(connOpts, function (err, db) {
+          );
+
+          ORM.connect(config, function (err, db) {
             should.not.exist(err);
             should.strictEqual(db.driver.opts.pool,  true);
             should.strictEqual(db.driver.opts.debug, true);
@@ -489,15 +494,18 @@ describe("ORM", function() {
           });
         });
 
-        it("should understand pool `false` from query options", function (done) {
-          var connCopy = _.cloneDeep(common.getConfig());
-          var connOpts = _.extend(connCopy, {
-            protocol: common.protocol(),
-            query: {
-              pool: false, debug: false
+        it("should understand pool `false` from connection options", function (done) {
+          const config = _.extend(
+            common.parseConnectionString(connStr),
+            {
+              protocol: common.protocol(),
+              query: {
+                pool: false, debug: false
+              }
             }
-          });
-          ORM.connect(connOpts, function (err, db) {
+          );
+
+          ORM.connect(config, function (err, db) {
             should.not.exist(err);
             should.strictEqual(db.driver.opts.pool,  false);
             should.strictEqual(db.driver.opts.debug, false);

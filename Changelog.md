@@ -1,3 +1,6 @@
+### v5.0.9
+- Add async versions of driver functions ([851](../../pull/851)
+
 ### v5.0.8
 - Improve Typescript typings - add offset prop to find options ([850](../../pull/850)
 

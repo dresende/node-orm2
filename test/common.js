@@ -5,7 +5,7 @@ var _           = require('lodash');
 var url         = require("url");
 var util        = require('util');
 var querystring = require('querystring');
-var Semver      = require('semver');
+var Semver      = require('semver/classes/semver');
 var ORM         = require('../');
 
 common.ORM = ORM;

@@ -2,6 +2,7 @@
 *.njsproj
 *.nodevsdbg
 .DS_Store
+.github
 node_modules
 test*
 lib-cov/

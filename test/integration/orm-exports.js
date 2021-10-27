@@ -323,11 +323,11 @@ describe("ORM", function() {
 
     it("should emit valid error if exception being thrown during connection try", function (done) {
       var testConfig = {
-          protocol : 'mongodb',
+          protocol : 'postgres',
           href     : 'unknownhost',
           database : 'unknowndb',
-          user     : '',
-          password : ''
+          user     : 'a',
+          password : 'b'
         },
         db = ORM.connect(testConfig);
 

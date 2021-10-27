@@ -1,0 +1,5 @@
+{
+  "reporter": "spec",
+  "timeout": 15000,
+  "exit": true
+}

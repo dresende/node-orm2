@@ -1,10 +1,10 @@
 *.sublime-*
 *.njsproj
 *.nodevsdbg
+*~
 .DS_Store
 .github
+.idea
+.nyc_output
 node_modules
 test*
-lib-cov/
-*~
-.idea

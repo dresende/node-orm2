@@ -20,7 +20,15 @@ switch (common.hasConfig(common.protocol())) {
     process.exit(0);
 }
 
-runTests();
+function shouldRunTest(file) {
+  var name  = path.basename(file).slice(0, -3)
+  var proto = common.protocol();
+  var exclude = ['model-aggregate','property-number-size','smart-types'];
+
+  if (proto == "mongodb" && exclude.indexOf(name) >= 0) return false;
+
+  return true;
+}
 
 function runTests() {
   if (common.protocol() == 'mongodb' && common.nodeVersion().major > 6) {
@@ -42,13 +50,4 @@ function runTests() {
   });
 }
 
-function shouldRunTest(file) {
-  var name  = path.basename(file).slice(0, -3)
-  var proto = common.protocol();
-  var exclude = ['model-aggregate','property-number-size','smart-types'];
-
-  if (proto == "mongodb" && exclude.indexOf(name) >= 0) return false;
-
-  return true;
-}
-
+runTests();

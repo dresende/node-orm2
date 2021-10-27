@@ -1,11 +1,10 @@
 *.sublime-*
 *.njsproj
 *.nodevsdbg
-.DS_Store
-node_modules
-test/config.js
-test/coverage.html
-lib-cov/
 *~
-npm-debug.log
+.DS_Store
 .idea
+.nyc_output
+node_modules
+npm-debug.log
+test/config.js

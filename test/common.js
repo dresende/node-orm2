@@ -1,12 +1,13 @@
-var common      = exports;
-var path        = require('path');
 var async       = require('async');
 var _           = require('lodash');
+var path        = require('path');
 var url         = require("url");
 var util        = require('util');
 var querystring = require('querystring');
 var Semver      = require('semver/classes/semver');
 var ORM         = require('../');
+
+var common      = exports;
 
 common.ORM = ORM;
 

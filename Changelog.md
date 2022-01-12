@@ -1,8 +1,17 @@
+### v6.0.0
+- [POSSIBLY BREAKING] Set internal default property value to `undefined` instead of `null` ([855](../../pull/855)).
+  - This will prevent `null` values being explicitly sent to the database when no value was assigned and instead result in the database setting the column to null, or generating a default value.
+  - Properties with an internal value of `undefined` will still return `null` when accessed.
+  - Setting a previously filled property to `undefined` will still set it to null in the DB.
+  - No ORM tests were broken by this change, and as such, the impact of this should be limited to a very small number of corner cases.
+- Add PostgreSQL `uuid` column support ([855](../../pull/855)).
+- Allow specifying `defaultExpression` (eg. `uuid_generate_v4()` for PostgreSQL or `uuid()` for MySQL) to be executed by the database engine for generating default values ([855](../../pull/855)).
+
 ### v5.0.9
-- Add async versions of driver functions ([851](../../pull/851)
+- Add async versions of driver functions ([851](../../pull/851))
 
 ### v5.0.8
-- Improve Typescript typings - add offset prop to find options ([850](../../pull/850)
+- Improve Typescript typings - add offset prop to find options ([850](../../pull/850))
 
 ### v5.0.7
 - Resolve security vulnerabilities
@@ -13,12 +22,12 @@
 - If using Postgres and Nodejs v14+, you must use `pg` driver >= 8.1. The cause of this is unclear, but tests timeout.
 
 ### v5.0.5
-- Update lodash & sql-ddl-sync version to address security vulnerabilities ([845](../../pull/845)
+- Update lodash & sql-ddl-sync version to address security vulnerabilities ([845](../../pull/845))
 - Node 11+ support (stable sort; see https://github.com/nodejs/node/issues/24294 for details)
 - Test against node 12 & 13
 
 ### v5.0.4
-- Update sql-query version to address security vulnerabilities ([841](../../pull/841)
+- Update sql-query version to address security vulnerabilities ([841](../../pull/841))
 
 ### v5.0.3
 - Update dependencies to address security vulnerabilities

@@ -1,4 +1,5 @@
 var should   = require('should');
+var sinon    = require('sinon');
 var helper   = require('../support/spec_helper');
 
 describe("Model.createAsync()", function() {
@@ -30,6 +31,10 @@ describe("Model.createAsync()", function() {
 
   after(function () {
     return db.close();
+  });
+
+  afterEach(function () {
+    sinon.restore();
   });
 
   describe("if passing an object", function () {
@@ -97,6 +102,45 @@ describe("Model.createAsync()", function() {
           John.pets[0].should.have.property(Pet.id);
           should.equal(John.pets[0].saved(), true);
         });
+    });
+
+    describe("with 'saveAssociationsByDefault' disabled", function () {
+      beforeEach(function () {
+        sinon.stub(db.settings, 'get').withArgs('instance.saveAssociationsByDefault').returns(false);
+      });
+
+      it("should not save associations", function () {
+        return Person.createAsync({
+          name : "John Doe",
+          pets : [ { name: "Deco" } ]
+        })
+          .then(function (John) {
+            John.should.have.property("name", "John Doe");
+
+            should(Array.isArray(John.pets));
+
+            John.pets[0].should.have.property("name", "Deco");
+            John.pets[0].should.not.have.property(Pet.id);
+          });
+      });
+
+      it("should save associations if 'saveAssociations' is passed", function () {
+        return Person.createAsync({
+          name : "John Doe",
+          pets : [ { name: "Deco" } ]
+        }, {
+          saveAssociations: true
+        })
+          .then(function (John) {
+            John.should.have.property("name", "John Doe");
+
+            should(Array.isArray(John.pets));
+
+            John.pets[0].should.have.property("name", "Deco");
+            John.pets[0].should.have.property(Pet.id);
+            should.equal(John.pets[0].saved(), true);
+          });
+      });
     });
   });
 

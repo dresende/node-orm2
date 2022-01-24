@@ -1,4 +1,5 @@
 var should   = require('should');
+var sinon    = require('sinon');
 var helper   = require('../support/spec_helper');
 
 describe("Model.create()", function() {
@@ -16,7 +17,7 @@ describe("Model.create()", function() {
       });
       Person.hasMany("pets", Pet);
 
-      return helper.dropSync([ Person, Pet ], done);
+      return helper.dropSync([Person, Pet], done);
     };
   };
 
@@ -30,6 +31,10 @@ describe("Model.create()", function() {
 
   after(function () {
     return db.close();
+  });
+
+  afterEach(function () {
+    sinon.restore();
   });
 
   describe("if passing an object", function () {
@@ -106,6 +111,47 @@ describe("Model.create()", function() {
         John.pets[0].saved().should.be.true;
 
         return done();
+      });
+    });
+
+    describe("with 'saveAssociationsByDefault' disabled", function () {
+      beforeEach(function () {
+        sinon.stub(db.settings, 'get').withArgs('instance.saveAssociationsByDefault').returns(false);
+      });
+
+      it("should not save associations", function (done) {
+        Person.create({
+          name : "John Doe",
+          pets : [ { name: "Deco" } ]
+        }, function (err, John) {
+          should.equal(err, null);
+
+          should.equal(Array.isArray(John.pets), true);
+
+          John.pets[0].should.have.property("name", "Deco");
+          John.pets[0].should.not.have.property(Pet.id);
+
+          return done();
+        });
+      });
+
+      it("should save associations if 'saveAssociations' is passed", function (done) {
+        Person.create({
+          name : "John Doe",
+          pets : [ { name: "Deco" } ]
+        }, {
+          saveAssociations: true
+        }, function (err, John) {
+          should.equal(err, null);
+
+          should.equal(Array.isArray(John.pets), true);
+
+          John.pets[0].should.have.property("name", "Deco");
+          John.pets[0].should.have.property(Pet.id);
+          John.pets[0].saved().should.be.true;
+
+          return done();
+        });
       });
     });
   });

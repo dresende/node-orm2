@@ -1,3 +1,6 @@
+### v6.1.0
+- [Feature] Accept options when calling `Model.create` ([856](../../pull/856))
+
 ### v6.0.0
 - [POSSIBLY BREAKING] Set internal default property value to `undefined` instead of `null` ([855](../../pull/855)).
   - This will prevent `null` values being explicitly sent to the database when no value was assigned and instead result in the database setting the column to null, or generating a default value.

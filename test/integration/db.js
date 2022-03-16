@@ -142,6 +142,27 @@ describe("db.driver", function () {
       });
     });
 
+    describe("#generateQuery", function () {
+      it("should return interpolated & escaped SQL", function () {
+        var expected = "expectation missing; unknown protocol";
+
+        switch (common.protocol()) {
+          case 'mysql':
+          case 'sqlite':
+            expected = "UPDATE `animals` SET `name` = 'cat' WHERE `id` = 9"
+            break;
+          case 'postgres':
+            expected = 'UPDATE "animals" SET "name" = \'cat\' WHERE "id" = 9'
+            break;
+        }
+
+        should.equal(
+          db.driver.generateQuery("UPDATE ?? SET ?? = ? WHERE ?? = ?", ['animals', 'name', 'cat', 'id', 9]),
+          expected,
+        );
+      });
+    });
+
     describe("#execQuery", function () {
       it("should execute sql queries", function (done) {
         db.driver.execQuery("SELECT id FROM log", function (err, data) {

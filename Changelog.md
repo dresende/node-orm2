@@ -1,3 +1,6 @@
+### v6.2.0
+- [Feature] Add `.driver.generateQuery` function - same as `.driver.execQuery` but returns the SQL instead of executing it
+
 ### v6.1.0
 - [Feature] Accept options when calling `Model.create` ([856](../../pull/856))
 

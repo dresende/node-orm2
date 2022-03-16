@@ -144,7 +144,7 @@ describe("db.driver", function () {
 
     describe("#generateQuery", function () {
       it("should return interpolated & escaped SQL", function () {
-        var expected = "expectation missing; unknown protocol";
+        var expected = "expectation missing; unknown protocol " + common.protocol();
 
         switch (common.protocol()) {
           case 'mysql':
@@ -152,6 +152,7 @@ describe("db.driver", function () {
             expected = "UPDATE `animals` SET `name` = 'cat' WHERE `id` = 9"
             break;
           case 'postgres':
+          case 'redshift':
             expected = 'UPDATE "animals" SET "name" = \'cat\' WHERE "id" = 9'
             break;
         }

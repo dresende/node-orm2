@@ -1,5 +1,9 @@
+### v7.0.0
+- Update `async` package from v2 to v3 to resolve security vulnerabilities ([858](../../pull/858))
+- Drop support for node < 6 (due to `async` package update)
+
 ### v6.2.0
-- [Feature] Add `.driver.generateQuery` function - same as `.driver.execQuery` but returns the SQL instead of executing it
+- [Feature] Add `.driver.generateQuery` function - same as `.driver.execQuery` but returns the SQL instead of executing it ([857](../../pull/857))
 
 ### v6.1.0
 - [Feature] Accept options when calling `Model.create` ([856](../../pull/856))

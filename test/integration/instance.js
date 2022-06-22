@@ -303,6 +303,35 @@ describe("Model instance", function() {
     });
   });
 
+  describe("#isDirty", function () {
+    var person = null;
+
+    beforeEach(function (done) {
+      Person.create({ name: 'John', age: 44, data: { a: 1 } }, function (err, p) {
+        if (err) return cb(err);
+
+        person = p;
+        done();
+      });
+    });
+
+    it("should return false by default", function () {
+      should.equal(person.isDirty(), false);
+    });
+
+    it("should return false when property is set to same value", function () {
+      should.equal(person.isDirty(), false);
+      person.name = 'John';
+      should.equal(person.isDirty(), false);
+    });
+
+    it("should return true when property is changed", function () {
+      should.equal(person.isDirty(), false);
+      person.name = 'Bob';
+      should.equal(person.isDirty(), true);
+    });
+  });
+
   describe("#isShell", function () {
     it("should return true for shell models", function () {
       should.equal(Person(4).isShell(), true);

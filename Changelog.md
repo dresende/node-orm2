@@ -1,3 +1,6 @@
+### v7.1.0
+- Add `isDirty` function to instances ([859](../../pull/859))
+
 ### v7.0.0
 - Update `async` package from v2 to v3 to resolve security vulnerabilities ([858](../../pull/858))
 - Drop support for node < 6 (due to `async` package update)

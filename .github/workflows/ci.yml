@@ -22,7 +22,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: ['10', '12', '14', '16']
+        node-version: ['14', '16', '18']
 
     name: test on nodejs ${{ matrix.node-version }}
 

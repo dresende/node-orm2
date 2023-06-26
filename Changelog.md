@@ -1,3 +1,7 @@
+### v7.1.1
+- Resolve most development-only security vulnerabilities (no production ones present) ([861](../../pull/861))
+- Don't run test on node 10 & 12 - dev deps don't work
+
 ### v7.1.0
 - Add `isDirty` function to instances ([859](../../pull/859))
 

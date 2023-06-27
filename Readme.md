@@ -9,7 +9,7 @@
 ## This package is not actively maintained
 
 If you're starting a new project, consider using one of the following instead as they have a more active community:
-* https://github.com/bookshelf/bookshelf
+* https://github.com/typeorm/typeorm
 * https://github.com/sequelize/sequelize
 
 

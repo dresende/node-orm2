@@ -513,6 +513,24 @@ describe("hasMany", function () {
         });
       });
 
+      it("should add rows to join tables in order provided", async function () {
+        const pets = await Pet.createAsync([{ name: 'Fluffy' }, { name: 'Quacky' }, { name: 'Horsey' }]);
+        const Justin = await Person.oneAsync({ name: "Justin" });
+        const justinsPetsBefore = await Justin.getPetsAsync();
+        await Justin.addPetsAsync(pets);
+        const justinsPetsAfter = await Justin.getPetsAsync();
+
+        should.equal(justinsPetsBefore.length, justinsPetsAfter.length - 3);
+
+        const joinRows = await db.driver.execQueryAsync("SELECT * FROM person_pets");
+
+        should.deepEqual(
+          // Mysql returns array of RowDataPacket. Concert to plain object.
+          joinRows.slice(-pets.length).map((item) => Object.assign({}, item)),
+          pets.map(function (pet) { return { person_id: Justin.id, pets_id: pet.id }; }),
+        );
+      });
+
       it("should throw if no items passed", function (done) {
         Person.one(function (err, person) {
           should.equal(err, null);

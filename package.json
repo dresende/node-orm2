@@ -12,7 +12,7 @@
     "sqlite",
     "mongodb"
   ],
-  "version": "7.1.1",
+  "version": "8.0.0",
   "license": "MIT",
   "homepage": "http://dresende.github.io/node-orm2",
   "repository": "http://github.com/dresende/node-orm2.git",

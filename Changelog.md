@@ -1,3 +1,6 @@
+### v8.0.0
+- [POSSIBLY BREAKING] Add rows to hasMany join table in order provided (previously, they were added in reverse order) ([862](../../pull/862))
+
 ### v7.1.1
 - Resolve most development-only security vulnerabilities (no production ones present) ([861](../../pull/861))
 - Don't run test on node 10 & 12 - dev deps don't work

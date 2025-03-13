@@ -1,3 +1,7 @@
+### v8.0.1
+- Remove usage of deprecated `util.isDate` in `sql-query` ([863](../../pull/863))
+- Add node 20 & 22 to test matrix
+
 ### v8.0.0
 - [POSSIBLY BREAKING] Add rows to hasMany join table in order provided (previously, they were added in reverse order) ([862](../../pull/862))
 
